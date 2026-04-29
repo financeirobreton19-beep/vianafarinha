@@ -137,6 +137,7 @@
         .btn-acao { background: none; border: none; cursor: pointer; font-size: 18px; margin: 0 4px; }
         .btn-editar { color: #f59e0b; }
         .btn-excluir { color: #ef4444; }
+        .btn-visualizar { color: #2563eb; }
         .resumo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -254,7 +255,12 @@
         .resumo-tabela { width: 100%; border-collapse: collapse; background: #f8fafc; border-radius: 16px; overflow: hidden; }
         .resumo-tabela th, .resumo-tabela td { padding: 14px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         .resumo-tabela th { background: #1e5631; color: white; }
-        @media (max-width: 768px) { body { padding: 16px; } .tab-btn { padding: 6px 12px; font-size: 10px; } .chart-grid { grid-template-columns: 1fr; } .card { padding: 20px; } .pedido-body { min-width: auto; } }
+        .connection-status { display: flex; align-items: center; gap: 8px; background: white; padding: 6px 16px; border-radius: 40px; font-size: 12px; }
+        .search-global { background: white; border-radius: 40px; padding: 8px 20px; border: none; width: 250px; outline: none; }
+        .lancamentos-tabela { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .lancamentos-tabela th, .lancamentos-tabela td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .lancamentos-tabela th { background: #1e5631; color: white; position: sticky; top: 0; }
+        @media (max-width: 768px) { body { padding: 16px; } .tab-btn { padding: 6px 12px; font-size: 10px; } .chart-grid { grid-template-columns: 1fr; } .card { padding: 20px; } .pedido-body { min-width: auto; } .search-global { width: 150px; } .lancamentos-tabela { font-size: 10px; } .lancamentos-tabela th, .lancamentos-tabela td { padding: 6px 4px; } }
     </style>
 </head>
 <body>
@@ -275,7 +281,11 @@
 <div class="container">
     <div class="top-bar">
         <div class="logo-area"><div class="logo-circle"><span>V</span></div><h1>VIANA FARINHA - SISTEMA COMPLETO</h1></div>
-        <button class="btn-sair" id="btnLogout">SAIR</button>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <input type="text" id="pesquisaGlobal" class="search-global" placeholder="🔍 Pesquisar...">
+            <div class="connection-status" id="connectionStatus"><span>🟢</span> <span>Online</span></div>
+            <button class="btn-sair" id="btnLogout">SAIR</button>
+        </div>
     </div>
 
     <div class="tabs">
@@ -290,189 +300,60 @@
 
     <div id="tabCadastros" class="tab-pane active">
         <div class="card">
-            <div class="card-header"><h3>📝 NOVO CADASTRO</h3>
-                <div style="display:flex; gap:12px;">
-                    <div class="tipo-option" data-tipo="fornecedor" onclick="selecionarTipoCadastro('fornecedor')">🏭 FORNECEDOR</div>
-                    <div class="tipo-option" data-tipo="cliente" onclick="selecionarTipoCadastro('cliente')">👤 CLIENTE</div>
-                    <div class="tipo-option" data-tipo="ambos" onclick="selecionarTipoCadastro('ambos')">🔄 AMBOS</div>
-                </div>
-            </div>
-            <input type="hidden" id="cadastroTipo" value="fornecedor">
-            <input type="hidden" id="editandoCadastroId">
-            <div class="form-row">
-                <div><label>🏢 NOME *</label><input type="text" id="cadastroNome" placeholder="Ex: Empório da Tapioca"></div>
-                <div><label>📄 CPF/CNPJ *</label><input type="text" id="cadastroDocumento" placeholder="Ex: 09.097.608/0001-50"></div>
-            </div>
-            <div class="form-row">
-                <div><label>📞 CONTATO *</label><input type="text" id="cadastroContato" placeholder="Ex: (91) 98418-5663"></div>
-                <div><label>💰 CHAVE PIX *</label><input type="text" id="cadastroPix" placeholder="CPF, E-mail ou Telefone"></div>
-            </div>
-            <div class="form-row">
-                <div><label>📧 E-MAIL</label><input type="email" id="cadastroEmail" placeholder="email@exemplo.com"></div>
-                <div><label>📍 ENDEREÇO</label><input type="text" id="cadastroEndereco" placeholder="Endereço completo"></div>
-            </div>
-            <div class="form-row">
-                <div><label>🏷️ APELIDO</label><input type="text" id="cadastroApelido" placeholder="Ex: Nenê, Leandro"></div>
-                <div></div>
-            </div>
-            <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button class="btn-limpar" onclick="limparFormularioCadastro()">LIMPAR</button>
-                <button class="btn-salvar" onclick="salvarCadastro()">💾 SALVAR</button>
-            </div>
+            <div class="card-header"><h3>📝 NOVO CADASTRO</h3><div style="display:flex; gap:12px;"><div class="tipo-option" data-tipo="fornecedor" onclick="selecionarTipoCadastro('fornecedor')">🏭 FORNECEDOR</div><div class="tipo-option" data-tipo="cliente" onclick="selecionarTipoCadastro('cliente')">👤 CLIENTE</div><div class="tipo-option" data-tipo="ambos" onclick="selecionarTipoCadastro('ambos')">🔄 AMBOS</div></div></div>
+            <input type="hidden" id="cadastroTipo" value="fornecedor"><input type="hidden" id="editandoCadastroId">
+            <div class="form-row"><div><label>🏢 NOME</label><input type="text" id="cadastroNome" placeholder="Ex: Empório da Tapioca"></div><div><label>📄 CPF/CNPJ</label><input type="text" id="cadastroDocumento" placeholder="Ex: 09.097.608/0001-50"></div></div>
+            <div class="form-row"><div><label>📞 CONTATO</label><input type="text" id="cadastroContato" placeholder="Ex: (91) 98418-5663"></div><div><label>💰 CHAVE PIX</label><input type="text" id="cadastroPix" placeholder="CPF, E-mail ou Telefone"></div></div>
+            <div class="form-row"><div><label>📧 E-MAIL</label><input type="email" id="cadastroEmail" placeholder="email@exemplo.com"></div><div><label>📍 ENDEREÇO</label><input type="text" id="cadastroEndereco" placeholder="Endereço completo"></div></div>
+            <div class="form-row"><div><label>🏷️ APELIDO</label><input type="text" id="cadastroApelido" placeholder="Ex: Nenê, Leandro"></div><div></div></div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end;"><button class="btn-limpar" onclick="limparFormularioCadastro()">LIMPAR</button><button class="btn-salvar" onclick="salvarCadastro()">💾 SALVAR</button></div>
         </div>
         <div class="card">
-            <div class="card-header"><h3>📋 LISTA DE CADASTROS</h3>
-                <div class="filtros-area">
-                    <select id="filtroTipoCadastro" onchange="renderizarCadastros()"><option value="">Todos</option><option value="fornecedor">Fornecedores</option><option value="cliente">Clientes</option><option value="ambos">Ambos</option></select>
-                    <input type="text" id="filtroBuscaCadastro" placeholder="Buscar..." oninput="renderizarCadastros()">
-                    <button class="btn-limpar" onclick="limparFiltrosCadastro()">LIMPAR</button>
-                </div>
-            </div>
+            <div class="card-header"><h3>📋 LISTA DE CADASTROS</h3><div class="filtros-area"><select id="filtroTipoCadastro" onchange="renderizarCadastros()"><option value="">Todos</option><option value="fornecedor">Fornecedores</option><option value="cliente">Clientes</option><option value="ambos">Ambos</option></select><input type="text" id="filtroBuscaCadastro" placeholder="Buscar..." oninput="renderizarCadastros()"><button class="btn-limpar" onclick="limparFiltrosCadastro()">LIMPAR</button></div></div>
             <div class="table-wrapper"><table id="tabelaCadastros"><thead><tr><th>TIPO</th><th>NOME</th><th>DOCUMENTO</th><th>CONTATO</th><th>CHAVE PIX</th><th>AÇÕES</th></tr></thead><tbody id="cadastrosBody"></tbody></table></div>
         </div>
     </div>
 
     <div id="tabCompra" class="tab-pane">
-        <div class="card">
-            <div class="filtros-area">
-                <select id="filtroFornecedor"><option value="">Todos</option></select>
-                <input type="date" id="dataInicio"><input type="date" id="dataFim">
-                <button class="btn-buscar" onclick="filtrarLancamentos()">BUSCAR</button>
-                <button class="btn-limpar" onclick="limparFiltrosCompra()">LIMPAR</button>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header"><h3>📋 LANÇAMENTOS (COMPRAS)</h3><button class="btn-novo" onclick="abrirModalLancamento()">+ NOVO LANÇAMENTO</button></div>
-            <div class="table-wrapper"><table id="tabelaLancamentos"><thead><tr><th>DATA</th><th>FORNECEDOR</th><th>RENDA(kg)</th><th>QTD CX</th><th>PESO(kg)</th><th>VL.TONELADA</th><th>TOTAL BRUTO</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="lancamentosBody"></tbody><tfoot id="lancamentosFooter"></tfoot></table></div>
-        </div>
-        <div class="card">
-            <div class="card-header"><h3>💰 CONTROLE DE PAGAMENTOS</h3><button class="btn-novo" onclick="abrirModalPagamento()">+ NOVO PAGAMENTO</button></div>
-            <div class="table-wrapper"><table id="tabelaPagamentos"><thead><tr><th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th>TOTAL</th><th>FRETE</th><th>ARRANCAÇÃO</th><th>VALOR PAGO</th><th>TIPO</th><th>SALDO</th><th>OBSERVAÇÃO</th><th>AÇÕES</th></tr></thead><tbody id="pagamentosBody"></tbody></table></div>
-        </div>
-        <div class="card"><h3>📊 RESUMO DA COMPRA</h3>
-            <div class="resumo-grid">
-                <div class="resumo-card"><h4>TOTAL BRUTO</h4><div class="valor" id="totalBruto">R$0</div></div>
-                <div class="resumo-card"><h4>TOTAL FRETE</h4><div class="valor" id="totalFrete">R$0</div></div>
-                <div class="resumo-card"><h4>TOTAL ARRANCAÇÃO</h4><div class="valor" id="totalArrancacao">R$0</div></div>
-                <div class="resumo-card resumo-destaque"><h4>TOTAL LÍQUIDO</h4><div class="valor" id="totalLiquido">R$0</div></div>
-                <div class="resumo-card"><h4>VALOR PAGO</h4><div class="valor" id="totalPagoCompra">R$0</div></div>
-                <div class="resumo-card resumo-destaque"><h4>SALDO A PAGAR</h4><div class="valor" id="saldoPagar">R$0</div></div>
-            </div>
-        </div>
+        <div class="card"><div class="filtros-area"><select id="filtroFornecedor"><option value="">Todos</option></select><input type="date" id="dataInicio"><input type="date" id="dataFim"><button class="btn-buscar" onclick="filtrarLancamentos()">BUSCAR</button><button class="btn-limpar" onclick="limparFiltrosCompra()">LIMPAR</button></div></div>
+        <div class="card"><div class="card-header"><h3>📋 LANÇAMENTOS (COMPRAS)</h3><button class="btn-novo" onclick="abrirModalLancamento()">+ NOVO LANÇAMENTO</button></div><div class="table-wrapper"><table class="lancamentos-tabela" id="tabelaLancamentos"><thead><tr><th>DATA</th><th>FORNECEDOR</th><th>RENDA(kg)</th><th>QTD CX</th><th>PESO(kg)</th><th>VL.TONELADA</th><th>TOTAL BRUTO</th><th>VALOR CAIXA</th><th>QTD SACOS 1</th><th>QTD SACOS 2</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="lancamentosBody"></tbody><tfoot id="lancamentosFooter"></tfoot></table></div></div>
+        <div class="card"><div class="card-header"><h3>💰 CONTROLE DE PAGAMENTOS</h3><button class="btn-novo" onclick="abrirModalPagamento()">+ NOVO PAGAMENTO</button></div><div class="table-wrapper"><table id="tabelaPagamentos"><thead><tr><th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th>TOTAL</th><th>FRETE</th><th>ARRANCAÇÃO</th><th>VALOR PAGO</th><th>TIPO</th><th>SALDO</th><th>OBSERVAÇÃO</th><th>AÇÕES</th></tr></thead><tbody id="pagamentosBody"></tbody></table></div></div>
+        <div class="card"><h3>📊 RESUMO DA COMPRA</h3><div class="resumo-grid"><div class="resumo-card"><h4>TOTAL BRUTO</h4><div class="valor" id="totalBruto">R$ 0,00</div></div><div class="resumo-card"><h4>TOTAL FRETE</h4><div class="valor" id="totalFrete">R$ 0,00</div></div><div class="resumo-card"><h4>TOTAL ARRANCAÇÃO</h4><div class="valor" id="totalArrancacao">R$ 0,00</div></div><div class="resumo-card resumo-destaque"><h4>TOTAL LÍQUIDO</h4><div class="valor" id="totalLiquido">R$ 0,00</div></div><div class="resumo-card"><h4>VALOR PAGO</h4><div class="valor" id="totalPagoCompra">R$ 0,00</div></div><div class="resumo-card resumo-destaque"><h4>SALDO A PAGAR</h4><div class="valor" id="saldoPagar">R$ 0,00</div></div></div></div>
     </div>
 
     <div id="tabEstoque" class="tab-pane">
-        <div class="resumo-grid">
-            <div class="resumo-card"><h4>📦 TOTAL PRODUTOS</h4><div class="valor" id="totalProdutos">0</div></div>
-            <div class="resumo-card"><h4>💰 VALOR ESTOQUE</h4><div class="valor" id="valorTotalEstoque">R$0</div></div>
-        </div>
-        <div class="card">
-            <div class="card-header"><h3>📦 PRODUTOS</h3><div><button class="btn-novo" onclick="abrirModalProduto()">+ NOVO PRODUTO</button><button class="btn-entrada" onclick="abrirModalEntradaEstoque()">+ ENTRADA</button></div></div>
-            <div class="table-wrapper"><table id="tabelaProdutos"><thead><tr><th>PRODUTO</th><th>UNIDADE</th><th>ENTRADAS</th><th>SAÍDAS</th><th>ESTOQUE</th><th>VLR UNIT.</th><th>VLR ESTOQUE</th><th>AÇÕES</th></tr></thead><tbody id="produtosBody"></tbody></table></div>
-        </div>
-        <div class="card">
-            <div class="card-header"><h3>🧾 SAÍDAS/VENDAS</h3></div>
-            <div class="table-wrapper"><table id="tabelaSaidas"><thead><tr><th>PEDIDO</th><th>DATA</th><th>CLIENTE</th><th>PRODUTO</th><th>QTD</th><th>TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="saidasBody"></tbody></table></div>
-        </div>
+        <div class="resumo-grid"><div class="resumo-card"><h4>📦 TOTAL PRODUTOS</h4><div class="valor" id="totalProdutos">0</div></div><div class="resumo-card"><h4>💰 VALOR ESTOQUE</h4><div class="valor" id="valorTotalEstoque">R$ 0,00</div></div></div>
+        <div class="card"><div class="card-header"><h3>📦 PRODUTOS</h3><div><button class="btn-novo" onclick="abrirModalProduto()">+ NOVO PRODUTO</button><button class="btn-entrada" onclick="abrirModalEntradaEstoque()">+ ENTRADA</button></div></div><div class="table-wrapper"><table id="tabelaProdutos"><thead><tr><th>PRODUTO</th><th>TIPO</th><th>UNIDADE</th><th>ENTRADAS</th><th>SAÍDAS</th><th>ESTOQUE</th><th>VLR UNIT.</th><th>VLR ESTOQUE</th><th>AÇÕES</th></tr></thead><tbody id="produtosBody"></tbody></table></div></div>
+        <div class="card"><div class="card-header"><h3>🧾 SAÍDAS/VENDAS</h3></div><div class="table-wrapper"><table id="tabelaSaidas"><thead><tr><th>PEDIDO</th><th>DATA</th><th>CLIENTE</th><th>PRODUTO</th><th>QTD</th><th>TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="saidasBody"></tbody></table></div></div>
     </div>
 
     <div id="tabPedidos" class="tab-pane">
-        <div class="pedido-card">
-            <div class="pedido-header"><h2>📋 NOVO PEDIDO</h2></div>
-            <div class="pedido-body">
-                <div class="form-row"><div><label>DATA</label><input type="date" id="pedidoData" value="2026-04-29"></div><div><label>CLIENTE</label><select id="pedidoCliente" onchange="carregarDadosCliente()"><option value="">Selecione</option></select></div></div>
-                <div class="form-row"><div><label>TELEFONE</label><input type="text" id="pedidoTelefone" readonly></div><div><label>E-MAIL</label><input type="text" id="pedidoEmail" readonly></div></div>
-                
-                <div class="section-title">🛒 ADICIONAR ITEM</div>
-                <div id="itensTemp"><div class="pedido-item-temp"><div style="display:flex; gap:12px; flex-wrap:wrap;"><select class="temp-produto" style="flex:3;"></select><input type="number" class="temp-qtd" placeholder="Qtd" step="0.001" style="flex:1;"><button class="btn-lancar" onclick="confirmarItem(this)">✓ LANÇAR</button></div></div></div>
-                <button class="btn-novo" style="margin-top:8px;" onclick="adicionarLinhaTemp()">+ ADICIONAR ITEM</button>
-                
-                <div class="section-title">📋 ITENS CONFIRMADOS</div>
-                <div id="itensConfirmadosDiv"><p style="text-align:center;padding:20px;">Nenhum item</p></div>
-                
-                <div class="resumo-pedido">
-                    <span>📦 QTD TOTAL:</span><strong id="resumoQtdTotal">0</strong>
-                    <span>⚖️ PESO TOTAL:</span><strong id="resumoPesoTotal">0 kg</strong>
-                    <span>💰 VALOR TOTAL:</span><strong id="resumoValorTotal">R$0</strong>
-                </div>
-                
-                <div class="payment-row">
-                    <div><label>DESCONTO (R$)</label><input type="number" id="pedidoDesconto" step="0.01" value="0" oninput="calcularTotais()"></div>
-                    <div><label>VALOR COM DESCONTO</label><input type="text" id="pedidoValorComDesconto" readonly></div>
-                </div>
-                
-                <div class="form-row"><div><label>CONDIÇÃO</label><select id="pedidoCondicao"><option>Espécie</option><option>Pix</option><option>Transferência</option><option>Cartão</option></select></div><div><label>VENDEDOR</label><input type="text" id="pedidoVendedor" value="Pedro R V da Silva Eirelli"></div></div>
-                
-                <div class="payment-row"><div><label>PAGAMENTO</label><input type="number" id="pedidoTotalPago" step="0.01" value="0" oninput="calcularLiquido()"></div><div><label>LÍQUIDO</label><input type="text" id="pedidoLiquido" readonly></div></div>
-                
-                <div class="assinatura">📝 ASSINATURA DO CLIENTE: _________________________</div>
-                
-                <div class="action-buttons"><button class="btn-limpar" onclick="limparPedido()">LIMPAR</button><button class="btn-imprimir" onclick="imprimirPedido()">IMPRIMIR</button><button class="btn-gerar" onclick="gerarPedido()">✅ GERAR PEDIDO</button></div>
-            </div>
-        </div>
+        <div class="pedido-card"><div class="pedido-header"><h2>📋 NOVO PEDIDO</h2></div><div class="pedido-body"><div class="form-row"><div><label>DATA</label><input type="date" id="pedidoData" value="2026-04-29"></div><div><label>CLIENTE</label><select id="pedidoCliente" onchange="carregarDadosCliente()"><option value="">Selecione</option></select></div></div><div class="form-row"><div><label>TELEFONE</label><input type="text" id="pedidoTelefone" readonly></div><div><label>E-MAIL</label><input type="text" id="pedidoEmail" readonly></div></div>
+        <div class="section-title">🛒 ADICIONAR ITEM</div><div id="itensTemp"><div class="pedido-item-temp"><div style="display:flex; gap:12px; flex-wrap:wrap;"><select class="temp-produto" style="flex:3;"></select><input type="number" class="temp-qtd" placeholder="Qtd" step="0.001" style="flex:1;"><button class="btn-lancar" onclick="confirmarItem(this)">✓ LANÇAR</button></div></div></div><button class="btn-novo" style="margin-top:8px;" onclick="adicionarLinhaTemp()">+ ADICIONAR ITEM</button>
+        <div class="section-title">📋 ITENS CONFIRMADOS</div><div id="itensConfirmadosDiv"><p style="text-align:center;padding:20px;">Nenhum item</p></div>
+        <div class="resumo-pedido"><span>📦 QTD TOTAL:</span><strong id="resumoQtdTotal">0</strong><span>⚖️ PESO TOTAL:</span><strong id="resumoPesoTotal">0 kg</strong><span>💰 VALOR TOTAL:</span><strong id="resumoValorTotal">R$ 0,00</strong></div>
+        <div class="payment-row"><div><label>DESCONTO (R$)</label><input type="number" id="pedidoDesconto" step="0.01" value="0" oninput="calcularTotais()"></div><div><label>VALOR COM DESCONTO</label><input type="text" id="pedidoValorComDesconto" readonly></div></div>
+        <div class="form-row"><div><label>CONDIÇÃO</label><select id="pedidoCondicao"><option>Espécie</option><option>Pix</option><option>Transferência</option><option>Cartão</option></select></div><div><label>VENDEDOR</label><input type="text" id="pedidoVendedor" value="Pedro R V da Silva Eirelli"></div></div>
+        <div class="payment-row"><div><label>PAGAMENTO</label><input type="number" id="pedidoTotalPago" step="0.01" value="0" oninput="calcularLiquido()"></div><div><label>LÍQUIDO</label><input type="text" id="pedidoLiquido" readonly></div></div>
+        <div class="assinatura">📝 ASSINATURA DO CLIENTE: _________________________</div>
+        <div class="action-buttons"><button class="btn-limpar" onclick="limparPedido()">LIMPAR</button><button class="btn-imprimir" onclick="imprimirPedido()">IMPRIMIR</button><button class="btn-gerar" onclick="gerarPedido()">✅ GERAR PEDIDO</button></div></div></div>
     </div>
 
     <div id="tabRocaEntradas" class="tab-pane">
-        <div class="card">
-            <div class="filtros-area">
-                <select id="filtroRoca"><option value="">Todas</option></select>
-                <select id="filtroResponsavel"><option value="">Todos</option><option value="Nenê">Nenê</option><option value="Leandro">Leandro</option></select>
-                <input type="date" id="filtroDataInicioRoca"><input type="date" id="filtroDataFimRoca">
-                <button class="btn-buscar" onclick="filtrarRoca()">BUSCAR</button>
-                <button class="btn-limpar" onclick="limparFiltrosRoca()">LIMPAR</button>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header"><h3>📥 ENTRADAS (Receitas da Roça)</h3><div><button class="btn-nova-roca" onclick="abrirModalNovaRoca()">+ NOVA ROÇA</button><button class="btn-novo" onclick="abrirModalEntradaRoca()">+ NOVA ENTRADA</button></div></div>
-            <div class="table-wrapper"><table id="tabelaEntradas"><thead><tr><th>DATA</th><th>ROÇA</th><th>CATEGORIA</th><th>RESPONSÁVEL</th><th>VALOR</th><th>AÇÕES</th></tr></thead><tbody id="entradasBody"></tbody></table></div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header"><h3>📤 SAÍDAS/DESPESAS (Custos da Roça)</h3><button class="btn-novo" onclick="abrirModalDespesaRoca()">+ NOVA DESPESA</button></div>
-            <div class="table-wrapper"><table id="tabelaDespesas"><thead><tr><th>DATA</th><th>ROÇA</th><th>CATEGORIA</th><th>RESPONSÁVEL</th><th>DESCRIÇÃO</th><th>VALOR</th><th>AÇÕES</th></tr></thead><tbody id="despesasBody"></tbody></table></div>
-        </div>
+        <div class="card"><div class="filtros-area"><select id="filtroRoca"><option value="">Todas</option></select><select id="filtroResponsavel"><option value="">Todos</option><option value="Nenê">Nenê</option><option value="Leandro">Leandro</option></select><input type="date" id="filtroDataInicioRoca"><input type="date" id="filtroDataFimRoca"><button class="btn-buscar" onclick="filtrarRoca()">BUSCAR</button><button class="btn-limpar" onclick="limparFiltrosRoca()">LIMPAR</button></div></div>
+        <div class="card"><div class="card-header"><h3>📥 ENTRADAS (Receitas da Roça)</h3><div><button class="btn-nova-roca" onclick="abrirModalNovaRoca()">+ NOVA ROÇA</button><button class="btn-novo" onclick="abrirModalEntradaRoca()">+ NOVA ENTRADA</button></div></div><div class="table-wrapper"><table id="tabelaEntradas"><thead><tr><th>DATA</th><th>ROÇA</th><th>CATEGORIA</th><th>RESPONSÁVEL</th><th>VALOR</th><th>AÇÕES</th></tr></thead><tbody id="entradasBody"></tbody></table></div></div>
+        <div class="card"><div class="card-header"><h3>📤 SAÍDAS/DESPESAS (Custos da Roça)</h3><button class="btn-novo" onclick="abrirModalDespesaRoca()">+ NOVA DESPESA</button></div><div class="table-wrapper"><table id="tabelaDespesas"><thead><tr><th>DATA</th><th>ROÇA</th><th>CATEGORIA</th><th>RESPONSÁVEL</th><th>DESCRIÇÃO</th><th>VALOR</th><th>AÇÕES</th></tr></thead><tbody id="despesasBody"></tbody></table></div></div>
     </div>
 
     <div id="tabRocaResumo" class="tab-pane">
-        <div class="card">
-            <div class="card-header"><h3>💰 PRESTAÇÃO DE CONTAS (Repasses aos Sócios)</h3><button class="btn-novo" onclick="abrirModalPrestacao()">+ NOVO REPASSE</button></div>
-            <div class="table-wrapper"><table id="tabelaPrestacoes"><thead><tr><th>DATA</th><th>ROÇA</th><th>RESPONSÁVEL</th><th>VALOR</th><th>FORMA</th><th>AÇÕES</th></tr></thead><tbody id="prestacoesBody"></tbody></table></div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header"><h3>📊 RESUMO GERAL</h3><div class="filtros-area"><select id="resumoFiltroRoca"><option value="">Todas as Roças</option></select><button class="btn-buscar" onclick="renderizarResumo()">ATUALIZAR</button></div></div>
-            <div id="resumoContainer"></div>
-        </div>
+        <div class="card"><div class="card-header"><h3>💰 PRESTAÇÃO DE CONTAS (Repasses aos Sócios)</h3><button class="btn-novo" onclick="abrirModalPrestacao()">+ NOVO REPASSE</button></div><div class="table-wrapper"><table id="tabelaPrestacoes"><thead><tr><th>DATA</th><th>ROÇA</th><th>RESPONSÁVEL</th><th>VALOR</th><th>FORMA</th><th>AÇÕES</th></tr></thead><tbody id="prestacoesBody"></tbody></table></div></div>
+        <div class="card"><div class="card-header"><h3>📊 RESUMO GERAL</h3><div class="filtros-area"><select id="resumoFiltroRoca"><option value="">Todas as Roças</option></select><button class="btn-buscar" onclick="renderizarResumo()">ATUALIZAR</button></div></div><div id="resumoContainer"></div></div>
     </div>
 
     <div id="tabDashboard" class="tab-pane">
-        <div class="card">
-            <div class="filter-group">
-                <select id="dashPeriodo" onchange="toggleDataRange()">
-                    <option value="7">Últimos 7 dias</option>
-                    <option value="30" selected>Últimos 30 dias</option>
-                    <option value="90">Últimos 90 dias</option>
-                    <option value="custom">Personalizado</option>
-                </select>
-                <div id="dashDataRange" style="display:none;" class="date-range">
-                    <input type="date" id="dashDataInicio">
-                    <input type="date" id="dashDataFim">
-                </div>
-                <select id="dashClienteFilter"><option value="">Todos os clientes</option></select>
-                <select id="dashFornecedorFilter"><option value="">Todos os fornecedores</option></select>
-                <select id="dashRocaFilter"><option value="">Todas as roças</option></select>
-                <button class="btn-buscar" onclick="atualizarDashboard()">ATUALIZAR</button>
-                <button class="btn-exportar" onclick="exportarDashboard()">📥 EXPORTAR</button>
-            </div>
-        </div>
+        <div class="card"><div class="filter-group"><select id="dashPeriodo" onchange="toggleDataRange()"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="custom">Personalizado</option></select><div id="dashDataRange" style="display:none;" class="date-range"><input type="date" id="dashDataInicio"><input type="date" id="dashDataFim"></div><select id="dashClienteFilter"><option value="">Todos os clientes</option></select><select id="dashFornecedorFilter"><option value="">Todos os fornecedores</option></select><select id="dashRocaFilter"><option value="">Todas as roças</option></select><button class="btn-buscar" onclick="atualizarDashboard()">ATUALIZAR</button><button class="btn-exportar" onclick="exportarDashboard()">📥 EXPORTAR</button></div></div>
         <div class="kpi-grid" id="kpiGrid"></div>
-        <div class="chart-grid">
-            <div class="chart-card"><h3>📈 VENDAS vs COMPRAS</h3><canvas id="chartVendasCompras"></canvas></div>
-            <div class="chart-card"><h3>🥧 DESPESAS POR CATEGORIA (Roça)</h3><canvas id="chartDespesasCategoria"></canvas></div>
-            <div class="chart-card"><h3>✅ STATUS DOS PEDIDOS</h3><canvas id="chartStatusPedidos"></canvas></div>
-            <div class="chart-card"><h3>📊 TOP 5 PRODUTOS MAIS VENDIDOS</h3><canvas id="chartTopProdutos"></canvas></div>
-        </div>
+        <div class="chart-grid"><div class="chart-card"><h3>📈 VENDAS vs COMPRAS</h3><canvas id="chartVendasCompras"></canvas></div><div class="chart-card"><h3>🥧 DESPESAS POR CATEGORIA (Roça)</h3><canvas id="chartDespesasCategoria"></canvas></div><div class="chart-card"><h3>✅ STATUS DOS PEDIDOS</h3><canvas id="chartStatusPedidos"></canvas></div><div class="chart-card"><h3>📊 TOP 5 PRODUTOS MAIS VENDIDOS</h3><canvas id="chartTopProdutos"></canvas></div></div>
         <div class="alert-list" id="alertasContainer"></div>
     </div>
 </div>
@@ -481,25 +362,19 @@
 <div id="feedback" class="feedback">✅ Operação realizada!</div>
 
 <!-- MODAIS -->
-<div id="modalLancamento" class="modal"><div class="modal-content"><h3>➕ NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA</label><input type="date" id="lancamentoData"><label>FORNECEDOR</label><select id="lancamentoFornecedor"></select><label>RENDA(kg farinha)</label><input type="number" id="lancamentoRenda" step="0.001"><label>PESO DA MANDIOCA (kg)</label><input type="number" id="lancamentoPeso" step="0.001"><label>VALOR DA TONELADA (R$/kg)</label><input type="number" id="lancamentoVlTonelada" step="0.001"><div class="info-calculo" id="previewInfo" style="background:#f1f5f9;padding:12px;border-radius:20px;margin:16px 0;">📦 QTD CX: 0 | 💰 TOTAL: R$0</div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
-
-<div id="modalPagamento" class="modal"><div class="modal-content"><h3>💰 NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><label>FRETE (desconto)</label><input type="number" id="pagamentoFrete" step="0.01" value="0"><label>ARRANCAÇÃO (desconto)</label><input type="number" id="pagamentoArrancacao" step="0.01" value="0"><label>VALOR PAGO</label><input type="number" id="pagamentoValor" step="0.01"><label>TIPO</label><select id="pagamentoTipo"><option>Parcial</option><option>Total</option></select><label>📝 OBSERVAÇÃO</label><input type="text" id="pagamentoObservacao"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
-
-<div id="modalProduto" class="modal"><div class="modal-content"><h3>📦 PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR UNITÁRIO</label><input type="number" id="produtoValorUnitario" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
-
-<div id="modalEntradaEstoque" class="modal"><div class="modal-content"><h3>📥 ENTRADA ESTOQUE</h3><label>PRODUTO</label><select id="entradaProdutoId"></select><label>QUANTIDADE</label><input type="number" id="entradaQuantidade" step="0.001"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaEstoque()">REGISTRAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaEstoque')">CANCELAR</button></div></div></div>
-
-<div id="modalRoca" class="modal"><div class="modal-content"><h3>➕ NOVA ROÇA</h3><label>NOME DA ROÇA</label><input type="text" id="novaRocaNome"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarNovaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalRoca')">CANCELAR</button></div></div></div>
-
-<div id="modalEntradaRoca" class="modal"><div class="modal-content"><h3>➕ NOVA ENTRADA</h3><input type="hidden" id="entradaIdRoca"><label>DATA</label><input type="date" id="entradaDataRoca"><label>ROÇA</label><select id="entradaRocaSelect"></select><label>CATEGORIA</label><input type="text" id="entradaCategoria" placeholder="Ex: Mandioca, Farinha"><label>RESPONSÁVEL</label><select id="entradaResponsavel"><option>Nenê</option><option>Leandro</option></select><label>VALOR</label><input type="number" id="entradaValorRoca" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaRoca')">CANCELAR</button></div></div></div>
-
-<div id="modalDespesaRoca" class="modal"><div class="modal-content"><h3>➕ NOVA DESPESA</h3><input type="hidden" id="despesaIdRoca"><label>DATA</label><input type="date" id="despesaDataRoca"><label>ROÇA</label><select id="despesaRocaSelect"></select><label>CATEGORIA</label><select id="despesaCategoriaRoca"><option>Combustível</option><option>Operador</option><option>Adubo</option><option>Veneno</option><option>Outros</option></select><label>RESPONSÁVEL</label><select id="despesaResponsavelRoca"><option>Nenê</option><option>Leandro</option></select><label>DESCRIÇÃO</label><input type="text" id="despesaDescricaoRoca"><label>VALOR</label><input type="number" id="despesaValorRoca" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarDespesaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalDespesaRoca')">CANCELAR</button></div></div></div>
-
-<div id="modalPrestacao" class="modal"><div class="modal-content"><h3>💰 PRESTAÇÃO DE CONTAS</h3><input type="hidden" id="prestacaoId"><label>DATA</label><input type="date" id="prestacaoData"><label>ROÇA</label><select id="prestacaoRocaSelect"></select><label>RESPONSÁVEL</label><select id="prestacaoResponsavel"><option>Nenê</option><option>Leandro</option></select><label>VALOR</label><input type="number" id="prestacaoValor" step="0.01"><label>FORMA</label><select id="prestacaoForma"><option>Pix</option><option>Dinheiro</option><option>Transferência</option></select><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPrestacao()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPrestacao')">CANCELAR</button></div></div></div>
+<div id="modalLancamento" class="modal"><div class="modal-content"><h3>➕ NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA *</label><input type="date" id="lancamentoData"><label>FORNECEDOR *</label><select id="lancamentoFornecedor"></select><label>RENDA(kg farinha)</label><input type="number" id="lancamentoRenda" step="0.001"><label>PESO DA MANDIOCA (kg) *</label><input type="number" id="lancamentoPeso" step="0.001"><label>VALOR DA TONELADA (R$/kg) *</label><input type="number" id="lancamentoVlTonelada" step="0.001"><label>QTD SACOS 2 (Manual)</label><input type="number" id="lancamentoQtdSacos2" step="0.001" value="0"><div class="info-calculo" id="previewInfo" style="background:#f1f5f9;padding:12px;border-radius:20px;margin:16px 0;">📦 QTD CX: 0 | 💰 TOTAL: R$ 0,00</div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
+<div id="modalPagamento" class="modal"><div class="modal-content"><h3>💰 NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA *</label><input type="date" id="pagamentoData"><label>FORNECEDOR *</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO *</label><input type="date" id="pagamentoPeriodoInicio" onchange="calcularTotalPeriodo()"><label>PERÍODO FIM *</label><input type="date" id="pagamentoPeriodoFim" onchange="calcularTotalPeriodo()"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:12px;border-radius:20px;margin:12px 0;text-align:center;font-weight:bold;">💰 TOTAL DO PERÍODO: R$ 0,00</div><label>FRETE (desconto)</label><input type="number" id="pagamentoFrete" step="0.01" value="0"><label>ARRANCAÇÃO (desconto)</label><input type="number" id="pagamentoArrancacao" step="0.01" value="0"><label>VALOR PAGO *</label><input type="number" id="pagamentoValor" step="0.01"><label>TIPO</label><select id="pagamentoTipo"><option>Parcial</option><option>Total</option></select><label>📝 OBSERVAÇÃO</label><input type="text" id="pagamentoObservacao"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
+<div id="modalProduto" class="modal"><div class="modal-content"><h3>📦 PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME *</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option value="Farinha">Farinha</option><option value="Farofa">Farofa</option><option value="Granel">Vendas a Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL *</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR UNITÁRIO *</label><input type="number" id="produtoValorUnitario" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
+<div id="modalEntradaEstoque" class="modal"><div class="modal-content"><h3>📥 ENTRADA ESTOQUE</h3><label>PRODUTO *</label><select id="entradaProdutoId"></select><label>QUANTIDADE *</label><input type="number" id="entradaQuantidade" step="0.001"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaEstoque()">REGISTRAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaEstoque')">CANCELAR</button></div></div></div>
+<div id="modalRoca" class="modal"><div class="modal-content"><h3>➕ NOVA ROÇA</h3><label>NOME DA ROÇA *</label><input type="text" id="novaRocaNome"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarNovaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalRoca')">CANCELAR</button></div></div></div>
+<div id="modalEntradaRoca" class="modal"><div class="modal-content"><h3>➕ NOVA ENTRADA</h3><input type="hidden" id="entradaIdRoca"><label>DATA *</label><input type="date" id="entradaDataRoca"><label>ROÇA *</label><select id="entradaRocaSelect"></select><label>CATEGORIA *</label><input type="text" id="entradaCategoria" placeholder="Ex: Mandioca, Farinha"><label>RESPONSÁVEL</label><select id="entradaResponsavel"><option>Nenê</option><option>Leandro</option></select><label>VALOR *</label><input type="number" id="entradaValorRoca" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaRoca')">CANCELAR</button></div></div></div>
+<div id="modalDespesaRoca" class="modal"><div class="modal-content"><h3>➕ NOVA DESPESA</h3><input type="hidden" id="despesaIdRoca"><label>DATA *</label><input type="date" id="despesaDataRoca"><label>ROÇA *</label><select id="despesaRocaSelect"></select><label>CATEGORIA</label><select id="despesaCategoriaRoca"><option>Combustível</option><option>Operador</option><option>Adubo</option><option>Veneno</option><option>Outros</option></select><label>RESPONSÁVEL</label><select id="despesaResponsavelRoca"><option>Nenê</option><option>Leandro</option></select><label>DESCRIÇÃO</label><input type="text" id="despesaDescricaoRoca"><label>VALOR *</label><input type="number" id="despesaValorRoca" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarDespesaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalDespesaRoca')">CANCELAR</button></div></div></div>
+<div id="modalPrestacao" class="modal"><div class="modal-content"><h3>💰 PRESTAÇÃO DE CONTAS</h3><input type="hidden" id="prestacaoId"><label>DATA *</label><input type="date" id="prestacaoData"><label>ROÇA *</label><select id="prestacaoRocaSelect"></select><label>RESPONSÁVEL</label><select id="prestacaoResponsavel"><option>Nenê</option><option>Leandro</option></select><label>VALOR *</label><input type="number" id="prestacaoValor" step="0.01"><label>FORMA</label><select id="prestacaoForma"><option>Pix</option><option>Dinheiro</option><option>Transferência</option></select><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPrestacao()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPrestacao')">CANCELAR</button></div></div></div>
+<div id="modalVisualizarPedido" class="modal"><div class="modal-content"><h3>📄 DETALHES DO PEDIDO</h3><div id="detalhesPedido"></div><div class="modal-buttons"><button class="btn-cancelar" onclick="fecharModal('modalVisualizarPedido')">FECHAR</button></div></div></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
     
     const firebaseConfig = {
@@ -515,7 +390,6 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     
-    // Coleções
     const cadastrosCol = collection(db, "cadastros");
     const lancamentosCol = collection(db, "lancamentos");
     const pagamentosCol = collection(db, "pagamentos");
@@ -525,28 +399,33 @@
     const entradasRocaCol = collection(db, "entradasRoca");
     const despesasRocaCol = collection(db, "despesasRoca");
     const prestacoesCol = collection(db, "prestacoesRoca");
+    const rocasCol = collection(db, "rocas");
     
-    // Dados locais
-    let cadastros = [];
-    let lancamentos = [];
-    let pagamentos = [];
-    let produtos = [];
-    let pedidos = [];
-    let saidas = [];
-    let entradasRoca = [];
-    let despesasRoca = [];
-    let prestacoes = [];
-    let rocas = ["Roça X", "Roça Y"];
+    let cadastros = [], lancamentos = [], pagamentos = [], produtos = [], pedidos = [], saidas = [], entradasRoca = [], despesasRoca = [], prestacoes = [], rocas = ["Roça X", "Roça Y"];
     let itensPedido = [];
+    let online = true;
     
-    // Funções auxiliares
     function formatarMoeda(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
-    function formatarNumero(v) { return v.toLocaleString('pt-br', { minimumFractionDigits: 2 }); }
-    function formatarData(data) { return new Date(data).toLocaleDateString('pt-br'); }
+    function formatarNumero(v) { return v.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function formatarData(data) { return data ? new Date(data).toLocaleDateString('pt-br') : ''; }
     function mostrarFeedback(msg) { let fb = document.getElementById('feedback'); fb.innerText = msg; fb.style.display = 'block'; setTimeout(() => fb.style.display = 'none', 3000); }
     function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
     
-    // LOGIN
+    window.addEventListener('online', () => { online = true; document.getElementById('connectionStatus').innerHTML = '<span>🟢</span> <span>Online</span>'; mostrarFeedback('🟢 Conexão restaurada!'); });
+    window.addEventListener('offline', () => { online = false; document.getElementById('connectionStatus').innerHTML = '<span>🔴</span> <span>Offline</span>'; mostrarFeedback('🔴 Sem conexão!'); });
+    
+    document.getElementById('pesquisaGlobal').addEventListener('input', (e) => {
+        const termo = e.target.value.toLowerCase();
+        if (termo.length < 2) return;
+        let count = 0;
+        count += cadastros.filter(c => c.nome?.toLowerCase().includes(termo)).length;
+        count += pedidos.filter(p => p.numero?.includes(termo) || p.cliente?.toLowerCase().includes(termo)).length;
+        count += produtos.filter(p => p.nome?.toLowerCase().includes(termo)).length;
+        if (count > 0) mostrarFeedback(`🔍 Encontrado: ${count} resultado(s)`);
+    });
+    
+    function confirmarExclusao(tipo, callback) { if (confirm(`⚠️ Excluir ${tipo}?`)) callback(); }
+    
     document.getElementById('btnLogin').onclick = async () => {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
@@ -555,12 +434,8 @@
         try {
             await signInWithEmailAndPassword(auth, email, password);
             document.getElementById('loginError').style.display = 'none';
-        } catch (error) {
-            document.getElementById('loginError').style.display = 'block';
-            btn.innerHTML = 'ENTRAR';
-        }
+        } catch (error) { document.getElementById('loginError').style.display = 'block'; btn.innerHTML = 'ENTRAR'; }
     };
-    
     document.getElementById('btnLogout').onclick = async () => { await signOut(auth); location.reload(); };
     
     onAuthStateChanged(auth, (user) => {
@@ -579,7 +454,8 @@
         const snapshots = await Promise.all([
             getDocs(cadastrosCol), getDocs(lancamentosCol), getDocs(pagamentosCol),
             getDocs(produtosCol), getDocs(pedidosCol), getDocs(saidasCol),
-            getDocs(entradasRocaCol), getDocs(despesasRocaCol), getDocs(prestacoesCol)
+            getDocs(entradasRocaCol), getDocs(despesasRocaCol), getDocs(prestacoesCol),
+            getDocs(rocasCol)
         ]);
         cadastros = snapshots[0].docs.map(d => ({ id: d.id, ...d.data() }));
         lancamentos = snapshots[1].docs.map(d => ({ id: d.id, ...d.data() }));
@@ -590,18 +466,8 @@
         entradasRoca = snapshots[6].docs.map(d => ({ id: d.id, ...d.data() }));
         despesasRoca = snapshots[7].docs.map(d => ({ id: d.id, ...d.data() }));
         prestacoes = snapshots[8].docs.map(d => ({ id: d.id, ...d.data() }));
-        
-        renderizarCadastros();
-        atualizarSelects();
-        filtrarLancamentos();
-        filtrarPagamentos();
-        renderizarProdutos();
-        renderizarSaidas();
-        renderizarEntradasRoca();
-        renderizarDespesasRoca();
-        renderizarPrestacoes();
-        renderizarResumo();
-        atualizarDashboard();
+        if (!snapshots[9].empty) rocas = snapshots[9].docs.map(d => d.data().nome);
+        renderizarCadastros(); atualizarSelects(); atualizarSelectsRoca(); filtrarLancamentos(); filtrarPagamentos(); renderizarProdutos(); renderizarSaidas(); renderizarEntradasRoca(); renderizarDespesasRoca(); renderizarPrestacoes(); renderizarResumo(); atualizarDashboard();
     }
     
     function iniciarListeners() {
@@ -614,14 +480,14 @@
         onSnapshot(entradasRocaCol, (s) => { entradasRoca = s.docs.map(d => ({ id: d.id, ...d.data() })); renderizarEntradasRoca(); renderizarResumo(); atualizarDashboard(); });
         onSnapshot(despesasRocaCol, (s) => { despesasRoca = s.docs.map(d => ({ id: d.id, ...d.data() })); renderizarDespesasRoca(); renderizarResumo(); atualizarDashboard(); });
         onSnapshot(prestacoesCol, (s) => { prestacoes = s.docs.map(d => ({ id: d.id, ...d.data() })); renderizarPrestacoes(); renderizarResumo(); });
+        onSnapshot(rocasCol, (s) => { if (!s.empty) rocas = s.docs.map(d => d.data().nome); atualizarSelectsRoca(); });
     }
     
     function atualizarSelects() {
         let fornecedores = cadastros.filter(c => c.tipo === 'fornecedor' || c.tipo === 'ambos');
         let clientes = cadastros.filter(c => c.tipo === 'cliente' || c.tipo === 'ambos');
         let optsForn = '<option value="">Selecione</option>' + fornecedores.map(f => `<option value="${f.nome}">${f.nome}</option>`).join('');
-        let optsCli = '<option value="">Selecione</option>' + clientes.map(c => `<option value="${c.nome}" data-tel="${c.contato}" data-email="${c.email || ''}">${c.nome}</option>`).join('');
-        
+        let optsCli = '<option value="">Selecione</option>' + clientes.map(c => `<option value="${c.nome}" data-tel="${c.contato || ''}" data-email="${c.email || ''}">${c.nome}</option>`).join('');
         document.getElementById('filtroFornecedor').innerHTML = '<option value="">Todos</option>' + optsForn;
         document.getElementById('lancamentoFornecedor').innerHTML = optsForn;
         document.getElementById('pagamentoFornecedor').innerHTML = optsForn;
@@ -645,13 +511,11 @@
         document.getElementById('resumoFiltroRoca').innerHTML = '<option value="">Todas as Roças</option>' + rocas.map(r => `<option value="${r}">${r}</option>`).join('');
     }
     
-    // CADASTROS
     window.selecionarTipoCadastro = (tipo) => {
         document.getElementById('cadastroTipo').value = tipo;
         document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('selected'));
         document.querySelector(`.tipo-option[data-tipo="${tipo}"]`).classList.add('selected');
     };
-    
     window.limparFormularioCadastro = () => {
         document.getElementById('editandoCadastroId').value = '';
         document.getElementById('cadastroNome').value = '';
@@ -663,7 +527,6 @@
         document.getElementById('cadastroApelido').value = '';
         window.selecionarTipoCadastro('fornecedor');
     };
-    
     window.salvarCadastro = async () => {
         let tipo = document.getElementById('cadastroTipo').value;
         let nome = document.getElementById('cadastroNome').value.trim();
@@ -674,17 +537,15 @@
         let endereco = document.getElementById('cadastroEndereco').value.trim();
         let apelido = document.getElementById('cadastroApelido').value.trim();
         let editId = document.getElementById('editandoCadastroId').value;
-        if (!nome || !documento || !contato || !pix) { alert('Preencha todos os campos!'); return; }
         let data = { tipo, nome, documento, contato, pix, email, endereco, apelido };
         if (editId) { await updateDoc(doc(db, "cadastros", editId), data); mostrarFeedback('Atualizado!'); }
         else { await addDoc(cadastrosCol, data); mostrarFeedback('Salvo!'); }
         window.limparFormularioCadastro();
     };
-    
     function renderizarCadastros() {
         let filtro = document.getElementById('filtroTipoCadastro').value;
         let busca = document.getElementById('filtroBuscaCadastro').value.toLowerCase();
-        let filtrados = cadastros.filter(c => (!filtro || c.tipo === filtro) && (!busca || c.nome.toLowerCase().includes(busca)));
+        let filtrados = cadastros.filter(c => (!filtro || c.tipo === filtro) && (!busca || (c.nome || '').toLowerCase().includes(busca)));
         let tbody = document.getElementById('cadastrosBody');
         tbody.innerHTML = '';
         filtrados.forEach(c => {
@@ -692,65 +553,69 @@
             let tipoLabel = c.tipo === 'fornecedor' ? '🏭 Fornecedor' : c.tipo === 'cliente' ? '👤 Cliente' : '🔄 Ambos';
             let tipoClass = c.tipo === 'fornecedor' ? 'tipo-fornecedor' : c.tipo === 'cliente' ? 'tipo-cliente' : 'tipo-ambos';
             row.insertCell(0).innerHTML = `<span class="tipo-badge ${tipoClass}">${tipoLabel}</span>`;
-            row.insertCell(1).innerHTML = `<strong>${c.nome}</strong>${c.apelido ? `<br><small>(${c.apelido})</small>` : ''}`;
-            row.insertCell(2).innerText = c.documento;
-            row.insertCell(3).innerText = c.contato;
-            row.insertCell(4).innerText = c.pix;
+            row.insertCell(1).innerHTML = `<strong>${c.nome || ''}</strong>${c.apelido ? `<br><small>(${c.apelido})</small>` : ''}`;
+            row.insertCell(2).innerText = c.documento || '';
+            row.insertCell(3).innerText = c.contato || '';
+            row.insertCell(4).innerText = c.pix || '';
             let acoes = row.insertCell(5);
             acoes.innerHTML = `<button class="btn-acao btn-editar" onclick="editarCadastro('${c.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirCadastro('${c.id}')">🗑️</button>`;
         });
     }
-    
     window.editarCadastro = (id) => {
         let c = cadastros.find(x => x.id === id);
         if (c) {
             window.selecionarTipoCadastro(c.tipo);
             document.getElementById('editandoCadastroId').value = c.id;
-            document.getElementById('cadastroNome').value = c.nome;
-            document.getElementById('cadastroDocumento').value = c.documento;
-            document.getElementById('cadastroContato').value = c.contato;
-            document.getElementById('cadastroPix').value = c.pix;
+            document.getElementById('cadastroNome').value = c.nome || '';
+            document.getElementById('cadastroDocumento').value = c.documento || '';
+            document.getElementById('cadastroContato').value = c.contato || '';
+            document.getElementById('cadastroPix').value = c.pix || '';
             document.getElementById('cadastroEmail').value = c.email || '';
             document.getElementById('cadastroEndereco').value = c.endereco || '';
             document.getElementById('cadastroApelido').value = c.apelido || '';
             mostrarFeedback('Editando...');
         }
     };
-    
-    window.excluirCadastro = async (id) => { if (confirm('Excluir?')) { await deleteDoc(doc(db, "cadastros", id)); mostrarFeedback('Excluído!'); } };
+    window.excluirCadastro = (id) => { confirmarExclusao('cadastro', async () => { await deleteDoc(doc(db, "cadastros", id)); }); };
     window.limparFiltrosCadastro = () => { document.getElementById('filtroTipoCadastro').value = ''; document.getElementById('filtroBuscaCadastro').value = ''; renderizarCadastros(); };
     
-    // COMPRAS
     window.abrirModalLancamento = () => {
         document.getElementById('lancamentoId').value = '';
         document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
         document.getElementById('lancamentoRenda').value = '';
         document.getElementById('lancamentoPeso').value = '';
         document.getElementById('lancamentoVlTonelada').value = '';
+        document.getElementById('lancamentoQtdSacos2').value = '0';
         document.getElementById('modalLancamento').style.display = 'flex';
         const preview = () => {
             let p = parseFloat(document.getElementById('lancamentoPeso').value) || 0;
             let v = parseFloat(document.getElementById('lancamentoVlTonelada').value) || 0;
-            document.getElementById('previewInfo').innerHTML = `📦 QTD CX: ${formatarNumero(p/50)} | 💰 TOTAL: ${formatarMoeda(p*v)}`;
+            let renda = parseFloat(document.getElementById('lancamentoRenda').value) || 0;
+            let qtdCx = p / 50;
+            let total = p * v;
+            let valorCaixa = v / 20;
+            let qtdSacos1 = (p * renda) / 10000;
+            document.getElementById('previewInfo').innerHTML = `📦 QTD CX: ${formatarNumero(qtdCx)} | 💰 TOTAL: ${formatarMoeda(total)} | 💵 VALOR CAIXA: ${formatarMoeda(valorCaixa)} | 📦 SACOS 1: ${Math.floor(qtdSacos1)}`;
         };
         document.getElementById('lancamentoPeso').oninput = preview;
         document.getElementById('lancamentoVlTonelada').oninput = preview;
+        document.getElementById('lancamentoRenda').oninput = preview;
     };
-    
     window.salvarLancamento = async () => {
         let data = document.getElementById('lancamentoData').value;
         let fornecedor = document.getElementById('lancamentoFornecedor').value;
         let renda = parseFloat(document.getElementById('lancamentoRenda').value) || 0;
         let peso = parseFloat(document.getElementById('lancamentoPeso').value) || 0;
         let vlTonelada = parseFloat(document.getElementById('lancamentoVlTonelada').value) || 0;
-        if (!data || !fornecedor || peso === 0) { alert('Preencha todos!'); return; }
+        let qtdSacos2 = parseFloat(document.getElementById('lancamentoQtdSacos2').value) || 0;
+        if (!data || !fornecedor || peso === 0) { alert('Preencha os campos obrigatórios!'); return; }
         let qtdCx = peso / 50;
         let totalBruto = peso * vlTonelada;
-        await addDoc(lancamentosCol, { data, fornecedor, renda, peso, vlTonelada, qtdCx, totalBruto });
-        fecharModal('modalLancamento');
-        mostrarFeedback('Lançamento salvo!');
+        let valorCaixa = vlTonelada / 20;
+        let qtdSacos1 = (peso * renda) / 10000;
+        await addDoc(lancamentosCol, { data, fornecedor, renda, peso, vlTonelada, qtdCx, totalBruto, valorCaixa, qtdSacos1, qtdSacos2 });
+        fecharModal('modalLancamento'); mostrarFeedback('Lançamento salvo!');
     };
-    
     function getStatusLancamento(lanc) {
         let pags = pagamentos.filter(p => p.fornecedor === lanc.fornecedor && lanc.data >= p.periodoInicio && lanc.data <= p.periodoFim);
         let totalPago = 0;
@@ -762,7 +627,6 @@
         if (totalPago > 0) return "PARCIAL";
         return "PENDENTE";
     }
-    
     function filtrarLancamentos() {
         let f = document.getElementById('filtroFornecedor').value;
         let di = document.getElementById('dataInicio').value;
@@ -773,30 +637,40 @@
         tbody.innerHTML = '';
         let somaRenda = 0, somaPeso = 0, somaTotal = 0;
         for (let l of filtrados) {
-            somaRenda += l.renda;
-            somaPeso += l.peso;
-            somaTotal += l.totalBruto;
+            somaRenda += l.renda || 0;
+            somaPeso += l.peso || 0;
+            somaTotal += l.totalBruto || 0;
             let status = getStatusLancamento(l);
             let cls = status === "PENDENTE" ? "status-pendente" : status === "PARCIAL" ? "status-parcial" : "status-quitado";
             let txt = status === "PENDENTE" ? "⏳ PENDENTE" : status === "PARCIAL" ? "🔄 PARCIAL" : "✅ QUITADO";
             let row = tbody.insertRow();
             row.insertCell(0).innerText = formatarData(l.data);
             row.insertCell(1).innerText = l.fornecedor;
-            row.insertCell(2).innerHTML = formatarNumero(l.renda);
-            row.insertCell(3).innerHTML = formatarNumero(l.qtdCx);
-            row.insertCell(4).innerHTML = formatarNumero(l.peso);
-            row.insertCell(5).innerHTML = formatarMoeda(l.vlTonelada);
-            row.insertCell(6).innerHTML = formatarMoeda(l.totalBruto);
-            row.insertCell(7).innerHTML = `<span class="${cls}">${txt}</span>`;
-            let acoes = row.insertCell(8);
+            row.insertCell(2).innerHTML = formatarNumero(l.renda || 0);
+            row.insertCell(3).innerHTML = formatarNumero(l.qtdCx || 0);
+            row.insertCell(4).innerHTML = formatarNumero(l.peso || 0);
+            row.insertCell(5).innerHTML = formatarMoeda(l.vlTonelada || 0);
+            row.insertCell(6).innerHTML = formatarMoeda(l.totalBruto || 0);
+            row.insertCell(7).innerHTML = formatarMoeda(l.valorCaixa || 0);
+            row.insertCell(8).innerHTML = Math.floor(l.qtdSacos1 || 0);
+            row.insertCell(9).innerHTML = formatarNumero(l.qtdSacos2 || 0);
+            row.insertCell(10).innerHTML = `<span class="${cls}">${txt}</span>`;
+            let acoes = row.insertCell(11);
             acoes.innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button>`;
         }
-        document.getElementById('lancamentosFooter').innerHTML = `<tr><td colspan="2"><strong>TOTAL</strong></td><td><strong>${formatarNumero(somaRenda)} kg</strong></td><td></td><td><strong>${formatarNumero(somaPeso)} kg</strong></td><td></td><td><strong>${formatarMoeda(somaTotal)}</strong></td><td colspan="2"></td></tr>`;
+        document.getElementById('lancamentosFooter').innerHTML = `<tr><td colspan="2"><strong>TOTAL</strong></td><td><strong>${formatarNumero(somaRenda)} kg</strong></td><td></td><td><strong>${formatarNumero(somaPeso)} kg</strong></td><td></td><td><strong>${formatarMoeda(somaTotal)}</strong></td><td colspan="5"></td></tr>`;
         atualizarResumoCompra();
     }
-    
-    window.excluirLancamento = async (id) => { if (confirm('Excluir?')) await deleteDoc(doc(db, "lancamentos", id)); };
-    
+    window.excluirLancamento = (id) => { confirmarExclusao('lançamento', async () => { await deleteDoc(doc(db, "lancamentos", id)); }); };
+    window.calcularTotalPeriodo = () => {
+        let inicio = document.getElementById('pagamentoPeriodoInicio').value;
+        let fim = document.getElementById('pagamentoPeriodoFim').value;
+        let fornecedor = document.getElementById('pagamentoFornecedor').value;
+        if (inicio && fim && fornecedor) {
+            let total = lancamentos.filter(l => l.fornecedor === fornecedor && l.data >= inicio && l.data <= fim).reduce((a, l) => a + l.totalBruto, 0);
+            document.getElementById('totalPeriodoDisplay').innerHTML = `💰 TOTAL DO PERÍODO: ${formatarMoeda(total)}`;
+        } else { document.getElementById('totalPeriodoDisplay').innerHTML = `💰 TOTAL DO PERÍODO: R$ 0,00`; }
+    };
     window.abrirModalPagamento = () => {
         document.getElementById('pagamentoId').value = '';
         document.getElementById('pagamentoData').value = new Date().toISOString().split('T')[0];
@@ -806,9 +680,9 @@
         document.getElementById('pagamentoArrancacao').value = '0';
         document.getElementById('pagamentoValor').value = '';
         document.getElementById('pagamentoObservacao').value = '';
+        document.getElementById('totalPeriodoDisplay').innerHTML = `💰 TOTAL DO PERÍODO: R$ 0,00`;
         document.getElementById('modalPagamento').style.display = 'flex';
     };
-    
     window.salvarPagamento = async () => {
         let data = document.getElementById('pagamentoData').value;
         let fornecedor = document.getElementById('pagamentoFornecedor').value;
@@ -819,15 +693,29 @@
         let valor = parseFloat(document.getElementById('pagamentoValor').value) || 0;
         let tipo = document.getElementById('pagamentoTipo').value;
         let observacao = document.getElementById('pagamentoObservacao').value;
-        if (!data || !fornecedor || !inicio || !fim || valor === 0) { alert('Preencha todos!'); return; }
+        if (!data || !fornecedor || !inicio || !fim || valor === 0) { alert('Preencha os campos obrigatórios!'); return; }
         let totalPeriodo = lancamentos.filter(l => l.fornecedor === fornecedor && l.data >= inicio && l.data <= fim).reduce((a, l) => a + l.totalBruto, 0);
         await addDoc(pagamentosCol, { data, fornecedor, periodoInicio: inicio, periodoFim: fim, totalPeriodo, valor, tipo, frete, arrancacao, observacao });
-        fecharModal('modalPagamento');
-        mostrarFeedback('Pagamento salvo!');
+        fecharModal('modalPagamento'); mostrarFeedback('Pagamento salvo!');
     };
-    
-    window.excluirPagamento = async (id) => { if (confirm('Excluir?')) await deleteDoc(doc(db, "pagamentos", id)); };
-    
+    window.editarPagamento = (id) => {
+        let pag = pagamentos.find(p => p.id === id);
+        if (pag) {
+            document.getElementById('pagamentoId').value = pag.id;
+            document.getElementById('pagamentoData').value = pag.data;
+            document.getElementById('pagamentoFornecedor').value = pag.fornecedor;
+            document.getElementById('pagamentoPeriodoInicio').value = pag.periodoInicio;
+            document.getElementById('pagamentoPeriodoFim').value = pag.periodoFim;
+            document.getElementById('pagamentoFrete').value = pag.frete || 0;
+            document.getElementById('pagamentoArrancacao').value = pag.arrancacao || 0;
+            document.getElementById('pagamentoValor').value = pag.valor;
+            document.getElementById('pagamentoTipo').value = pag.tipo;
+            document.getElementById('pagamentoObservacao').value = pag.observacao || '';
+            window.calcularTotalPeriodo();
+            document.getElementById('modalPagamento').style.display = 'flex';
+        }
+    };
+    window.excluirPagamento = (id) => { confirmarExclusao('pagamento', async () => { await deleteDoc(doc(db, "pagamentos", id)); }); };
     function filtrarPagamentos() {
         let tbody = document.getElementById('pagamentosBody');
         tbody.innerHTML = '';
@@ -845,12 +733,11 @@
             row.insertCell(8).innerHTML = formatarMoeda(saldo);
             row.insertCell(9).innerText = p.observacao || '';
             let acoes = row.insertCell(10);
-            acoes.innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirPagamento('${p.id}')">🗑️</button>`;
+            acoes.innerHTML = `<button class="btn-acao btn-editar" onclick="editarPagamento('${p.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirPagamento('${p.id}')">🗑️</button>`;
         });
     }
-    
     function atualizarResumoCompra() {
-        let totalBruto = lancamentos.reduce((a, l) => a + l.totalBruto, 0);
+        let totalBruto = lancamentos.reduce((a, l) => a + (l.totalBruto || 0), 0);
         let totalFrete = pagamentos.reduce((a, p) => a + (p.frete || 0), 0);
         let totalArrancacao = pagamentos.reduce((a, p) => a + (p.arrancacao || 0), 0);
         let totalPago = pagamentos.reduce((a, p) => a + p.valor, 0);
@@ -862,75 +749,82 @@
         document.getElementById('totalPagoCompra').innerHTML = formatarMoeda(totalPago);
         document.getElementById('saldoPagar').innerHTML = formatarMoeda(totalLiquido - totalPago);
     }
-    
     window.limparFiltrosCompra = () => { document.getElementById('filtroFornecedor').value = ''; document.getElementById('dataInicio').value = ''; document.getElementById('dataFim').value = ''; filtrarLancamentos(); };
     
-    // ESTOQUE
     function renderizarProdutos() {
         let tbody = document.getElementById('produtosBody');
         tbody.innerHTML = '';
         produtos.forEach(p => {
             let row = tbody.insertRow();
             row.insertCell(0).innerText = p.nome;
-            row.insertCell(1).innerText = p.unidade;
-            row.insertCell(2).innerHTML = formatarNumero(p.entrada);
-            row.insertCell(3).innerHTML = formatarNumero(p.saidas || 0);
-            row.insertCell(4).innerHTML = formatarNumero(p.qtdEstoque);
-            row.insertCell(5).innerHTML = formatarMoeda(p.valorUnitario);
-            row.insertCell(6).innerHTML = formatarMoeda(p.qtdEstoque * p.valorUnitario);
-            let acoes = row.insertCell(7);
+            row.insertCell(1).innerText = p.tipo || 'Farinha';
+            row.insertCell(2).innerText = p.unidade;
+            row.insertCell(3).innerHTML = formatarNumero(p.entrada);
+            row.insertCell(4).innerHTML = formatarNumero(p.saidas || 0);
+            row.insertCell(5).innerHTML = formatarNumero(p.qtdEstoque);
+            row.insertCell(6).innerHTML = formatarMoeda(p.valorUnitario);
+            row.insertCell(7).innerHTML = formatarMoeda(p.qtdEstoque * p.valorUnitario);
+            let acoes = row.insertCell(8);
             acoes.innerHTML = `<button class="btn-acao btn-editar" onclick="editarProduto('${p.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirProduto('${p.id}')">🗑️</button>`;
         });
         let totalProdutos = produtos.reduce((a, p) => a + p.qtdEstoque, 0);
         let valorTotal = produtos.reduce((a, p) => a + (p.qtdEstoque * p.valorUnitario), 0);
         document.getElementById('totalProdutos').innerHTML = totalProdutos;
         document.getElementById('valorTotalEstoque').innerHTML = formatarMoeda(valorTotal);
+        let baixos = produtos.filter(p => p.qtdEstoque < 20);
+        if (baixos.length > 0) mostrarFeedback(`⚠️ ${baixos.length} produto(s) com estoque baixo!`);
     }
-    
     window.abrirModalProduto = () => {
         document.getElementById('produtoId').value = '';
         document.getElementById('produtoNome').value = '';
+        document.getElementById('produtoTipo').value = 'Farinha';
         document.getElementById('produtoUnidade').value = 'Sacas';
         document.getElementById('produtoEntrada').value = '';
         document.getElementById('produtoValorUnitario').value = '';
         document.getElementById('modalProduto').style.display = 'flex';
     };
-    
+    window.editarProduto = (id) => {
+        let p = produtos.find(x => x.id === id);
+        if (p) {
+            document.getElementById('produtoId').value = p.id;
+            document.getElementById('produtoNome').value = p.nome;
+            document.getElementById('produtoTipo').value = p.tipo || 'Farinha';
+            document.getElementById('produtoUnidade').value = p.unidade;
+            document.getElementById('produtoEntrada').value = p.entrada;
+            document.getElementById('produtoValorUnitario').value = p.valorUnitario;
+            document.getElementById('modalProduto').style.display = 'flex';
+        }
+    };
     window.salvarProduto = async () => {
+        let id = document.getElementById('produtoId').value;
         let nome = document.getElementById('produtoNome').value;
+        let tipo = document.getElementById('produtoTipo').value;
         let unidade = document.getElementById('produtoUnidade').value;
         let entrada = parseFloat(document.getElementById('produtoEntrada').value) || 0;
         let valorUnitario = parseFloat(document.getElementById('produtoValorUnitario').value) || 0;
-        if (!nome || entrada === 0 || valorUnitario === 0) { alert('Preencha todos!'); return; }
-        await addDoc(produtosCol, { nome, unidade, entrada, saidas: 0, qtdEstoque: entrada, valorUnitario });
+        if (!nome || entrada === 0) { alert('Preencha os campos obrigatórios!'); return; }
+        let saidas = id ? (produtos.find(x => x.id === id)?.saidas || 0) : 0;
+        let data = { nome, tipo, unidade, entrada, saidas, qtdEstoque: entrada - saidas, valorUnitario };
+        if (id) { await updateDoc(doc(db, "produtos", id), data); mostrarFeedback('Produto atualizado!'); }
+        else { await addDoc(produtosCol, data); mostrarFeedback('Produto salvo!'); }
         fecharModal('modalProduto');
-        mostrarFeedback('Produto salvo!');
     };
-    
-    window.excluirProduto = async (id) => { if (confirm('Excluir?')) await deleteDoc(doc(db, "produtos", id)); };
-    
-    window.abrirModalEntradaEstoque = () => {
-        document.getElementById('entradaQuantidade').value = '';
-        document.getElementById('modalEntradaEstoque').style.display = 'flex';
-    };
-    
+    window.excluirProduto = (id) => { confirmarExclusao('produto', async () => { await deleteDoc(doc(db, "produtos", id)); }); };
+    window.abrirModalEntradaEstoque = () => { document.getElementById('entradaQuantidade').value = ''; document.getElementById('modalEntradaEstoque').style.display = 'flex'; };
     window.salvarEntradaEstoque = async () => {
         let prodId = document.getElementById('entradaProdutoId').value;
         let qtd = parseFloat(document.getElementById('entradaQuantidade').value) || 0;
         let prod = produtos.find(p => p.id === prodId);
         if (prod && qtd > 0) {
             await updateDoc(doc(db, "produtos", prodId), { entrada: prod.entrada + qtd, qtdEstoque: prod.qtdEstoque + qtd });
-            fecharModal('modalEntradaEstoque');
-            mostrarFeedback('Entrada registrada!');
+            fecharModal('modalEntradaEstoque'); mostrarFeedback('Entrada registrada!');
         } else { alert('Selecione um produto!'); }
     };
-    
     function atualizarSelectsProdutos() {
         let opts = '<option value="">Selecione</option>' + produtos.map(p => `<option value="${p.id}" data-nome="${p.nome}" data-valor="${p.valorUnitario}" data-kg="50">${p.nome}</option>`).join('');
         document.getElementById('entradaProdutoId').innerHTML = opts;
         document.querySelectorAll('.temp-produto').forEach(sel => { if (sel) sel.innerHTML = opts; });
     }
-    
     function renderizarSaidas() {
         let tbody = document.getElementById('saidasBody');
         tbody.innerHTML = '';
@@ -943,18 +837,25 @@
             row.insertCell(4).innerHTML = formatarNumero(s.qtd);
             row.insertCell(5).innerHTML = formatarMoeda(s.total);
             let acoes = row.insertCell(6);
-            acoes.innerHTML = `<button class="btn-acao" onclick="alert('Pedido: ${s.pedidoNumero}')">🔍</button>`;
+            acoes.innerHTML = `<button class="btn-acao btn-visualizar" onclick="visualizarPedido('${s.pedidoNumero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${s.pedidoNumero}')">✏️</button>`;
         });
     }
+    window.visualizarPedido = (numero) => {
+        let pedido = pedidos.find(p => p.numero === numero);
+        if (pedido) {
+            let html = `<p><strong>Número:</strong> ${pedido.numero}</p><p><strong>Data:</strong> ${formatarData(pedido.data)}</p><p><strong>Cliente:</strong> ${pedido.cliente}</p><p><strong>Valor Total:</strong> ${formatarMoeda(pedido.valorTotal)}</p><p><strong>Desconto:</strong> ${formatarMoeda(pedido.desconto)}</p><p><strong>Valor Final:</strong> ${formatarMoeda(pedido.valorFinal)}</p><p><strong>Pago:</strong> ${formatarMoeda(pedido.totalPago)}</p><p><strong>Líquido:</strong> ${formatarMoeda(pedido.liquido)}</p><p><strong>Status:</strong> ${pedido.status}</p><h4>Itens:</h4><table class="itens-table"><thead><tr><th>Produto</th><th>Qtd</th><th>Preço</th><th>Subtotal</th></tr></thead><tbody>${pedido.itens.map(i => `<tr><td>${i.produtoNome}</td><td>${i.qtd}</td><td>${formatarMoeda(i.valorUnitario)}</td><td>${formatarMoeda(i.subtotal)}</td>`).join('')}</tbody></table>`;
+            document.getElementById('detalhesPedido').innerHTML = html;
+            document.getElementById('modalVisualizarPedido').style.display = 'flex';
+        }
+    };
+    window.editarPedido = (numero) => { mostrarFeedback(`Edição do pedido ${numero} - selecione e edite`); };
     
-    // PEDIDOS
     window.carregarDadosCliente = () => {
         let sel = document.getElementById('pedidoCliente');
         let opt = sel.options[sel.selectedIndex];
         document.getElementById('pedidoTelefone').value = opt.getAttribute('data-tel') || '';
         document.getElementById('pedidoEmail').value = opt.getAttribute('data-email') || '';
     };
-    
     window.adicionarLinhaTemp = () => {
         let container = document.getElementById('itensTemp');
         let newDiv = document.createElement('div');
@@ -963,7 +864,6 @@
         newDiv.innerHTML = `<div style="display:flex; gap:12px; flex-wrap:wrap;"><select class="temp-produto" style="flex:3;">${opts}</select><input type="number" class="temp-qtd" placeholder="Qtd" step="0.001" style="flex:1;"><button class="btn-lancar" onclick="confirmarItem(this)">✓ LANÇAR</button></div>`;
         container.appendChild(newDiv);
     };
-    
     window.confirmarItem = (btn) => {
         let div = btn.closest('.pedido-item-temp');
         let select = div.querySelector('.temp-produto');
@@ -977,19 +877,14 @@
         let prod = produtos.find(p => p.id === id);
         if (prod && qtd > prod.qtdEstoque) { alert(`Estoque insuficiente! Disponível: ${prod.qtdEstoque}`); return; }
         itensPedido.push({ produtoId: id, produtoNome: nome, qtd, valorUnitario: valor, kg, subtotal: qtd * valor });
-        renderizarItens();
-        div.remove();
-        calcularTotais();
+        renderizarItens(); div.remove(); calcularTotais();
     };
-    
     function renderizarItens() {
         let container = document.getElementById('itensConfirmadosDiv');
         if (itensPedido.length === 0) { container.innerHTML = '<p style="text-align:center;padding:20px;">Nenhum item</p>'; return; }
-        container.innerHTML = `<table class="itens-table"><thead><tr><th>PRODUTO</th><th>QTD</th><th>PREÇO</th><th>SUBTOTAL</th><th></th></tr></thead><tbody>${itensPedido.map((i, idx) => `<tr><td><strong>${i.produtoNome}</strong></td><td>${formatarNumero(i.qtd)}</td><td>${formatarMoeda(i.valorUnitario)}</td><td>${formatarMoeda(i.subtotal)}</td><td><button class="btn-acao btn-excluir" onclick="removerItem(${idx})">🗑️</button></td></tr>`).join('')}</tbody></table>`;
+        container.innerHTML = `<table class="itens-table"><thead><tr><th>PRODUTO</th><th>QTD</th><th>PREÇO</th><th>SUBTOTAL</th><th></th></tr></thead><tbody>${itensPedido.map((i, idx) => `<tr><td><strong>${i.produtoNome}</strong></td><td>${formatarNumero(i.qtd)}</td><td>${formatarMoeda(i.valorUnitario)}</td><td>${formatarMoeda(i.subtotal)}</td><td><button class="btn-acao btn-excluir" onclick="removerItem(${idx})">🗑️</button></td>`).join('')}</tbody></table>`;
     }
-    
     window.removerItem = (idx) => { itensPedido.splice(idx, 1); renderizarItens(); calcularTotais(); };
-    
     function calcularTotais() {
         let qtdTotal = itensPedido.reduce((a, i) => a + i.qtd, 0);
         let pesoTotal = itensPedido.reduce((a, i) => a + (i.qtd * i.kg), 0);
@@ -1002,14 +897,12 @@
         document.getElementById('pedidoValorComDesconto').value = formatarMoeda(valorComDesconto);
         calcularLiquido();
     }
-    
     function calcularLiquido() {
         let vc = document.getElementById('pedidoValorComDesconto').value;
         let valorComDesconto = parseFloat(vc.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
         let pago = parseFloat(document.getElementById('pedidoTotalPago').value) || 0;
         document.getElementById('pedidoLiquido').value = formatarMoeda(valorComDesconto - pago);
     }
-    
     window.limparPedido = () => {
         itensPedido = [];
         renderizarItens();
@@ -1019,11 +912,8 @@
         document.getElementById('pedidoTotalPago').value = '0';
         document.getElementById('pedidoTelefone').value = '';
         document.getElementById('pedidoEmail').value = '';
-        calcularTotais();
-        mostrarFeedback('Formulário limpo!');
-        atualizarSelectsProdutos();
+        calcularTotais(); mostrarFeedback('Formulário limpo!'); atualizarSelectsProdutos();
     };
-    
     window.gerarPedido = async () => {
         let data = document.getElementById('pedidoData').value;
         let clienteNome = document.getElementById('pedidoCliente').value;
@@ -1044,46 +934,37 @@
             let prod = produtos.find(p => p.id === item.produtoId);
             if (prod) { await updateDoc(doc(db, "produtos", prod.id), { saidas: (prod.saidas || 0) + item.qtd, qtdEstoque: prod.qtdEstoque - item.qtd }); }
         }
-        mostrarFeedback(`✅ Pedido ${pedidoNumero} gerado!`);
-        window.limparPedido();
-        atualizarDashboard();
+        mostrarFeedback(`✅ Pedido ${pedidoNumero} gerado!`); window.limparPedido(); atualizarDashboard();
     };
-    
     window.imprimirPedido = () => {
         let clienteNome = document.getElementById('pedidoCliente').value;
-        if (!clienteNome || itensPedido.length === 0) { alert('Selecione cliente e adicione itens!'); return; }
+        if (!clienteNome || itensPedido.length === 0) { alert('Selecione cliente e itens!'); return; }
         let win = window.open('', '_blank');
-        win.document.write(`<html><head><title>Pedido</title><style>body{font-family:Arial;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px}th{background:#f0fdf4}</style></head><body><h2>VIANA FARINHA</h2><p>Data: ${document.getElementById('pedidoData').value}</p><p>Cliente: ${clienteNome}</p><p>Telefone: ${document.getElementById('pedidoTelefone').value}</p><table><tr><th>Produto</th><th>Qtd</th><th>Preço</th><th>Subtotal</th></tr>${itensPedido.map(i => `<tr><td>${i.produtoNome}</td><td>${i.qtd}</td><td>${formatarMoeda(i.valorUnitario)}</td><td>${formatarMoeda(i.subtotal)}</td></tr>`).join('')}</table><p>Total: ${document.getElementById('resumoValorTotal').innerHTML}</p><p>Desconto: ${formatarMoeda(parseFloat(document.getElementById('pedidoDesconto').value) || 0)}</p><p>Valor Final: ${document.getElementById('pedidoValorComDesconto').value}</p><p>Pago: ${formatarMoeda(parseFloat(document.getElementById('pedidoTotalPago').value) || 0)}</p><p>Líquido: ${document.getElementById('pedidoLiquido').value}</p><div>Assinatura: _________________________</div></body></html>`);
-        win.document.close();
-        win.print();
+        win.document.write(`<html><head><title>Pedido</title><style>body{font-family:Arial;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px}th{background:#f0fdf4}</style></head><body><h2>VIANA FARINHA</h2><p>Data: ${document.getElementById('pedidoData').value}</p><p>Cliente: ${clienteNome}</p><p>Telefone: ${document.getElementById('pedidoTelefone').value}</p>${document.getElementById('itensConfirmadosDiv').innerHTML}<p>Total: ${document.getElementById('resumoValorTotal').innerHTML}</p><p>Desconto: ${formatarMoeda(parseFloat(document.getElementById('pedidoDesconto').value) || 0)}</p><p>Valor Final: ${document.getElementById('pedidoValorComDesconto').value}</p><p>Pago: ${formatarMoeda(parseFloat(document.getElementById('pedidoTotalPago').value) || 0)}</p><p>Líquido: ${document.getElementById('pedidoLiquido').value}</p><div>Assinatura: _________________________</div></body></html>`);
+        win.document.close(); win.print();
     };
     
-    // ROÇA ENTRADAS/DESPESAS
-    window.salvarNovaRoca = () => {
+    window.salvarNovaRoca = async () => {
         let nome = document.getElementById('novaRocaNome').value.trim();
         if (!nome || rocas.includes(nome)) { alert('Nome inválido ou já existe'); return; }
+        await addDoc(rocasCol, { nome });
         rocas.push(nome);
         atualizarSelectsRoca();
         fecharModal('modalRoca');
         mostrarFeedback('Roça criada!');
     };
-    
     window.abrirModalNovaRoca = () => { document.getElementById('novaRocaNome').value = ''; document.getElementById('modalRoca').style.display = 'flex'; };
-    
     window.salvarEntradaRoca = async () => {
         let data = document.getElementById('entradaDataRoca').value;
         let roca = document.getElementById('entradaRocaSelect').value;
         let categoria = document.getElementById('entradaCategoria').value;
         let responsavel = document.getElementById('entradaResponsavel').value;
         let valor = parseFloat(document.getElementById('entradaValorRoca').value) || 0;
-        if (!data || !roca || !categoria || valor === 0) { alert('Preencha todos!'); return; }
+        if (!data || !roca || !categoria || valor === 0) { alert('Preencha os campos obrigatórios!'); return; }
         await addDoc(entradasRocaCol, { data, roca, categoria, responsavel, valor });
-        fecharModal('modalEntradaRoca');
-        mostrarFeedback('Entrada salva!');
+        fecharModal('modalEntradaRoca'); mostrarFeedback('Entrada salva!');
     };
-    
-    window.excluirEntradaRoca = async (id) => { if (confirm('Excluir?')) await deleteDoc(doc(db, "entradasRoca", id)); };
-    
+    window.excluirEntradaRoca = (id) => { confirmarExclusao('entrada', async () => { await deleteDoc(doc(db, "entradasRoca", id)); }); };
     window.salvarDespesaRoca = async () => {
         let data = document.getElementById('despesaDataRoca').value;
         let roca = document.getElementById('despesaRocaSelect').value;
@@ -1091,14 +972,25 @@
         let responsavel = document.getElementById('despesaResponsavelRoca').value;
         let descricao = document.getElementById('despesaDescricaoRoca').value;
         let valor = parseFloat(document.getElementById('despesaValorRoca').value) || 0;
-        if (!data || !roca || valor === 0) { alert('Preencha todos!'); return; }
+        if (!data || !roca || valor === 0) { alert('Preencha os campos obrigatórios!'); return; }
         await addDoc(despesasRocaCol, { data, roca, categoria, responsavel, descricao, valor });
-        fecharModal('modalDespesaRoca');
-        mostrarFeedback('Despesa salva!');
+        fecharModal('modalDespesaRoca'); mostrarFeedback('Despesa salva!');
     };
-    
-    window.excluirDespesaRoca = async (id) => { if (confirm('Excluir?')) await deleteDoc(doc(db, "despesasRoca", id)); };
-    
+    window.excluirDespesaRoca = (id) => { confirmarExclusao('despesa', async () => { await deleteDoc(doc(db, "despesasRoca", id)); }); };
+    window.abrirModalEntradaRoca = () => {
+        document.getElementById('entradaIdRoca').value = '';
+        document.getElementById('entradaDataRoca').value = new Date().toISOString().split('T')[0];
+        document.getElementById('entradaCategoria').value = '';
+        document.getElementById('entradaValorRoca').value = '';
+        document.getElementById('modalEntradaRoca').style.display = 'flex';
+    };
+    window.abrirModalDespesaRoca = () => {
+        document.getElementById('despesaIdRoca').value = '';
+        document.getElementById('despesaDataRoca').value = new Date().toISOString().split('T')[0];
+        document.getElementById('despesaDescricaoRoca').value = '';
+        document.getElementById('despesaValorRoca').value = '';
+        document.getElementById('modalDespesaRoca').style.display = 'flex';
+    };
     function renderizarEntradasRoca() {
         let fRoca = document.getElementById('filtroRoca').value;
         let fResp = document.getElementById('filtroResponsavel').value;
@@ -1118,7 +1010,6 @@
             acoes.innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirEntradaRoca('${e.id}')">🗑️</button>`;
         });
     }
-    
     function renderizarDespesasRoca() {
         let fRoca = document.getElementById('filtroRoca').value;
         let fResp = document.getElementById('filtroResponsavel').value;
@@ -1139,32 +1030,26 @@
             acoes.innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirDespesaRoca('${d.id}')">🗑️</button>`;
         });
     }
-    
     window.filtrarRoca = () => { renderizarEntradasRoca(); renderizarDespesasRoca(); };
     window.limparFiltrosRoca = () => { document.getElementById('filtroRoca').value = ''; document.getElementById('filtroResponsavel').value = ''; document.getElementById('filtroDataInicioRoca').value = ''; document.getElementById('filtroDataFimRoca').value = ''; window.filtrarRoca(); };
     
-    // PRESTAÇÃO DE CONTAS
     window.abrirModalPrestacao = () => {
         document.getElementById('prestacaoId').value = '';
         document.getElementById('prestacaoData').value = new Date().toISOString().split('T')[0];
         document.getElementById('prestacaoValor').value = '';
         document.getElementById('modalPrestacao').style.display = 'flex';
     };
-    
     window.salvarPrestacao = async () => {
         let data = document.getElementById('prestacaoData').value;
         let roca = document.getElementById('prestacaoRocaSelect').value;
         let responsavel = document.getElementById('prestacaoResponsavel').value;
         let valor = parseFloat(document.getElementById('prestacaoValor').value) || 0;
         let forma = document.getElementById('prestacaoForma').value;
-        if (!data || !roca || valor === 0) { alert('Preencha todos!'); return; }
+        if (!data || !roca || valor === 0) { alert('Preencha os campos obrigatórios!'); return; }
         await addDoc(prestacoesCol, { data, roca, responsavel, valor, forma });
-        fecharModal('modalPrestacao');
-        mostrarFeedback('Repasse salvo!');
+        fecharModal('modalPrestacao'); mostrarFeedback('Repasse salvo!');
     };
-    
-    window.excluirPrestacao = async (id) => { if (confirm('Excluir?')) await deleteDoc(doc(db, "prestacoesRoca", id)); };
-    
+    window.excluirPrestacao = (id) => { confirmarExclusao('prestação', async () => { await deleteDoc(doc(db, "prestacoesRoca", id)); }); };
     function renderizarPrestacoes() {
         let tbody = document.getElementById('prestacoesBody');
         tbody.innerHTML = '';
@@ -1179,7 +1064,6 @@
             acoes.innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirPrestacao('${p.id}')">🗑️</button>`;
         });
     }
-    
     window.renderizarResumo = () => {
         let filtro = document.getElementById('resumoFiltroRoca').value;
         let html = '';
@@ -1193,17 +1077,7 @@
             let repLeandro = prestacoes.filter(p => p.roca === roca && p.responsavel === "Leandro").reduce((a, p) => a + p.valor, 0);
             let combNene = despesasRoca.filter(d => d.roca === roca && d.responsavel === "Nenê" && d.categoria === "Combustível").reduce((a, d) => a + d.valor, 0);
             let combLeandro = despesasRoca.filter(d => d.roca === roca && d.responsavel === "Leandro" && d.categoria === "Combustível").reduce((a, d) => a + d.valor, 0);
-            html += `<div style="margin-bottom:24px;background:#f1f5f9;border-radius:24px;padding:20px;"><h4 style="color:#1e5631;">🌾 ${roca}</h4>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;">
-                <div style="background:#1e5631;color:white;padding:16px;border-radius:20px;text-align:center;"><strong>💰 RECEITA</strong><br>${formatarMoeda(receitas)}</div>
-                <div style="background:#475569;color:white;padding:16px;border-radius:20px;text-align:center;"><strong>📉 DESPESAS</strong><br>${formatarMoeda(despesas)}</div>
-                <div style="background:#f59e0b;color:white;padding:16px;border-radius:20px;text-align:center;"><strong>📈 LUCRO</strong><br>${formatarMoeda(lucro)}</div>
-            </div>
-            <table class="resumo-tabela"><thead><tr><th>SÓCIO</th><th>DIREITO (50%)</th><th>REPASSES</th><th>SALDO</th><th>COMBUSTÍVEL</th></tr></thead>
-            <tbody>
-                <tr style="background:#1e5631;color:white;"><td><strong>NENÊ</strong></td><td>${formatarMoeda(direito)}</td><td>${formatarMoeda(repNene)}</td><td><strong>${formatarMoeda(direito - repNene)}</strong></td><td>${formatarMoeda(combNene)}</td></tr>
-                <tr style="background:#1e5631;color:white;"><td><strong>LEANDRO</strong></td><td>${formatarMoeda(direito)}</td><td>${formatarMoeda(repLeandro)}</td><td><strong>${formatarMoeda(direito - repLeandro)}</strong></td><td>${formatarMoeda(combLeandro)}</td></tr>
-            </tbody></table></div>`;
+            html += `<div style="margin-bottom:24px;background:#f1f5f9;border-radius:24px;padding:20px;"><h4 style="color:#1e5631;">🌾 ${roca}</h4><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;"><div style="background:#1e5631;color:white;padding:16px;border-radius:20px;text-align:center;"><strong>💰 RECEITA</strong><br>${formatarMoeda(receitas)}</div><div style="background:#475569;color:white;padding:16px;border-radius:20px;text-align:center;"><strong>📉 DESPESAS</strong><br>${formatarMoeda(despesas)}</div><div style="background:#f59e0b;color:white;padding:16px;border-radius:20px;text-align:center;"><strong>📈 LUCRO</strong><br>${formatarMoeda(lucro)}</div></div><table class="resumo-tabela"><thead><tr><th>SÓCIO</th><th>DIREITO (50%)</th><th>REPASSES</th><th>SALDO</th><th>COMBUSTÍVEL</th></tr></thead><tbody><tr style="background:#1e5631;color:white;"><td><strong>NENÊ</strong></td><td>${formatarMoeda(direito)}</td><td>${formatarMoeda(repNene)}</td><td><strong>${formatarMoeda(direito - repNene)}</strong></td><td>${formatarMoeda(combNene)}</td></tr><tr style="background:#1e5631;color:white;"><td><strong>LEANDRO</strong></td><td>${formatarMoeda(direito)}</td><td>${formatarMoeda(repLeandro)}</td><td><strong>${formatarMoeda(direito - repLeandro)}</strong></td><td>${formatarMoeda(combLeandro)}</td></tr></tbody></table></div>`;
         }
         let totalReceitas = entradasRoca.reduce((a, e) => a + e.valor, 0);
         let totalDespesas = despesasRoca.reduce((a, d) => a + d.valor, 0);
@@ -1213,42 +1087,27 @@
         let totalRepLeandro = prestacoes.filter(p => p.responsavel === "Leandro").reduce((a, p) => a + p.valor, 0);
         let totalCombNene = despesasRoca.filter(d => d.responsavel === "Nenê" && d.categoria === "Combustível").reduce((a, d) => a + d.valor, 0);
         let totalCombLeandro = despesasRoca.filter(d => d.responsavel === "Leandro" && d.categoria === "Combustível").reduce((a, d) => a + d.valor, 0);
-        html += `<div style="margin-top:24px;background:#1e5631;border-radius:24px;padding:24px;color:white;"><h4>🏁 TOTAL GERAL</h4>
-        <div style="display:flex;gap:16px;margin-bottom:16px;"><div>💰 RECEITA: ${formatarMoeda(totalReceitas)}</div><div>📉 DESPESA: ${formatarMoeda(totalDespesas)}</div><div>📈 LUCRO: ${formatarMoeda(totalLucro)}</div></div>
-        <table class="resumo-tabela" style="background:rgba(255,255,255,0.1);color:white;"><thead><tr><th>SÓCIO</th><th>DIREITO</th><th>REPASSES</th><th>SALDO</th><th>COMBUSTÍVEL</th></tr></thead>
-        <tbody><tr><td><strong>NENÊ</strong></td><td>${formatarMoeda(totalDireito)}</td><td>${formatarMoeda(totalRepNene)}</td><td><strong>${formatarMoeda(totalDireito - totalRepNene)}</strong></td><td>${formatarMoeda(totalCombNene)}</td></tr>
-        <tr><td><strong>LEANDRO</strong></td><td>${formatarMoeda(totalDireito)}</td><td>${formatarMoeda(totalRepLeandro)}</td><td><strong>${formatarMoeda(totalDireito - totalRepLeandro)}</strong></td><td>${formatarMoeda(totalCombLeandro)}</td></tr>
-        </tbody></table></div>`;
+        html += `<div style="margin-top:24px;background:#1e5631;border-radius:24px;padding:24px;color:white;"><h4>🏁 TOTAL GERAL</h4><div style="display:flex;gap:16px;margin-bottom:16px;"><div>💰 RECEITA: ${formatarMoeda(totalReceitas)}</div><div>📉 DESPESA: ${formatarMoeda(totalDespesas)}</div><div>📈 LUCRO: ${formatarMoeda(totalLucro)}</div></div><table class="resumo-tabela" style="background:rgba(255,255,255,0.1);color:white;"><thead><tr><th>SÓCIO</th><th>DIREITO</th><th>REPASSES</th><th>SALDO</th><th>COMBUSTÍVEL</th></tr></thead><tbody><tr><td><strong>NENÊ</strong></td><td>${formatarMoeda(totalDireito)}</td><td>${formatarMoeda(totalRepNene)}</td><td><strong>${formatarMoeda(totalDireito - totalRepNene)}</strong></td><td>${formatarMoeda(totalCombNene)}</td></tr><tr><td><strong>LEANDRO</strong></td><td>${formatarMoeda(totalDireito)}</td><td>${formatarMoeda(totalRepLeandro)}</td><td><strong>${formatarMoeda(totalDireito - totalRepLeandro)}</strong></td><td>${formatarMoeda(totalCombLeandro)}</td></tr></tbody></table></div>`;
         document.getElementById('resumoContainer').innerHTML = html;
     };
     
-    // DASHBOARD
-    window.toggleDataRange = () => {
-        document.getElementById('dashDataRange').style.display = document.getElementById('dashPeriodo').value === 'custom' ? 'flex' : 'none';
-    };
-    
+    window.toggleDataRange = () => { document.getElementById('dashDataRange').style.display = document.getElementById('dashPeriodo').value === 'custom' ? 'flex' : 'none'; };
     function getDataRange() {
         let periodo = document.getElementById('dashPeriodo').value;
         let hoje = new Date();
-        let inicio = new Date();
-        if (periodo === 'custom') {
-            return { inicio: document.getElementById('dashDataInicio').value || '', fim: document.getElementById('dashDataFim').value || '' };
-        }
-        inicio.setDate(hoje.getDate() - parseInt(periodo));
+        if (periodo === 'custom') return { inicio: document.getElementById('dashDataInicio').value || '', fim: document.getElementById('dashDataFim').value || '' };
+        let inicio = new Date(); inicio.setDate(hoje.getDate() - parseInt(periodo));
         return { inicio: inicio.toISOString().split('T')[0], fim: hoje.toISOString().split('T')[0] };
     }
-    
     window.atualizarDashboard = () => {
         let { inicio, fim } = getDataRange();
         let clienteFiltro = document.getElementById('dashClienteFilter').value;
         let fornecedorFiltro = document.getElementById('dashFornecedorFilter').value;
         let rocaFiltro = document.getElementById('dashRocaFilter').value;
-        
         let pedidosFiltrados = pedidos.filter(p => (!inicio || p.data >= inicio) && (!fim || p.data <= fim) && (!clienteFiltro || p.cliente === clienteFiltro));
         let lancamentosFiltrados = lancamentos.filter(l => (!inicio || l.data >= inicio) && (!fim || l.data <= fim) && (!fornecedorFiltro || l.fornecedor === fornecedorFiltro));
         let saidasFiltradas = saidas.filter(s => (!inicio || s.data >= inicio) && (!fim || s.data <= fim) && (!clienteFiltro || s.cliente === clienteFiltro));
         let despesasFiltradas = despesasRoca.filter(d => (!inicio || d.data >= inicio) && (!fim || d.data <= fim) && (!rocaFiltro || d.roca === rocaFiltro));
-        
         let faturamento = pedidosFiltrados.reduce((a, p) => a + p.valorFinal, 0);
         let totalVendasQtd = saidasFiltradas.reduce((a, s) => a + s.qtd, 0);
         let totalComprasKg = lancamentosFiltrados.reduce((a, l) => a + l.peso, 0);
@@ -1261,26 +1120,11 @@
         let margem = faturamento > 0 ? (lucroBruto / faturamento) * 100 : 0;
         let ticketMedio = pedidosFiltrados.length > 0 ? faturamento / pedidosFiltrados.length : 0;
         let clientesAtivos = [...new Set(pedidosFiltrados.map(p => p.cliente))].length;
+        let fornecedoresAtivos = [...new Set(lancamentosFiltrados.map(l => l.fornecedor))].length;
         let estoqueBaixo = produtos.filter(p => p.qtdEstoque < 20).length;
         let saldoReceber = pedidosFiltrados.reduce((a, p) => a + (p.liquido > 0 ? p.liquido : 0), 0);
-        
-        document.getElementById('kpiGrid').innerHTML = `
-            <div class="kpi-card"><div class="value">${formatarMoeda(faturamento)}</div><div class="label">💰 FATURAMENTO</div></div>
-            <div class="kpi-card"><div class="value">${formatarNumero(totalVendasQtd)}</div><div class="label">📦 VENDAS (QTD)</div></div>
-            <div class="kpi-card"><div class="value">${formatarNumero(totalComprasKg)} kg</div><div class="label">🌾 COMPRAS (KG)</div></div>
-            <div class="kpi-card"><div class="value">${margem.toFixed(1)}%</div><div class="label">📊 MARGEM</div></div>
-            <div class="kpi-card"><div class="value">${formatarMoeda(lucroBruto)}</div><div class="label">💵 LUCRO BRUTO</div></div>
-            <div class="kpi-card"><div class="value">${formatarMoeda(ticketMedio)}</div><div class="label">📈 TICKET MÉDIO</div></div>
-            <div class="kpi-card"><div class="value">${clientesAtivos}</div><div class="label">🏪 CLIENTES ATIVOS</div></div>
-            <div class="kpi-card"><div class="value">${fornecedorFiltro ? 1 : lancamentosFiltrados.length > 0 ? [...new Set(lancamentosFiltrados.map(l => l.fornecedor))].length : 0}</div><div class="label">🚚 FORNECEDORES</div></div>
-            <div class="kpi-card"><div class="value">${estoqueBaixo}</div><div class="label">⚠️ ESTOQUE BAIXO</div></div>
-            <div class="kpi-card"><div class="value">${formatarMoeda(saldoReceber)}</div><div class="label">💳 SALDO A RECEBER</div></div>
-        `;
-        
-        // Gráfico Vendas vs Compras
-        let dias = [];
-        let vendasPorDia = [];
-        let comprasPorDia = [];
+        document.getElementById('kpiGrid').innerHTML = `<div class="kpi-card"><div class="value">${formatarMoeda(faturamento)}</div><div class="label">💰 FATURAMENTO</div></div><div class="kpi-card"><div class="value">${formatarNumero(totalVendasQtd)}</div><div class="label">📦 VENDAS (QTD)</div></div><div class="kpi-card"><div class="value">${formatarNumero(totalComprasKg)} kg</div><div class="label">🌾 COMPRAS (KG)</div></div><div class="kpi-card"><div class="value">${margem.toFixed(1)}%</div><div class="label">📊 MARGEM</div></div><div class="kpi-card"><div class="value">${formatarMoeda(lucroBruto)}</div><div class="label">💵 LUCRO BRUTO</div></div><div class="kpi-card"><div class="value">${formatarMoeda(ticketMedio)}</div><div class="label">📈 TICKET MÉDIO</div></div><div class="kpi-card"><div class="value">${clientesAtivos}</div><div class="label">🏪 CLIENTES ATIVOS</div></div><div class="kpi-card"><div class="value">${fornecedoresAtivos}</div><div class="label">🚚 FORNECEDORES</div></div><div class="kpi-card"><div class="value">${estoqueBaixo}</div><div class="label">⚠️ ESTOQUE BAIXO</div></div><div class="kpi-card"><div class="value">${formatarMoeda(saldoReceber)}</div><div class="label">💳 SALDO A RECEBER</div></div>`;
+        let dias = [], vendasPorDia = [], comprasPorDia = [];
         if (inicio && fim) {
             let dataAtual = new Date(inicio);
             let dataFim = new Date(fim);
@@ -1293,48 +1137,27 @@
             }
         }
         if (window.vendasComprasChart) window.vendasComprasChart.destroy();
-        window.vendasComprasChart = new Chart(document.getElementById('chartVendasCompras'), {
-            type: 'line', data: { labels: dias, datasets: [{ label: 'Vendas (R$)', data: vendasPorDia, borderColor: '#1e5631', fill: true, backgroundColor: 'rgba(30,86,49,0.1)' }, { label: 'Compras (R$)', data: comprasPorDia, borderColor: '#f59e0b', fill: true, backgroundColor: 'rgba(245,158,11,0.1)' }] },
-            options: { responsive: true, maintainAspectRatio: true }
-        });
-        
-        // Gráfico Despesas por Categoria
+        window.vendasComprasChart = new Chart(document.getElementById('chartVendasCompras'), { type: 'line', data: { labels: dias, datasets: [{ label: 'Vendas (R$)', data: vendasPorDia, borderColor: '#1e5631', fill: true, backgroundColor: 'rgba(30,86,49,0.1)' }, { label: 'Compras (R$)', data: comprasPorDia, borderColor: '#f59e0b', fill: true, backgroundColor: 'rgba(245,158,11,0.1)' }] }, options: { responsive: true, maintainAspectRatio: true } });
         let categorias = ['Combustível', 'Operador', 'Adubo', 'Veneno', 'Outros'];
         let valoresCategorias = categorias.map(cat => despesasFiltradas.filter(d => d.categoria === cat).reduce((a, d) => a + d.valor, 0));
         if (window.despesasCategoriaChart) window.despesasCategoriaChart.destroy();
-        window.despesasCategoriaChart = new Chart(document.getElementById('chartDespesasCategoria'), {
-            type: 'pie', data: { labels: categorias, datasets: [{ data: valoresCategorias, backgroundColor: ['#1e5631', '#2d8f4a', '#f59e0b', '#dc2626', '#6c757d'] }] },
-            options: { responsive: true, maintainAspectRatio: true }
-        });
-        
-        // Gráfico Status Pedidos
+        window.despesasCategoriaChart = new Chart(document.getElementById('chartDespesasCategoria'), { type: 'pie', data: { labels: categorias, datasets: [{ data: valoresCategorias, backgroundColor: ['#1e5631', '#2d8f4a', '#f59e0b', '#dc2626', '#6c757d'] }] }, options: { responsive: true, maintainAspectRatio: true } });
         let quitados = pedidosFiltrados.filter(p => p.status === 'QUITADO' || p.liquido <= 0).length;
         let pendentes = pedidosFiltrados.filter(p => p.status === 'PENDENTE' || p.liquido > 0).length;
         if (window.statusPedidosChart) window.statusPedidosChart.destroy();
-        window.statusPedidosChart = new Chart(document.getElementById('chartStatusPedidos'), {
-            type: 'doughnut', data: { labels: ['QUITADOS', 'PENDENTES'], datasets: [{ data: [quitados, pendentes], backgroundColor: ['#1e5631', '#f59e0b'] }] },
-            options: { responsive: true, maintainAspectRatio: true }
-        });
-        
-        // Gráfico Top 5 Produtos
+        window.statusPedidosChart = new Chart(document.getElementById('chartStatusPedidos'), { type: 'doughnut', data: { labels: ['QUITADOS', 'PENDENTES'], datasets: [{ data: [quitados, pendentes], backgroundColor: ['#1e5631', '#f59e0b'] }] }, options: { responsive: true, maintainAspectRatio: true } });
         let produtosVendidos = {};
         saidasFiltradas.forEach(s => { produtosVendidos[s.produtoNome] = (produtosVendidos[s.produtoNome] || 0) + s.qtd; });
         let topProdutos = Object.entries(produtosVendidos).sort((a, b) => b[1] - a[1]).slice(0, 5);
         if (window.topProdutosChart) window.topProdutosChart.destroy();
-        window.topProdutosChart = new Chart(document.getElementById('chartTopProdutos'), {
-            type: 'bar', data: { labels: topProdutos.map(p => p[0]), datasets: [{ label: 'Quantidade Vendida', data: topProdutos.map(p => p[1]), backgroundColor: '#1e5631', borderRadius: 8 }] },
-            options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y' }
-        });
-        
-        // Alertas
+        window.topProdutosChart = new Chart(document.getElementById('chartTopProdutos'), { type: 'bar', data: { labels: topProdutos.map(p => p[0]), datasets: [{ label: 'Quantidade Vendida', data: topProdutos.map(p => p[1]), backgroundColor: '#1e5631', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y' } });
         let alertasHtml = '<h3>⚠️ ALERTAS E ATENÇÕES</h3>';
         if (estoqueBaixo > 0) alertasHtml += `<div class="alert-item warning">📦 Estoque baixo: ${produtos.filter(p => p.qtdEstoque < 20).map(p => `${p.nome} (${p.qtdEstoque})`).join(', ')}</div>`;
         if (saldoReceber > 1000) alertasHtml += `<div class="alert-item warning">💰 Saldo a receber > R$1.000: ${formatarMoeda(saldoReceber)}</div>`;
         if (pendentes > 0) alertasHtml += `<div class="alert-item warning">⏳ ${pendentes} pedido(s) pendente(s) de pagamento</div>`;
-        if (alertasHtml === '<h3>⚠️ ALERTAS E ATENÇÕES</h3>') alertasHtml += '<div class="alert-item" style="border-left-color:#1e5631;">✅ Nenhum alerta no momento. Tudo em ordem!</div>';
+        if (alertasHtml === '<h3>⚠️ ALERTAS E ATENÇÕES</h3>') alertasHtml += '<div class="alert-item" style="border-left-color:#1e5631;">✅ Nenhum alerta no momento.</div>';
         document.getElementById('alertasContainer').innerHTML = alertasHtml;
     };
-    
     window.exportarDashboard = () => {
         let { inicio, fim } = getDataRange();
         let clienteFiltro = document.getElementById('dashClienteFilter').value;
@@ -1347,7 +1170,8 @@
         mostrarFeedback('Exportado para Excel!');
     };
     
-    // Inicializar
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal').forEach(m => { if (m.style.display === 'flex') m.style.display = 'none'; }); });
+    
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1362,10 +1186,8 @@
     
     window.onclick = (e) => { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; };
     
-    // Selecionar tipo cadastro inicial
     setTimeout(() => {
-        document.querySelector('.tipo-option[data-tipo="fornecedor"]').classList.add('selected');
-        atualizarSelectsRoca();
+        document.querySelector('.tipo-option[data-tipo="fornecedor"]')?.classList.add('selected');
         atualizarSelectsProdutos();
         atualizarFiltrosDashboard();
     }, 100);
