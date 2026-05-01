@@ -179,7 +179,7 @@
     <div id="tabEstoque" class="tab-pane">
         <div class="resumo-grid"><div class="resumo-card"><h4>TOTAL PRODUTOS</h4><div class="valor" id="totalProdutos">0</div></div><div class="resumo-card"><h4>VALOR ESTOQUE</h4><div class="valor" id="valorTotalEstoque">R$ 0,00</div></div></div>
         <div class="card"><div class="card-header"><h3>PRODUTOS</h3><div><button class="btn-novo" id="btnNovoProduto">NOVO PRODUTO</button><button class="btn-entrada" id="btnEntradaEstoque">ENTRADA</button></div></div><div class="table-wrapper"><table id="tabelaProdutos"><thead><tr><th>PRODUTO</th><th>TIPO</th><th>UNIDADE</th><th>ENTRADAS</th><th>SAÍDAS</th><th>ESTOQUE</th><th>VALOR BASE</th><th>VLR ESTOQUE</th><th>CUSTO MANUAL</th><th>CUSTO TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="produtosBody"></tbody></table></div></div>
-        <div class="card"><div class="card-header"><h3>SAÍDAS/VENDAS</h3></div><div class="table-wrapper"><table id="tabelaSaidas"><thead><tr><th>PEDIDO</th><th>DATA</th><th>CLIENTE</th><th>PRODUTO</th><th>QTD</th><th>TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="saidasBody"></tbody></table></div></div>
+        <div class="card"><div class="card-header"><h3>SAÍDAS/VENDAS</h3></div><div class="table-wrapper"><table id="tabelaSaidas"><thead><tr><th>PEDIDO</th><th>DATA</th><th>CLIENTE</th><th>PRODUTO</th><th>QTD</th><th>TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="saidasBody"></tbody><td></div></div>
     </div>
 
     <div id="tabPedidos" class="tab-pane">
@@ -207,12 +207,12 @@
     </div>
 
     <div id="tabRocaResumo" class="tab-pane">
-        <div class="card"><div class="card-header"><h3>PRESTAÇÃO DE CONTAS (Repasses aos Sócios)</h3><button class="btn-novo" id="btnNovaPrestacao">NOVO REPASSE</button></div><div class="table-wrapper"><table id="tabelaPrestacoes"><thead><tr><th>DATA</th><th>ROÇA</th><th>RESPONSÁVEL</th><th>VALOR</th><th>FORMA</th><th>AÇÕES</th></tr></thead><tbody id="prestacoesBody"></tbody></tr></div></div>
+        <div class="card"><div class="card-header"><h3>PRESTAÇÃO DE CONTAS (Repasses aos Sócios)</h3><button class="btn-novo" id="btnNovaPrestacao">NOVO REPASSE</button></div><div class="table-wrapper"><table id="tabelaPrestacoes"><thead><tr><th>DATA</th><th>ROÇA</th><th>RESPONSÁVEL</th><th>VALOR</th><th>FORMA</th><th>AÇÕES</th></tr></thead><tbody id="prestacoesBody"></tbody></table></div></div>
         <div class="card"><div class="card-header"><h3>RESUMO GERAL</h3><div class="filtros-area"><select id="resumoFiltroRoca"><option value="">Todas as Roças</option></select><div class="filtro-data-group"><input type="date" id="resumoDataInicio" placeholder="Data Início"><input type="date" id="resumoDataFim" placeholder="Data Fim"></div><button class="btn-buscar" id="btnAtualizarResumo">ATUALIZAR</button></div></div><div id="resumoContainer"></div></div>
     </div>
 
     <div id="tabDashboard" class="tab-pane">
-        <div class="card"><div class="filter-group"><select id="dashPeriodo" onchange="toggleDataRange()"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="custom">Personalizado</option></select><div id="dashDataRange" style="display:none;" class="date-range"><input type="date" id="dashDataInicio"><input type="date" id="dashDataFim"></div><select id="dashClienteFilter"><option value="">Todos os clientes</option></select><select id="dashFornecedorFilter"><option value="">Todos os fornecedores</option></select><select id="dashRocaFilter"><option value="">Todas as roça</select><button class="btn-buscar" onclick="atualizarDashboard()">ATUALIZAR</button><button class="btn-exportar" onclick="exportarDashboard()">EXPORTAR</button></div></div>
+        <div class="card"><div class="filter-group"><select id="dashPeriodo" onchange="toggleDataRange()"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="custom">Personalizado</option></select><div id="dashDataRange" style="display:none;" class="date-range"><input type="date" id="dashDataInicio"><input type="date" id="dashDataFim"></div><select id="dashClienteFilter"><option value="">Todos os clientes</option></select><select id="dashFornecedorFilter"><option value="">Todos os fornecedores</option></select><select id="dashRocaFilter"><option value="">Todas as roças</option></select><button class="btn-buscar" onclick="atualizarDashboard()">ATUALIZAR</button><button class="btn-exportar" onclick="exportarDashboard()">EXPORTAR</button></div></div>
         <div class="kpi-grid" id="kpiGrid"></div>
         <div class="chart-grid"><div class="chart-card"><h3>VENDAS vs COMPRAS</h3><canvas id="chartVendasCompras"></canvas></div><div class="chart-card"><h3>DESPESAS POR CATEGORIA (Roça)</h3><canvas id="chartDespesasCategoria"></canvas></div><div class="chart-card"><h3>STATUS DOS PEDIDOS</h3><canvas id="chartStatusPedidos"></canvas></div><div class="chart-card"><h3>TOP 5 PRODUTOS MAIS VENDIDOS</h3><canvas id="chartTopProdutos"></canvas></div></div>
         <div class="alert-list" id="alertasContainer"></div>
@@ -234,7 +234,6 @@
 <div id="modalPrestacao" class="modal"><div class="modal-content"><h3>PRESTAÇÃO DE CONTAS</h3><label>DATA *</label><input type="date" id="prestacaoData"><label>ROÇA *</label><select id="prestacaoRocaSelect"></select><label>RESPONSÁVEL</label><select id="prestacaoResponsavel"><option>Nenê</option><option>Leandro</option></select><label>VALOR *</label><input type="number" id="prestacaoValor" step="0.01"><label>FORMA</label><select id="prestacaoForma"><option>Pix</option><option>Dinheiro</option><option>Transferência</option></select><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPrestacao()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPrestacao')">CANCELAR</button></div></div></div>
 <div id="modalVisualizarPedido" class="modal"><div class="modal-content"><h3>DETALHES DO PEDIDO</h3><div id="detalhesPedido"></div><div class="modal-buttons"><button class="btn-cancelar" onclick="fecharModal('modalVisualizarPedido')">FECHAR</button></div></div></div>
 <div id="modalDevolucao" class="modal"><div class="modal-content"><h3>🔄 DEVOLUÇÃO DE PEDIDO</h3><div id="devolucaoInfo"></div><div id="devolucaoItens"></div><label>MOTIVO</label><input type="text" id="devolucaoMotivo"><div class="modal-buttons"><button class="btn-salvar" onclick="confirmarDevolucao()">CONFIRMAR</button><button class="btn-cancelar" onclick="fecharModal('modalDevolucao')">CANCELAR</button></div></div></div>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
@@ -730,10 +729,12 @@
                 <p>Período: ${di||'Início'} a ${df||'Hoje'} | Fornecedor: ${fornecedor||'Todos'}</p>
                 <h3>Lançamentos</h3>
                 <table><thead><tr><th>Data</th><th>Fornecedor</th><th>Peso(kg)</th><th>Total</th></tr></thead>
-                <tbody>${lancFiltrados.map(l=>`<tr><td>${formatarData(l.data)}</td><td>${l.fornecedor}</td><td>${formatarNumero(l.peso)}</td><td>${formatarMoeda(l.totalBruto)}</td></tr>`).join('')}</tbody></table>
+                <tbody>${lancFiltrados.map(l=>`<tr><td>${formatarData(l.data)}</td><td>${l.fornecedor}</td><td>${formatarNumero(l.peso)}</td><td>${formatarMoeda(l.totalBruto)}</td></tr>`).join('')}</tbody>
+                </table>
                 <h3>Pagamentos</h3>
                 <table><thead><tr><th>Data</th><th>Fornecedor</th><th>Valor</th><th>Nota</th></tr></thead>
-                <tbody>${pagFiltrados.map(p=>`<tr><td>${formatarData(p.data)}</td><td>${p.fornecedor}</td><td>${formatarMoeda(p.valor)}</td><td>${p.nota||''}</td></tr>`).join('')}</tbody></table>
+                <tbody>${pagFiltrados.map(p=>`<tr><td>${formatarData(p.data)}</td><td>${p.fornecedor}</td><td>${formatarMoeda(p.valor)}</td><td>${p.nota||''}</td></tr>`).join('')}</tbody>
+                </table>
                 <div><strong>Total Bruto:</strong> ${formatarMoeda(lancFiltrados.reduce((a,l)=>a+l.totalBruto,0))}<br>
                 <strong>Total Pago:</strong> ${formatarMoeda(pagFiltrados.reduce((a,p)=>a+p.valor,0))}<br>
                 <strong>Saldo:</strong> ${formatarMoeda(lancFiltrados.reduce((a,l)=>a+l.totalBruto,0) - pagFiltrados.reduce((a,p)=>a+p.valor,0))}</div>
@@ -939,10 +940,7 @@
     }
     
     window.editarSaida = (id) => {
-        const saida = saidas.find(s => s.id === id);
-        if(saida) {
-            alert('Função de edição em desenvolvimento. Em breve!');
-        }
+        alert('Função de edição em desenvolvimento. Em breve!');
     };
     
     window.excluirSaida = async (id) => {
