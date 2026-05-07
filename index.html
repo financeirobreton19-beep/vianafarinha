@@ -48,7 +48,6 @@
         th { background: #1e5631; color: white; font-weight: 600; white-space: nowrap; }
         td { border-bottom: 1px solid #e2e8f0; background: white; }
         tr:hover td { background: #f0fdf4; }
-        /* Linhas mais compactas para cadastros */
         #tabelaCadastros td, #tabelaCadastros th { padding: 6px 10px; }
         .btn-acao { background: none; border: none; cursor: pointer; font-size: 16px; margin: 0 3px; display: inline-flex; align-items: center; padding: 4px 6px; border-radius: 6px; }
         .btn-editar { color: #f59e0b; }
@@ -103,7 +102,6 @@
         .tipo-cliente { background: #dcfce7; color: #166534; }
         .tipo-ambos { background: #fef3c7; color: #92400e; }
         .connection-status { display: flex; align-items: center; gap: 6px; background: white; padding: 5px 14px; border-radius: 40px; font-size: 11px; }
-        .search-global { background: white; border-radius: 40px; padding: 6px 16px; border: none; width: 200px; outline: none; font-size: 12px; }
         .lancamentos-tabela { width: 100%; border-collapse: collapse; font-size: 11px; }
         .lancamentos-tabela th, .lancamentos-tabela td { padding: 8px 6px; }
         .lancamentos-tabela th { background: #1e5631; color: white; }
@@ -133,66 +131,62 @@
         .grupo-mes-body table { width: 100%; }
         .linha-pedido-duplo-clique { cursor: pointer; }
         .linha-pedido-duplo-clique:hover { background: #e8f0ea; }
+        .search-global { background: white; border-radius: 40px; padding: 6px 16px; border: none; width: 200px; outline: none; font-size: 12px; }
+
+        /* IMPRESSÃO - RELATÓRIO PROFISSIONAL A4 (CORRIGIDO) */
         @media print {
             body * { visibility: hidden; }
             .print-pedido, .print-pedido * { visibility: visible; }
-            .print-pedido { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; }
+            .print-pedido {
+                position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
+                background: white; font-family: Arial, sans-serif; color: #000;
+            }
             .no-print { display: none; }
+
+            .tabela-impressao {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 12px;
+                page-break-inside: avoid;
+            }
+            .tabela-impressao th,
+            .tabela-impressao td {
+                border: 1px solid #000;
+                padding: 8px 10px;
+                font-size: 11px;
+                color: #000;
+                vertical-align: top;
+            }
+            .tabela-impressao th {
+                background-color: #1e5631;
+                color: white;
+                font-weight: bold;
+                text-align: center;
+            }
+            .tabela-impressao .header-title {
+                background-color: #1e5631;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                text-align: center;
+                padding: 8px;
+            }
+            .tabela-impressao .section-title {
+                background-color: #1e5631;
+                color: white;
+                font-weight: bold;
+                text-align: center;
+            }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .text-bold { font-weight: bold; }
+            .assinatura-print {
+                text-align: center;
+                margin-top: 30px;
+                font-size: 12px;
+            }
         }
-        .pedido-print-area {
-            font-family: 'Courier New', monospace;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-        }
-        .pedido-print-area h1 {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .pedido-print-area .cnpj {
-            text-align: center;
-            font-size: 11px;
-            margin-bottom: 20px;
-            color: #555;
-        }
-        .pedido-print-area h3 {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .pedido-print-area .info-row {
-            margin-bottom: 8px;
-            font-size: 12px;
-        }
-        .pedido-print-area table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 12px;
-        }
-        .pedido-print-area th, .pedido-print-area td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-        .pedido-print-area th {
-            background: #f0f0f0;
-        }
-        .pedido-print-area .total-row {
-            margin-top: 20px;
-            text-align: right;
-        }
-        .pedido-print-area .total-row p {
-            margin: 5px 0;
-        }
-        .pedido-print-area .assinatura {
-            margin-top: 40px;
-            text-align: center;
-            border-top: 1px dashed #ccc;
-            padding-top: 20px;
-        }
+
         @media (max-width: 768px) { body { padding: 16px; } .tab-btn { padding: 5px 10px; font-size: 10px; } .card { padding: 16px; } .resumo-grid { grid-template-columns: repeat(2, 1fr); } th, td { padding: 6px 8px; font-size: 10px; } }
     </style>
 </head>
@@ -244,6 +238,9 @@
         <div class="filtros-area">
             <input type="date" id="dataInicioCompra" placeholder="Data Início">
             <input type="date" id="dataFimCompra" placeholder="Data Fim">
+            <select id="filtroFornecedorLancamentos">
+                <option value="">Todos fornecedores</option>
+            </select>
             <button class="btn-buscar" id="btnBuscarCompra">BUSCAR</button>
             <button class="btn-limpar" id="btnLimparFiltrosCompra">LIMPAR</button>
             <button class="btn-pdf" id="btnGerarPDF">PDF</button>
@@ -301,7 +298,7 @@
     <div id="tabLucro" class="tab-pane">
         <div class="card"><div class="card-header"><h3>RELATÓRIO DE LUCRO</h3></div>
         <div class="filtros-area"><label>Mês/Ano:</label><input type="month" id="lucroMes" value="2026-05"><button class="btn-buscar" id="btnAtualizarLucro">ATUALIZAR</button><button class="btn-exportar" id="btnExportarLucro">EXPORTAR</button></div>
-        <div class="table-wrapper"><table id="tabelaLucro" class="zebra-table" style="min-width:700px"><thead><tr><th>Valor mandioca</th><th>Custo operacional</th><th>Custo total</th><th>Valor vendido</th><th>Lucro real</th><th>Margem real</th><th>Margem proj.</th><th>Lucro proj.</th></tr></thead><tbody><tr><td id="lucroValorMandioca">R$ 0,00</td<td id="lucroCustoOperacional">R$ 0,00</td<td id="lucroCustoTotal">R$ 0,00</td<td id="lucroVendido">R$ 0,00</td<td id="lucroReal">R$ 0,00</td<td id="lucroMargemReal">0,00%</td><td><input type="number" id="lucroMargemProj" class="lucro-manual-input" step="0.1" value="30.0" onchange="salvarProjecaoLucro()"></td><td><input type="number" id="lucroLucroProj" class="lucro-manual-input" step="0.01" value="0.00" onchange="salvarProjecaoLucro()"></td></tr></tbody></table></div>
+        <div class="table-wrapper"><table id="tabelaLucro" class="zebra-table" style="min-width:700px"><thead><tr><th>Valor mandioca</th><th>Custo operacional</th><th>Custo total</th><th>Valor vendido</th><th>Lucro real</th><th>Margem real</th><th>Margem proj.</th><th>Lucro proj.</th></tr></thead><tbody><tr><td id="lucroValorMandioca">R$ 0,00</td><td id="lucroCustoOperacional">R$ 0,00</td><td id="lucroCustoTotal">R$ 0,00</td><td id="lucroVendido">R$ 0,00</td><td id="lucroReal">R$ 0,00</td><td id="lucroMargemReal">0,00%</td><td><input type="number" id="lucroMargemProj" class="lucro-manual-input" step="0.1" value="30.0" onchange="salvarProjecaoLucro()"></td><td><input type="number" id="lucroLucroProj" class="lucro-manual-input" step="0.01" value="0.00" onchange="salvarProjecaoLucro()"></td></tr></tbody></table></div>
         <div style="margin-top:12px;padding:8px;background:#f0fdf4;border-radius:12px;font-size:11px"><strong>Legenda:</strong> Custo operacional = Frete + Arrancação + Custo manual. Margem e lucro projetado são editáveis.</div></div>
         <div class="card"><div class="alert-list" id="alertasContainer"><h3>⚠️ ALERTAS E ATENÇÕES</h3><div class="alert-item">Carregando...</div></div></div>
     </div>
@@ -311,7 +308,7 @@
 <div id="feedback" class="feedback">Operação realizada!</div>
 <div id="loading" class="loading"><div class="loading-content">Carregando dados...</div></div>
 
-<!-- MODAIS -->
+<!-- MODAIS (mantidos iguais ao original) -->
 <div id="modalLancamento" class="modal"><div class="modal-content"><h3>NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA</label><input type="date" id="lancamentoData"><label>FORNECEDOR</label><select id="lancamentoFornecedor"></select><label>MOTORISTA</label><input type="text" id="lancamentoMotorista" placeholder="Opcional"><label>RENDA</label><input type="number" id="lancamentoRenda" step="0.001" placeholder="Valor da renda"><label>FATOR</label><input type="number" id="lancamentoFator" step="0.001" placeholder="Fator multiplicador" value="1.000"><label>PESO</label><input type="number" id="lancamentoPeso" step="0.001" placeholder="Peso em kg"><label>SACOS 2</label><input type="number" id="lancamentoQtdSacos2" step="0.001" placeholder="Opcional"><div id="previewInfo" style="background:#f1f5f9;padding:10px;border-radius:16px;margin:12px 0;font-size:11px;">Preencha os campos</div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
 <div id="modalPagamento" class="modal"><div class="modal-content"><h3>NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:10px;border-radius:16px;margin:10px 0;text-align:center;font-size:12px;">TOTAL: R$ 0,00</div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01" placeholder="Opcional"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01" placeholder="Opcional"><label>VALOR PAGO</label><input type="number" id="pagamentoValor" step="0.01" placeholder="Opcional"><label>TIPO</label><select id="pagamentoTipo"><option>Parcial</option><option>Total</option></select><label>NOTA</label><input type="text" id="pagamentoNota" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
 <div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>CUSTO MANUAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
@@ -536,17 +533,26 @@
     window.excluirCadastro = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "cadastros", id)); };
     window.limparFiltrosCadastro = () => { document.getElementById('filtroTipoCadastro').value = ''; document.getElementById('filtroBuscaCadastro').value = ''; renderizarCadastros(); };
 
-    // ==================== COMPRA ====================
+    // ==================== COMPRA (ATUALIZADO) ====================
     function atualizarSelects() {
         const fornecedores = cadastros.filter(c => c.tipo === 'fornecedor' || c.tipo === 'ambos');
         const clientes = cadastros.filter(c => c.tipo === 'cliente' || c.tipo === 'ambos');
-        const optsForn = '<option value="">Selecione</option>' + fornecedores.map(f => `<option value="${f.nome || ''}">${f.nome || ''}</option>`).join('');
+        const fornOpcoes = fornecedores.map(f => `<option value="${f.nome || ''}">${f.nome || ''}</option>`).join('');
+        const optsForn = '<option value="">Selecione</option>' + fornOpcoes;
         const optsCli = '<option value="">Selecione</option>' + clientes.map(c => `<option value="${c.nome || ''}" data-tel="${c.contato || ''}" data-email="${c.email || ''}">${c.nome || ''}</option>`).join('');
-        const filtroPag = document.getElementById('filtroFornecedorPagamentos'); if(filtroPag) filtroPag.innerHTML = '<option value="">Todos fornecedores</option>' + optsForn;
-        const lancForn = document.getElementById('lancamentoFornecedor'); if(lancForn) lancForn.innerHTML = optsForn;
-        const pagForn = document.getElementById('pagamentoFornecedor'); if(pagForn) pagForn.innerHTML = optsForn;
-        const pedidoCli = document.getElementById('pedidoCliente'); if(pedidoCli) pedidoCli.innerHTML = optsCli;
-        const filtroPedidoCli = document.getElementById('filtroPedidosCliente'); if(filtroPedidoCli) filtroPedidoCli.innerHTML = '<option value="">Todos os clientes</option>' + optsCli;
+        
+        const filtroFornLanc = document.getElementById('filtroFornecedorLancamentos');
+        if(filtroFornLanc) filtroFornLanc.innerHTML = '<option value="">Todos fornecedores</option>' + fornOpcoes;
+        const filtroPag = document.getElementById('filtroFornecedorPagamentos');
+        if(filtroPag) filtroPag.innerHTML = '<option value="">Todos fornecedores</option>' + fornOpcoes;
+        const lancForn = document.getElementById('lancamentoFornecedor');
+        if(lancForn) lancForn.innerHTML = optsForn;
+        const pagForn = document.getElementById('pagamentoFornecedor');
+        if(pagForn) pagForn.innerHTML = optsForn;
+        const pedidoCli = document.getElementById('pedidoCliente');
+        if(pedidoCli) pedidoCli.innerHTML = optsCli;
+        const filtroPedidoCli = document.getElementById('filtroPedidosCliente');
+        if(filtroPedidoCli) filtroPedidoCli.innerHTML = '<option value="">Todos os clientes</option>' + optsCli;
     }
     function atualizarSelectsRoca() {
         const opts = '<option value="">Selecione</option>' + rocas.map(r => `<option value="${r.nome || ''}">${r.nome || ''}</option>`).join('');
@@ -571,7 +577,7 @@
         document.getElementById('lancamentoPeso').value = '';
         document.getElementById('lancamentoQtdSacos2').value = '0';
         document.getElementById('modalLancamento').style.display = 'flex';
-        const preview = () => {
+        const previewCalc = () => {
             const renda = parseFloat(document.getElementById('lancamentoRenda').value) || 0;
             const fator = parseFloat(document.getElementById('lancamentoFator').value) || 1.000;
             const p = parseFloat(document.getElementById('lancamentoPeso').value) || 0;
@@ -579,9 +585,9 @@
             const total = (p * vlTon) / 1000;
             document.getElementById('previewInfo').innerHTML = `VL Tonelada: ${formatarNumeroInteiro(vlTon)} | QTD CX: ${formatarNumeroRedondo(p/50)} | TOTAL: ${formatarMoeda(total)} | SACOS 1: ${Math.floor((p * renda) / 10000 / 10)}`;
         };
-        document.getElementById('lancamentoRenda').oninput = preview;
-        document.getElementById('lancamentoFator').oninput = preview;
-        document.getElementById('lancamentoPeso').oninput = preview;
+        document.getElementById('lancamentoRenda').oninput = previewCalc;
+        document.getElementById('lancamentoFator').oninput = previewCalc;
+        document.getElementById('lancamentoPeso').oninput = previewCalc;
     };
     window.editarLancamento = (id) => {
         const lanc = lancamentos.find(l => l.id === id);
@@ -634,6 +640,7 @@
     function atualizarTelaCompra() {
         const dataInicio = document.getElementById('dataInicioCompra').value;
         const dataFim = document.getElementById('dataFimCompra').value;
+        const filtroFornecedorLanc = document.getElementById('filtroFornecedorLancamentos')?.value || '';
         const filtroFornecedorPag = document.getElementById('filtroFornecedorPagamentos').value;
         const dataInicioPag = document.getElementById('dataInicioPagamentos').value;
         const dataFimPag = document.getElementById('dataFimPagamentos').value;
@@ -642,7 +649,8 @@
             const dataLanc = new Date(l.data).getTime();
             const inicio = dataInicio ? new Date(dataInicio).getTime() : -Infinity;
             const fim = dataFim ? new Date(dataFim).getTime() : Infinity;
-            return dataLanc >= inicio && dataLanc <= fim;
+            const fornecedorOk = !filtroFornecedorLanc || l.fornecedor === filtroFornecedorLanc;
+            return fornecedorOk && dataLanc >= inicio && dataLanc <= fim;
         }).sort((a,b) => new Date(b.data) - new Date(a.data));
         
         const pagFiltrados = pagamentos.filter(p => {
@@ -656,10 +664,12 @@
         const tbody = document.getElementById('lancamentosBody');
         if(tbody) {
             tbody.innerHTML = '';
-            let totalS1=0, totalS2=0;
+            let totalS1=0, totalS2=0, totalPeso=0, totalBrutoTab=0;
             for(let l of lancFiltrados) {
                 totalS1 += l.qtdSacos1 || 0;
                 totalS2 += l.qtdSacos2 || 0;
+                totalPeso += l.peso || 0;
+                totalBrutoTab += l.totalBruto || 0;
                 const status = getStatusLancamento(l);
                 const row = tbody.insertRow();
                 row.insertCell(0).innerText = formatarData(l.data);
@@ -677,6 +687,25 @@
                 row.insertCell(12).innerHTML = `<span class="status-${status.toLowerCase()}">${status}</span>`;
                 row.insertCell(13).innerHTML = `<button class="btn-acao btn-editar" onclick="editarLancamento('${l.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button>`;
             }
+            if(lancFiltrados.length > 0) {
+                const rowTotais = tbody.insertRow();
+                rowTotais.style.fontWeight = 'bold';
+                rowTotais.style.background = '#e8f0ea';
+                rowTotais.insertCell(0).innerText = 'TOTAIS';
+                rowTotais.insertCell(1).innerText = '';
+                rowTotais.insertCell(2).innerText = '';
+                rowTotais.insertCell(3).innerText = '';
+                rowTotais.insertCell(4).innerText = '';
+                rowTotais.insertCell(5).innerText = '';
+                rowTotais.insertCell(6).innerHTML = formatarNumero(totalPeso);
+                rowTotais.insertCell(7).innerText = '';
+                rowTotais.insertCell(8).innerHTML = formatarMoeda(totalBrutoTab);
+                rowTotais.insertCell(9).innerText = '';
+                rowTotais.insertCell(10).innerHTML = totalS1;
+                rowTotais.insertCell(11).innerHTML = formatarNumero(totalS2);
+                rowTotais.insertCell(12).innerText = '';
+                rowTotais.insertCell(13).innerText = '';
+            }
             const totalBruto = lancFiltrados.reduce((a,l)=>a+(l.totalBruto||0),0);
             const totalFrete = pagamentos.reduce((a,p)=>a+(p.frete||0),0);
             const totalArranc = pagamentos.reduce((a,p)=>a+(p.arrancacao||0),0);
@@ -693,7 +722,12 @@
         const tbodyPag = document.getElementById('pagamentosBody');
         if(tbodyPag) {
             tbodyPag.innerHTML = '';
+            let totalPeriodoTab=0, totalFreteTab=0, totalArrancTab=0, totalPagoTab=0;
             for(let p of pagFiltrados) {
+                totalPeriodoTab += p.totalPeriodo || 0;
+                totalFreteTab += p.frete || 0;
+                totalArrancTab += p.arrancacao || 0;
+                totalPagoTab += p.valor || 0;
                 const row = tbodyPag.insertRow();
                 row.insertCell(0).innerText = formatarData(p.data);
                 row.insertCell(1).innerText = p.fornecedor || '';
@@ -706,6 +740,22 @@
                 row.insertCell(8).innerHTML = formatarMoeda((p.totalPeriodo || 0) - (p.frete||0) - (p.arrancacao||0) - (p.valor||0));
                 row.insertCell(9).innerText = p.nota||'';
                 row.insertCell(10).innerHTML = `<button class="btn-acao btn-editar" onclick="editarPagamento('${p.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirPagamento('${p.id}')">🗑️</button>`;
+            }
+            if(pagFiltrados.length > 0) {
+                const rowTotaisPag = tbodyPag.insertRow();
+                rowTotaisPag.style.fontWeight = 'bold';
+                rowTotaisPag.style.background = '#e8f0ea';
+                rowTotaisPag.insertCell(0).innerText = 'TOTAIS';
+                rowTotaisPag.insertCell(1).innerText = '';
+                rowTotaisPag.insertCell(2).innerText = '';
+                rowTotaisPag.insertCell(3).innerHTML = formatarMoeda(totalPeriodoTab);
+                rowTotaisPag.insertCell(4).innerHTML = formatarMoeda(totalFreteTab);
+                rowTotaisPag.insertCell(5).innerHTML = formatarMoeda(totalArrancTab);
+                rowTotaisPag.insertCell(6).innerHTML = formatarMoeda(totalPagoTab);
+                rowTotaisPag.insertCell(7).innerText = '';
+                rowTotaisPag.insertCell(8).innerText = '';
+                rowTotaisPag.insertCell(9).innerText = '';
+                rowTotaisPag.insertCell(10).innerText = '';
             }
         }
     }
@@ -770,6 +820,7 @@
     document.getElementById('btnGerarPDF').onclick = () => {
         const dataInicio = document.getElementById('dataInicioCompra').value;
         const dataFim = document.getElementById('dataFimCompra').value;
+        const filtroFornecedorLanc = document.getElementById('filtroFornecedorLancamentos')?.value || '';
         const filtroFornecedorPag = document.getElementById('filtroFornecedorPagamentos').value;
         const dataInicioPag = document.getElementById('dataInicioPagamentos').value;
         const dataFimPag = document.getElementById('dataFimPagamentos').value;
@@ -778,7 +829,8 @@
             const dataLanc = new Date(l.data).getTime();
             const inicio = dataInicio ? new Date(dataInicio).getTime() : -Infinity;
             const fim = dataFim ? new Date(dataFim).getTime() : Infinity;
-            return dataLanc >= inicio && dataLanc <= fim;
+            const fornecedorOk = !filtroFornecedorLanc || l.fornecedor === filtroFornecedorLanc;
+            return fornecedorOk && dataLanc >= inicio && dataLanc <= fim;
         }).sort((a,b) => new Date(b.data) - new Date(a.data));
         
         const pagFiltrados = pagamentos.filter(p => {
@@ -802,42 +854,43 @@
             <head>
                 <title>Relatório de Compras</title>
                 <style>
-                    body { font-family: Arial, sans-serif; padding: 40px; }
-                    h1 { text-align: center; color: #1e5631; }
-                    h2 { margin-top: 30px; color: #1e5631; border-bottom: 2px solid #1e5631; padding-bottom: 5px; }
-                    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                    th { background-color: #1e5631; color: white; }
-                    .resumo { margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px; }
-                    .resumo p { margin: 5px 0; font-size: 14px; }
-                    .resumo .destaque { font-weight: bold; color: #1e5631; }
-                    .periodo { text-align: center; margin-bottom: 20px; font-size: 14px; color: #666; }
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { font-family: 'Courier New', monospace; padding: 40px; background: white; }
+                    h1, h2 { text-align: center; }
+                    .periodo { text-align: center; margin-bottom: 20px; font-size: 12px; color: #555; }
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; }
+                    th, td { border: 1px solid #000; padding: 10px; text-align: left; vertical-align: top; }
+                    th { background: #f0f0f0; font-weight: bold; }
+                    td:nth-child(4), td:nth-child(5), td:nth-child(6), th:nth-child(4), th:nth-child(5), th:nth-child(6) { text-align: right; }
+                    .resumo { margin-top: 30px; padding: 20px; border: 1px solid #000; border-radius: 5px; }
+                    .resumo p { margin: 5px 0; font-size: 12px; }
+                    .resumo .destaque { font-weight: bold; }
+                    .footer { text-align: center; margin-top: 40px; font-size: 11px; color: #999; }
                 </style>
             </head>
             <body>
                 <h1>VIANA FARINHA</h1>
-                <h2>RELATÓRIO DE COMPRAS</h2>
                 <div class="periodo">
                     Período Lançamentos: ${dataInicio || 'Início'} a ${dataFim || 'Hoje'}<br>
                     Período Pagamentos: ${dataInicioPag || 'Início'} a ${dataFimPag || 'Hoje'}
-                    ${filtroFornecedorPag ? `<br>Fornecedor: ${filtroFornecedorPag}` : ''}
+                    ${filtroFornecedorLanc ? `<br>Fornecedor (Lançamentos): ${filtroFornecedorLanc}` : ''}
+                    ${filtroFornecedorPag ? `<br>Fornecedor (Pagamentos): ${filtroFornecedorPag}` : ''}
                 </div>
                 
                 <h2>LANÇAMENTOS</h2>
                 <table>
                     <thead>
-                        <tr><th>Data</th><th>Fornecedor</th><th>Motorista</th><th>Renda</th><th>QTD CX</th><th>Peso (kg)</th><th>VL Tonelada</th><th>Total Bruto</th></tr>
+                        <tr><th>Data</th><th>Fornecedor</th><th>Motorista</th><th>Qtd CX</th><th>Peso (kg)</th><th>Total Bruto</th></tr>
                     </thead>
                     <tbody>
                         ${lancFiltrados.map(l => `
-                            <tr><td align="center">${formatarData(l.data)}</td>
-                            <td>${l.fornecedor || ''}</td>
-                            <td>${l.motorista || ''}</td>
-                            <td align="right">${formatarNumero(l.renda||0)}</td>
-                            <td align="right">${formatarNumeroRedondo(l.qtdCx||0)}</td>
-                            <td align="right">${formatarNumero(l.peso||0)}</td>
-                            <td align="right">${formatarNumeroInteiro(l.vlTonelada||0)}</td>
-                            <td align="right">${formatarMoeda(l.totalBruto||0)}</td>
+                            <tr>
+                                <td align="center">${formatarData(l.data)}</td>
+                                <td>${l.fornecedor || ''}</td>
+                                <td>${l.motorista || ''}</td>
+                                <td align="right">${formatarNumeroRedondo(l.qtdCx||0)}</td>
+                                <td align="right">${formatarNumero(l.peso||0)}</td>
+                                <td align="right">${formatarMoeda(l.totalBruto||0)}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -850,29 +903,30 @@
                     </thead>
                     <tbody>
                         ${pagFiltrados.map(p => `
-                            <tr><td align="center">${formatarData(p.data)}</td>
-                            <td>${p.fornecedor || ''}</td>
-                            <td align="right">${formatarMoeda(p.frete||0)}</td>
-                            <td align="right">${formatarMoeda(p.arrancacao||0)}</td>
-                            <td align="right">${formatarMoeda(p.valor||0)}</td>
+                            <tr>
+                                <td align="center">${formatarData(p.data)}</td>
+                                <td>${p.fornecedor || ''}</td>
+                                <td align="right">${formatarMoeda(p.frete||0)}</td>
+                                <td align="right">${formatarMoeda(p.arrancacao||0)}</td>
+                                <td align="right">${formatarMoeda(p.valor||0)}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
                 
                 <div class="resumo">
-                    <h3>RESUMO FINANCEIRO</h3>
+                    <h3>RESUMO</h3>
                     <p><strong>Total Bruto:</strong> ${formatarMoeda(totalBruto)}</p>
-                    <p><strong>(-) Total Frete:</strong> ${formatarMoeda(totalFrete)}</p>
-                    <p><strong>(-) Total Arrancação:</strong> ${formatarMoeda(totalArranc)}</p>
+                    <p><strong>(-) Frete:</strong> ${formatarMoeda(totalFrete)}</p>
+                    <p><strong>(-) Arrancação:</strong> ${formatarMoeda(totalArranc)}</p>
                     <p class="destaque"><strong>= Total Líquido:</strong> ${formatarMoeda(totalLiquido)}</p>
-                    <p><strong>(-) Total Pago:</strong> ${formatarMoeda(totalPago)}</p>
-                    <p class="destaque"><strong>= Saldo Pendente:</strong> ${formatarMoeda(saldoPendente)}</p>
+                    <p><strong>(-) Pago:</strong> ${formatarMoeda(totalPago)}</p>
+                    <p class="destaque"><strong>= Pendente:</strong> ${formatarMoeda(saldoPendente)}</p>
                 </div>
                 
-                <p style="text-align: center; margin-top: 40px; font-size: 12px; color: #999;">
+                <div class="footer">
                     Relatório gerado em ${new Date().toLocaleDateString('pt-br')} às ${new Date().toLocaleTimeString('pt-br')}
-                </p>
+                </div>
             </body>
             </html>
         `);
@@ -883,7 +937,8 @@
     document.getElementById('btnBuscarCompra').onclick = atualizarTelaCompra;
     document.getElementById('btnLimparFiltrosCompra').onclick = () => { 
         document.getElementById('dataInicioCompra').value = ''; 
-        document.getElementById('dataFimCompra').value = ''; 
+        document.getElementById('dataFimCompra').value = '';
+        document.getElementById('filtroFornecedorLancamentos').value = '';
         atualizarTelaCompra(); 
     };
     document.getElementById('btnBuscarPagamentos').onclick = atualizarTelaCompra;
@@ -969,7 +1024,7 @@
     document.getElementById('btnNovoProduto').onclick = () => window.abrirModalProduto();
     document.getElementById('btnEntradaEstoque').onclick = () => window.abrirModalEntradaEstoque();
 
-    // ==================== PEDIDOS ====================
+    // ==================== PEDIDOS (IMPRESSÃO CORRIGIDA) ====================
     window.carregarDadosCliente = () => {
         const sel = document.getElementById('pedidoCliente');
         const opt = sel.options[sel.selectedIndex];
@@ -1005,7 +1060,7 @@
         const container = document.getElementById('itensConfirmadosDiv');
         if(!container) return;
         if(itensPedido.length === 0) { container.innerHTML = '<p style="padding:16px;text-align:center;">Nenhum item</p>'; return; }
-        container.innerHTML = `<table class="itens-table"><thead><tr><th>PRODUTO</th><th>QTD</th><th>PREÇO</th><th>SUBTOTAL</th><th></th></tr></thead><tbody>${itensPedido.map((i,idx)=>`<tr><td><strong>${i.produtoNome}</strong></td<td>${formatarNumero(i.qtd)}</td<td>${formatarMoeda(i.valorUnitario)}</td<td>${formatarMoeda(i.subtotal)}</td<td><button class="btn-acao btn-excluir" onclick="removerItem(${idx})">🗑️</button></td></tr>`).join('')}</tbody></table>`;
+        container.innerHTML = `<table class="itens-table"><thead><tr><th>PRODUTO</th><th>QTD</th><th>PREÇO</th><th>SUBTOTAL</th><th></th></thead><tbody>${itensPedido.map((i,idx)=>`<tr><td><strong>${i.produtoNome}</strong></td><td>${formatarNumero(i.qtd)}</td><td>${formatarMoeda(i.valorUnitario)}</td><td>${formatarMoeda(i.subtotal)}</td><td><button class="btn-acao btn-excluir" onclick="removerItem(${idx})">🗑️</button></td></tr>`).join('')}</tbody></table>`;
     }
     window.removerItem = (idx) => { itensPedido.splice(idx,1); renderizarItens(); calcularTotais(); };
     function calcularTotais() {
@@ -1037,11 +1092,131 @@
         calcularTotais(); atualizarSelectsProdutos();
         mostrarFeedback('Formulário limpo!');
     };
-    
+
+    // FUNÇÃO AUXILIAR DE IMPRESSÃO (TABELAS REAIS)
+    function gerarHtmlImpressao(ped) {
+        const pesoTotal = (ped.itens || []).reduce((acc, i) => acc + (i.qtd * 50), 0);
+        let itensHtml = '';
+        for(let item of ped.itens) {
+            itensHtml += `<tr>
+                <td>${item.produtoNome}</td>
+                <td class="text-center">${formatarNumero(item.qtd)}</td>
+                <td class="text-right">${formatarMoeda(item.valorUnitario)}</td>
+                <td class="text-right">${formatarMoeda(item.subtotal)}</td>
+            </tr>`;
+        }
+
+        return `
+        <table class="tabela-impressao">
+            <tr><td colspan="4" class="header-title">VIANA FARINHA</td></tr>
+            <tr><td colspan="4" class="text-center text-bold">PEDRO R V DA SILVA LTDA - ME</td></tr>
+            <tr><td colspan="4" class="text-center">CNPJ: 09.097.608/0001-50</td></tr>
+            <tr><td colspan="4" class="text-center text-bold" style="font-size:14px;">PEDIDO DE VENDA</td></tr>
+        </table>
+
+        <table class="tabela-impressao">
+            <tr><td width="20%" class="text-bold">DATA:</td><td width="80%" colspan="3">${formatarData(ped.data)}</td></tr>
+            <tr><td class="text-bold">CLIENTE:</td><td colspan="3">${ped.cliente}</td></tr>
+            <tr><td class="text-bold">PEDIDO:</td><td colspan="3">${ped.numero || 'NOVO'}</td></tr>
+            <tr><td class="text-bold">CONDIÇÃO:</td><td colspan="3">${ped.condicao || 'Espécie'}</td></tr>
+            <tr><td class="text-bold">VENDEDOR:</td><td colspan="3">${ped.vendedor || 'Pedro R V da Silva Eirelli'}</td></tr>
+        </table>
+
+        <table class="tabela-impressao">
+            <thead>
+                <tr>
+                    <th>PRODUTO</th>
+                    <th>QTDE</th>
+                    <th>PREÇO UNIT</th>
+                    <th>SUBTOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${itensHtml}
+            </tbody>
+        </table>
+
+        <table class="tabela-impressao">
+            <tr>
+                <td colspan="3" class="text-right text-bold">Total:</td>
+                <td class="text-right">${formatarMoeda(ped.valorTotal)}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-right">Desconto:</td>
+                <td class="text-right">${formatarMoeda(ped.desconto)}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-right text-bold">Valor Final:</td>
+                <td class="text-right text-bold">${formatarMoeda(ped.valorFinal)}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-right">Valor Pago:</td>
+                <td class="text-right">${formatarMoeda(ped.totalPago)}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-right text-bold">Saldo Devedor:</td>
+                <td class="text-right text-bold">${formatarMoeda(ped.liquido)}</td>
+            </tr>
+        </table>
+
+        <table class="tabela-impressao">
+            <tr><td><strong>PESO TOTAL:</strong> ${formatarNumero(pesoTotal)} KG</td></tr>
+        </table>
+
+        <div class="assinatura-print">
+            <p>ASSINATURA DO CLIENTE</p>
+            <p>____________________________________________________</p>
+        </div>
+        `;
+    }
+
+    window.imprimirPedidoVisual = () => {
+        const cliente = document.getElementById('pedidoCliente').value;
+        if(!cliente || itensPedido.length === 0) return alert('Selecione cliente e itens!');
+        const data = document.getElementById('pedidoData').value;
+        const condicao = document.getElementById('pedidoCondicao').value;
+        const vendedor = document.getElementById('pedidoVendedor').value;
+        const desconto = parseFloat(document.getElementById('pedidoDesconto').value) || 0;
+        const totalPago = parseFloat(document.getElementById('pedidoTotalPago').value) || 0;
+        const valorTotal = itensPedido.reduce((a,i)=>a+i.subtotal,0);
+        const valorFinal = valorTotal - desconto;
+        const liquido = valorFinal - totalPago;
+
+        const html = gerarHtmlImpressao({
+            numero: 'NOVO',
+            data,
+            cliente,
+            itens: itensPedido,
+            valorTotal,
+            desconto,
+            valorFinal,
+            totalPago,
+            liquido,
+            condicao,
+            vendedor
+        });
+
+        const win = window.open('', '_blank');
+        win.document.write(`<html><head><title>Pedido</title><style>${document.querySelector('style').innerHTML}</style></head><body class="print-pedido">${html}</body></html>`);
+        win.document.close();
+        win.print();
+    };
+
+    window.reimprimirPedido = (numero) => {
+        const pedido = pedidos.find(p => p.numero === numero);
+        if(!pedido) return alert('Pedido não encontrado!');
+        const html = gerarHtmlImpressao(pedido);
+        const win = window.open('', '_blank');
+        win.document.write(`<html><head><title>Pedido ${numero}</title><style>${document.querySelector('style').innerHTML}</style></head><body class="print-pedido">${html}</body></html>`);
+        win.document.close();
+        win.print();
+    };
+
+    // Mantida a função original de geração ao GERAR pedido
     function gerarHtmlPedidoFormatado(pedido) {
         let itensHtml = '';
         for(let item of pedido.itens) {
-            itensHtml += `<tr><td style="font-weight:600;">${item.produtoNome}</td><td align="right">${formatarNumero(item.qtd)}</td><td align="right">${formatarMoeda(item.valorUnitario)}</td><td align="right">${formatarMoeda(item.subtotal)}</td</tr>`;
+            itensHtml += `<tr><td style="font-weight:600;">${item.produtoNome}</td><td align="right">${formatarNumero(item.qtd)}</td><td align="right">${formatarMoeda(item.valorUnitario)}</td><td align="right">${formatarMoeda(item.subtotal)}</td></tr>`;
         }
         const pesoTotal = (pedido.itens || []).reduce((acc, i) => acc + (i.qtd * 50), 0);
         return `
@@ -1052,15 +1227,16 @@
                 <div class="info-row"><strong>Data:</strong> ${formatarData(pedido.data)}</div>
                 <div class="info-row"><strong>Cliente:</strong> ${pedido.cliente}</div>
                 <div class="info-row"><strong>Número do Pedido:</strong> ${pedido.numero || 'NOVO'}</div>
-                <table><thead><tr><th>Produto</th><th>Qtde</th><th>Preço Unit</th><th>Subtotal</th></tr></thead>
-                <tbody>${itensHtml}</tbody>
-                <tfoot>
-                    <tr style="background:#f0f0f0;"><td colspan="3"><strong>Total</strong></td><td align="right"><strong>${formatarMoeda(pedido.valorTotal)}</strong></td></tr>
-                    <tr><td colspan="3"><strong>Desconto</strong></td><td align="right">${formatarMoeda(pedido.desconto)}</td></tr>
-                    <tr style="background:#f0f0f0;"><td colspan="3"><strong>Valor Final</strong></td><td align="right"><strong>${formatarMoeda(pedido.valorFinal)}</strong></td></tr>
-                    <tr><td colspan="3"><strong>Valor Pago</strong></td><td align="right">${formatarMoeda(pedido.totalPago)}</td></tr>
-                    <tr style="background:#f0f0f0;"><td colspan="3"><strong>Saldo Devedor</strong></td><td align="right"><strong>${formatarMoeda(pedido.liquido)}</strong></td></tr>
-                </tfoot>
+                <table>
+                    <thead><tr><th>Produto</th><th>Qtde</th><th>Preço Unit</th><th>Subtotal</th></tr></thead>
+                    <tbody>${itensHtml}</tbody>
+                    <tfoot>
+                        <tr style="background:#f0f0f0;"><td colspan="3"><strong>Total</strong></td><td align="right"><strong>${formatarMoeda(pedido.valorTotal)}</strong></td></tr>
+                        <tr><td colspan="3"><strong>Desconto</strong></td><td align="right">${formatarMoeda(pedido.desconto)}</td></tr>
+                        <tr style="background:#f0f0f0;"><td colspan="3"><strong>Valor Final</strong></td><td align="right"><strong>${formatarMoeda(pedido.valorFinal)}</strong></td></tr>
+                        <tr><td colspan="3"><strong>Valor Pago</strong></td><td align="right">${formatarMoeda(pedido.totalPago)}</td></tr>
+                        <tr style="background:#f0f0f0;"><td colspan="3"><strong>Saldo Devedor</strong></td><td align="right"><strong>${formatarMoeda(pedido.liquido)}</strong></td></tr>
+                    </tfoot>
                 </table>
                 <p><strong>Peso Total:</strong> ${formatarNumero(pesoTotal)} kg</p>
                 <p><strong>Condição:</strong> ${pedido.condicao || 'Espécie'}</p>
@@ -1099,36 +1275,8 @@
         win.print();
         limparPedido(); renderizarProdutos(); renderizarPedidosAgrupados();
     };
-    
-    window.imprimirPedidoVisual = () => {
-        const cliente = document.getElementById('pedidoCliente').value;
-        if(!cliente || itensPedido.length === 0) return alert('Selecione cliente e itens!');
-        const data = document.getElementById('pedidoData').value;
-        const condicao = document.getElementById('pedidoCondicao').value;
-        const vendedor = document.getElementById('pedidoVendedor').value;
-        const desconto = parseFloat(document.getElementById('pedidoDesconto').value) || 0;
-        const totalPago = parseFloat(document.getElementById('pedidoTotalPago').value) || 0;
-        const valorTotal = itensPedido.reduce((a,i)=>a+i.subtotal,0);
-        const valorFinal = valorTotal - desconto;
-        const liquido = valorFinal - totalPago;
-        const pedidoTemp = { data, cliente, itens: [...itensPedido], valorTotal, desconto, valorFinal, totalPago, liquido, condicao, vendedor, numero: 'NOVO' };
-        const printHtml = gerarHtmlPedidoFormatado(pedidoTemp);
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><title>Pedido</title><style>${document.querySelector('style').innerHTML}</style></head><body class="print-pedido">${printHtml}</body></html>`);
-        win.document.close();
-        win.print();
-    };
-    
-    window.reimprimirPedido = (numero) => {
-        const pedido = pedidos.find(p => p.numero === numero);
-        if(!pedido) return alert('Pedido não encontrado!');
-        const printHtml = gerarHtmlPedidoFormatado(pedido);
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><title>Pedido ${numero}</title><style>${document.querySelector('style').innerHTML}</style></head><body class="print-pedido">${printHtml}</body></html>`);
-        win.document.close();
-        win.print();
-    };
-    
+
+    // DEMAIS FUNÇÕES DE PEDIDOS (DEVOLUÇÕES, EXCLUSÃO, ETC.) MANTIDAS IGUAIS
     window.abrirDevolucao = (pedidoId) => {
         const pedido = pedidos.find(p => p.id === pedidoId);
         if(!pedido) return;
@@ -1144,7 +1292,6 @@
         document.getElementById('devolucaoInfo').innerHTML = html;
         document.getElementById('modalDevolucao').style.display = 'flex';
     };
-    
     window.confirmarDevolucao = async () => {
         if(!devolucaoPedidoAtual) return;
         const itensDev = []; let total = 0;
@@ -1170,7 +1317,6 @@
         } else alert('Nenhum item selecionado');
         fecharModal('modalDevolucao');
     };
-    
     window.excluirPedido = async (id) => {
         if(confirm('Excluir pedido?')) {
             const pedido = pedidos.find(p => p.id === id);
@@ -1188,18 +1334,16 @@
             }
         }
     };
-    
     window.visualizarPedido = (numero) => {
         const pedido = pedidos.find(p=>p.numero===numero);
         if(pedido) {
             let html = `<h3>Pedido ${pedido.numero}</h3><p>Cliente: ${pedido.cliente}</p><p>Data: ${formatarData(pedido.data)}</p><table border="1" style="border-collapse:collapse;width:100%"><thead><tr><th>Produto</th><th>Qtd</th><th>Valor Unit</th><th>Subtotal</th></tr></thead><tbody>`;
-            (pedido.itens || []).forEach(i => html += `<tr><td style="font-weight:600;">${i.produtoNome}</td><td align="right">${formatarNumero(i.qtd)}</td<td align="right">${formatarMoeda(i.valorUnitario)}</td<td align="right">${formatarMoeda(i.subtotal)}</td</tr>`);
+            (pedido.itens || []).forEach(i => html += `<tr><td style="font-weight:600;">${i.produtoNome}</td><td align="right">${formatarNumero(i.qtd)}</td><td align="right">${formatarMoeda(i.valorUnitario)}</td><td align="right">${formatarMoeda(i.subtotal)}</td></tr>`);
             html += `</tbody></table><p><strong>Total: ${formatarMoeda(pedido.valorFinal)}</strong></p><p>Status: ${pedido.status}</p>`;
             document.getElementById('detalhesPedido').innerHTML = html;
             document.getElementById('modalVisualizarPedido').style.display = 'flex';
         }
     };
-    
     window.editarPedido = (id) => {
         const pedido = pedidos.find(p => p.id === id);
         if(!pedido) return;
@@ -1210,7 +1354,6 @@
         document.getElementById('editarPedidoPago').value = pedido.totalPago || 0;
         document.getElementById('modalEditarPedido').style.display = 'flex';
     };
-    
     window.salvarEdicaoPedido = async () => {
         if(!pedidoEditando) return;
         const novoDesconto = parseFloat(document.getElementById('editarPedidoDesconto').value) || 0;
@@ -1222,7 +1365,6 @@
         fecharModal('modalEditarPedido');
         renderizarPedidosAgrupados();
     };
-    
     function renderizarPedidosAgrupados() {
         const container = document.getElementById('pedidosAgrupadosContainer');
         if(!container) return;
@@ -1260,14 +1402,12 @@
         }
         container.innerHTML = html;
     }
-    
     window.toggleGrupoMes = (header) => {
         const body = header.nextElementSibling;
         const icone = header.querySelector('.icone');
         body.classList.toggle('aberto');
         icone.classList.toggle('aberto');
     };
-    
     document.getElementById('btnFiltrarPedidos').onclick = () => renderizarPedidosAgrupados();
     document.getElementById('btnLimparFiltrosPedidos').onclick = () => {
         document.getElementById('filtroPedidosDataInicio').value = '';
@@ -1287,12 +1427,10 @@
             row.insertCell(1).innerHTML = `<button class="btn-acao btn-editar" onclick="editarRoca('${r.id}', '${r.nome || ''}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirRoca('${r.id}', '${r.nome || ''}')">🗑️</button>`;
         });
     }
-    
     window.editarRoca = (id, nome) => { document.getElementById('editarRocaId').value = id; document.getElementById('editarRocaNome').value = nome; document.getElementById('modalEditarRoca').style.display = 'flex'; };
     window.salvarEdicaoRoca = async () => { const id = document.getElementById('editarRocaId').value; const nome = document.getElementById('editarRocaNome').value.trim(); if(!nome) return alert('Digite um nome!'); await updateDoc(doc(db, "rocas", id), { nome }); fecharModal('modalEditarRoca'); mostrarFeedback('Roça atualizada!'); };
     window.excluirRoca = async (id, nome) => { if(entradasRoca.some(e => e.roca === nome) || despesasRoca.some(d => d.roca === nome) || prestacoes.some(p => p.roca === nome)) return alert('Existem lançamentos vinculados!'); if(confirm(`Excluir "${nome}"?`)) await deleteDoc(doc(db, "rocas", id)); };
     window.salvarNovaRoca = async () => { const nome = document.getElementById('novaRocaNome').value.trim(); if(!nome) return alert('Digite um nome!'); if(rocas.some(r=>r.nome===nome)) return alert('Já existe!'); await addDoc(rocasCol, { nome }); fecharModal('modalRoca'); mostrarFeedback('Roça criada!'); };
-    
     window.renderizarEntradasRoca = () => {
         const filtroRoca = document.getElementById('filtroRocaEntradas')?.value || '';
         const dataInicio = document.getElementById('filtroDataInicioEntradas')?.value || '';
@@ -1305,7 +1443,7 @@
         const tbody = document.getElementById('entradasRocaBody');
         if(!tbody) return;
         tbody.innerHTML = '';
-        if(filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhuma entrada cadastrada</td></tr>'; return; }
+        if(filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Nenhuma entrada cadastrada</td></tr>'; return; }
         filtradas.forEach(e => {
             const row = tbody.insertRow();
             row.insertCell(0).innerText = formatarData(e.data);
@@ -1315,7 +1453,6 @@
             row.insertCell(4).innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirEntradaRoca('${e.id}')">🗑️</button>`;
         });
     };
-    
     window.renderizarDespesasRoca = () => {
         const filtroRoca = document.getElementById('filtroRocaEntradas')?.value || '';
         const dataInicio = document.getElementById('filtroDataInicioEntradas')?.value || '';
@@ -1328,7 +1465,7 @@
         const tbody = document.getElementById('despesasRocaBody');
         if(!tbody) return;
         tbody.innerHTML = '';
-        if(filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhuma despesa cadastrada</td></tr>'; return; }
+        if(filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma despesa cadastrada</td></tr>'; return; }
         filtradas.forEach(d => {
             const row = tbody.insertRow();
             row.insertCell(0).innerText = formatarData(d.data);
@@ -1339,7 +1476,6 @@
             row.insertCell(5).innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirDespesaRoca('${d.id}')">🗑️</button>`;
         });
     };
-    
     window.limparFiltrosEntradas = () => {
         document.getElementById('filtroRocaEntradas').value = '';
         document.getElementById('filtroDataInicioEntradas').value = '';
@@ -1347,7 +1483,6 @@
         renderizarEntradasRoca();
         renderizarDespesasRoca();
     };
-    
     window.salvarEntradaRoca = async () => {
         const data = document.getElementById('entradaDataRoca').value;
         const roca = document.getElementById('entradaRocaSelect').value;
@@ -1359,14 +1494,7 @@
         mostrarFeedback('Entrada salva!');
         renderizarEntradasRoca();
     };
-    
-    window.excluirEntradaRoca = async (id) => {
-        if(confirm('Excluir esta entrada?')) {
-            await deleteDoc(doc(db, "entradasRoca", id));
-            mostrarFeedback('Entrada excluída!');
-        }
-    };
-    
+    window.excluirEntradaRoca = async (id) => { if(confirm('Excluir esta entrada?')) { await deleteDoc(doc(db, "entradasRoca", id)); mostrarFeedback('Entrada excluída!'); } };
     window.salvarDespesaRoca = async () => {
         const data = document.getElementById('despesaDataRoca').value;
         const roca = document.getElementById('despesaRocaSelect').value;
@@ -1379,14 +1507,7 @@
         mostrarFeedback('Despesa salva!');
         renderizarDespesasRoca();
     };
-    
-    window.excluirDespesaRoca = async (id) => {
-        if(confirm('Excluir esta despesa?')) {
-            await deleteDoc(doc(db, "despesasRoca", id));
-            mostrarFeedback('Despesa excluída!');
-        }
-    };
-    
+    window.excluirDespesaRoca = async (id) => { if(confirm('Excluir esta despesa?')) { await deleteDoc(doc(db, "despesasRoca", id)); mostrarFeedback('Despesa excluída!'); } };
     document.getElementById('btnNovaRocaHeader').onclick = () => { document.getElementById('novaRocaNome').value = ''; document.getElementById('modalRoca').style.display = 'flex'; };
     document.getElementById('btnNovaEntradaRoca').onclick = () => { document.getElementById('entradaDataRoca').value = new Date().toISOString().split('T')[0]; document.getElementById('entradaCategoriaRoca').value = ''; document.getElementById('entradaValorRoca').value = ''; document.getElementById('modalEntradaRoca').style.display = 'flex'; };
     document.getElementById('btnNovaDespesaRoca').onclick = () => { document.getElementById('despesaDataRoca').value = new Date().toISOString().split('T')[0]; document.getElementById('despesaDescricaoRoca').value = ''; document.getElementById('despesaValorRoca').value = ''; document.getElementById('modalDespesaRoca').style.display = 'flex'; };
@@ -1406,7 +1527,7 @@
         const tbody = document.getElementById('prestacoesBody');
         if(!tbody) return;
         tbody.innerHTML = '';
-        if(filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum repasse cadastrado</td</tr>'; return; }
+        if(filtradas.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum repasse cadastrado</td></tr>'; return; }
         filtradas.forEach(p => {
             const row = tbody.insertRow();
             row.insertCell(0).innerText = formatarData(p.data);
@@ -1417,7 +1538,6 @@
             row.insertCell(5).innerHTML = `<button class="btn-acao btn-excluir" onclick="excluirPrestacao('${p.id}')">🗑️</button>`;
         });
     };
-    
     window.salvarPrestacao = async () => {
         const data = document.getElementById('prestacaoData').value;
         const roca = document.getElementById('prestacaoRocaSelect').value;
@@ -1431,16 +1551,7 @@
         renderizarPrestacoes();
         renderizarResumoCompleto();
     };
-    
-    window.excluirPrestacao = async (id) => {
-        if(confirm('Excluir este repasse?')) {
-            await deleteDoc(doc(db, "prestacoesRoca", id));
-            mostrarFeedback('Repasse excluído!');
-            renderizarPrestacoes();
-            renderizarResumoCompleto();
-        }
-    };
-    
+    window.excluirPrestacao = async (id) => { if(confirm('Excluir este repasse?')) { await deleteDoc(doc(db, "prestacoesRoca", id)); mostrarFeedback('Repasse excluído!'); renderizarPrestacoes(); renderizarResumoCompleto(); } };
     window.renderizarResumoCompleto = () => {
         const filtroRoca = document.getElementById('filtroRocaResumo')?.value || '';
         const dataInicio = document.getElementById('resumoDataInicio')?.value || '';
@@ -1481,15 +1592,28 @@
                 <div class="resumo-card resumo-destaque"><h4>💰 LUCRO TOTAL</h4><div class="valor">${formatarMoeda(lucroTotal)}</div></div>
             </div>
             <table class="socio-table">
-                <thead><tr><th>SÓCIO</th><th>DIREITO (50%)</th><th>DESPESAS GERAIS (50%)</th><th>REPASSES</th><th>SALDO</th></tr></thead>
+                <thead>
+                    <tr><th>SÓCIO</th><th>DIREITO (50%)</th><th>DESPESAS GERAIS (50%)</th><th>REPASSES</th><th>SALDO</th></tr>
+                </thead>
                 <tbody>
-                    <tr style="background:#e8f0ea;"><td><strong>👤 NENE</strong></td><td>${formatarMoeda(direitoIndividual)}</td><td>${formatarMoeda(despesasGerais)}</td><td>${formatarMoeda(repassesNene)}</td><td><strong style="color: ${saldoNene >= 0 ? '#166534' : '#dc2626'}">${formatarMoeda(saldoNene)}</strong></td></tr>
-                    <tr><td><strong>👤 LEANDRO</strong></td><td>${formatarMoeda(direitoIndividual)}</td><td>${formatarMoeda(despesasGerais)}</td><td>${formatarMoeda(repassesLeandro)}</td><td><strong style="color: ${saldoLeandro >= 0 ? '#166534' : '#dc2626'}">${formatarMoeda(saldoLeandro)}</strong></td></tr>
+                    <tr style="background:#e8f0ea;">
+                        <td><strong>👤 NENE</strong></td>
+                        <td>${formatarMoeda(direitoIndividual)}</td>
+                        <td>${formatarMoeda(despesasGerais)}</td>
+                        <td>${formatarMoeda(repassesNene)}</td>
+                        <td><strong style="color: ${saldoNene >= 0 ? '#166534' : '#dc2626'}">${formatarMoeda(saldoNene)}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>👤 LEANDRO</strong></td>
+                        <td>${formatarMoeda(direitoIndividual)}</td>
+                        <td>${formatarMoeda(despesasGerais)}</td>
+                        <td>${formatarMoeda(repassesLeandro)}</td>
+                        <td><strong style="color: ${saldoLeandro >= 0 ? '#166534' : '#dc2626'}">${formatarMoeda(saldoLeandro)}</strong></td>
+                    </tr>
                 </tbody>
             </table>
         `;
     };
-    
     window.exportarResumoExcel = () => {
         const filtro = document.getElementById('filtroRocaResumo')?.value || 'Todas';
         const dataInicio = document.getElementById('resumoDataInicio')?.value || '';
@@ -1521,7 +1645,6 @@
         XLSX.writeFile(wb, `resumo_roca_${new Date().toISOString().slice(0,10)}.xlsx`);
         mostrarFeedback('Exportado!');
     };
-    
     document.getElementById('btnNovaPrestacao').onclick = () => { document.getElementById('prestacaoData').value = new Date().toISOString().split('T')[0]; document.getElementById('prestacaoValor').value = ''; document.getElementById('modalPrestacao').style.display = 'flex'; };
     document.getElementById('btnAtualizarResumo').onclick = () => { renderizarPrestacoes(); renderizarResumoCompleto(); };
     document.getElementById('btnExportarResumo').onclick = () => window.exportarResumoExcel();
@@ -1554,15 +1677,12 @@
         if(projSalva) { const proj = JSON.parse(projSalva); document.getElementById('lucroMargemProj').value = proj.margem; document.getElementById('lucroLucroProj').value = proj.lucro; }
         else { const projLucro = valorVendido * 0.3; document.getElementById('lucroMargemProj').value = '30.0'; document.getElementById('lucroLucroProj').value = projLucro.toFixed(2); }
     }
-    
     window.salvarProjecaoLucro = () => { const mesAno = document.getElementById('lucroMes').value; if(!mesAno) return; const margem = parseFloat(document.getElementById('lucroMargemProj').value) || 0; const lucro = parseFloat(document.getElementById('lucroLucroProj').value) || 0; localStorage.setItem(`lucro_proj_${mesAno}`, JSON.stringify({ margem, lucro })); mostrarFeedback('Projeção salva!'); };
-    
     function exportarLucroExcel() {
         const mesAno = document.getElementById('lucroMes').value;
         const data = { 'Mês/Ano': mesAno, 'Valor mandioca': document.getElementById('lucroValorMandioca').innerText, 'Custo operacional': document.getElementById('lucroCustoOperacional').innerText, 'Custo total': document.getElementById('lucroCustoTotal').innerText, 'Valor vendido': document.getElementById('lucroVendido').innerText, 'Lucro real': document.getElementById('lucroReal').innerText, 'Margem real': document.getElementById('lucroMargemReal').innerText, 'Margem projetada': document.getElementById('lucroMargemProj').value, 'Lucro projetado': document.getElementById('lucroLucroProj').value };
         const ws = XLSX.utils.json_to_sheet([data]); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Lucro'); XLSX.writeFile(wb, `relatorio_lucro_${mesAno}.xlsx`); mostrarFeedback('Exportado!');
     }
-    
     function atualizarAlertas() {
         const estoqueBaixo = produtos.filter(p => ((p.entrada||0) - (p.saidas||0)) < 20);
         const pendentes = pedidos.filter(p => (p.liquido || 0) > 0).length;
@@ -1572,11 +1692,10 @@
         if(estoqueBaixo.length === 0 && pendentes === 0) alertasHtml += '<div class="alert-item">✅ Nenhum alerta no momento.</div>';
         document.getElementById('alertasContainer').innerHTML = alertasHtml;
     }
-    
     document.getElementById('btnAtualizarLucro').addEventListener('click', () => { atualizarLucro(); atualizarAlertas(); });
     document.getElementById('btnExportarLucro').addEventListener('click', exportarLucroExcel);
     document.getElementById('lucroMes').value = '2026-05';
-    
+
     // TABS
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
