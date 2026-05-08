@@ -133,7 +133,43 @@
         .linha-pedido-duplo-clique:hover { background: #e8f0ea; }
         .search-global { background: white; border-radius: 40px; padding: 6px 16px; border: none; width: 200px; outline: none; font-size: 12px; }
 
-        /* IMPRESSÃO - RELATÓRIO PROFISSIONAL A4 (CORRIGIDO) */
+        /* ESTILOS DA IMPRESSÃO - visíveis também na tela do popup */
+        .tabela-impressao {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        .tabela-impressao th,
+        .tabela-impressao td {
+            border: 1px solid #000;
+            padding: 8px 10px;
+            font-size: 11px;
+            color: #000;
+            vertical-align: top;
+        }
+        .tabela-impressao th {
+            background-color: #1e5631;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        .tabela-impressao .header-title {
+            background-color: #1e5631;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+        }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-bold { font-weight: bold; }
+        .assinatura-print {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+        }
+
         @media print {
             body * { visibility: hidden; }
             .print-pedido, .print-pedido * { visibility: visible; }
@@ -142,49 +178,6 @@
                 background: white; font-family: Arial, sans-serif; color: #000;
             }
             .no-print { display: none; }
-
-            .tabela-impressao {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 12px;
-                page-break-inside: avoid;
-            }
-            .tabela-impressao th,
-            .tabela-impressao td {
-                border: 1px solid #000;
-                padding: 8px 10px;
-                font-size: 11px;
-                color: #000;
-                vertical-align: top;
-            }
-            .tabela-impressao th {
-                background-color: #1e5631;
-                color: white;
-                font-weight: bold;
-                text-align: center;
-            }
-            .tabela-impressao .header-title {
-                background-color: #1e5631;
-                color: white;
-                font-size: 16px;
-                font-weight: bold;
-                text-align: center;
-                padding: 8px;
-            }
-            .tabela-impressao .section-title {
-                background-color: #1e5631;
-                color: white;
-                font-weight: bold;
-                text-align: center;
-            }
-            .text-center { text-align: center; }
-            .text-right { text-align: right; }
-            .text-bold { font-weight: bold; }
-            .assinatura-print {
-                text-align: center;
-                margin-top: 30px;
-                font-size: 12px;
-            }
         }
 
         @media (max-width: 768px) { body { padding: 16px; } .tab-btn { padding: 5px 10px; font-size: 10px; } .card { padding: 16px; } .resumo-grid { grid-template-columns: repeat(2, 1fr); } th, td { padding: 6px 8px; font-size: 10px; } }
@@ -308,7 +301,7 @@
 <div id="feedback" class="feedback">Operação realizada!</div>
 <div id="loading" class="loading"><div class="loading-content">Carregando dados...</div></div>
 
-<!-- MODAIS (mantidos iguais ao original) -->
+<!-- MODAIS -->
 <div id="modalLancamento" class="modal"><div class="modal-content"><h3>NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA</label><input type="date" id="lancamentoData"><label>FORNECEDOR</label><select id="lancamentoFornecedor"></select><label>MOTORISTA</label><input type="text" id="lancamentoMotorista" placeholder="Opcional"><label>RENDA</label><input type="number" id="lancamentoRenda" step="0.001" placeholder="Valor da renda"><label>FATOR</label><input type="number" id="lancamentoFator" step="0.001" placeholder="Fator multiplicador" value="1.000"><label>PESO</label><input type="number" id="lancamentoPeso" step="0.001" placeholder="Peso em kg"><label>SACOS 2</label><input type="number" id="lancamentoQtdSacos2" step="0.001" placeholder="Opcional"><div id="previewInfo" style="background:#f1f5f9;padding:10px;border-radius:16px;margin:12px 0;font-size:11px;">Preencha os campos</div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
 <div id="modalPagamento" class="modal"><div class="modal-content"><h3>NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:10px;border-radius:16px;margin:10px 0;text-align:center;font-size:12px;">TOTAL: R$ 0,00</div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01" placeholder="Opcional"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01" placeholder="Opcional"><label>VALOR PAGO</label><input type="number" id="pagamentoValor" step="0.01" placeholder="Opcional"><label>TIPO</label><select id="pagamentoTipo"><option>Parcial</option><option>Total</option></select><label>NOTA</label><input type="text" id="pagamentoNota" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
 <div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>CUSTO MANUAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
@@ -1093,82 +1086,88 @@
         mostrarFeedback('Formulário limpo!');
     };
 
-    // FUNÇÃO AUXILIAR DE IMPRESSÃO (TABELAS REAIS)
-    function gerarHtmlImpressao(ped) {
-        const pesoTotal = (ped.itens || []).reduce((acc, i) => acc + (i.qtd * 50), 0);
-        let itensHtml = '';
-        for(let item of ped.itens) {
-            itensHtml += `<tr>
-                <td>${item.produtoNome}</td>
-                <td class="text-center">${formatarNumero(item.qtd)}</td>
-                <td class="text-right">${formatarMoeda(item.valorUnitario)}</td>
-                <td class="text-right">${formatarMoeda(item.subtotal)}</td>
-            </tr>`;
-        }
-
-        return `
-        <table class="tabela-impressao">
-            <tr><td colspan="4" class="header-title">VIANA FARINHA</td></tr>
-            <tr><td colspan="4" class="text-center text-bold">PEDRO R V DA SILVA LTDA - ME</td></tr>
-            <tr><td colspan="4" class="text-center">CNPJ: 09.097.608/0001-50</td></tr>
-            <tr><td colspan="4" class="text-center text-bold" style="font-size:14px;">PEDIDO DE VENDA</td></tr>
-        </table>
-
-        <table class="tabela-impressao">
-            <tr><td width="20%" class="text-bold">DATA:</td><td width="80%" colspan="3">${formatarData(ped.data)}</td></tr>
-            <tr><td class="text-bold">CLIENTE:</td><td colspan="3">${ped.cliente}</td></tr>
-            <tr><td class="text-bold">PEDIDO:</td><td colspan="3">${ped.numero || 'NOVO'}</td></tr>
-            <tr><td class="text-bold">CONDIÇÃO:</td><td colspan="3">${ped.condicao || 'Espécie'}</td></tr>
-            <tr><td class="text-bold">VENDEDOR:</td><td colspan="3">${ped.vendedor || 'Pedro R V da Silva Eirelli'}</td></tr>
-        </table>
-
-        <table class="tabela-impressao">
-            <thead>
-                <tr>
-                    <th>PRODUTO</th>
-                    <th>QTDE</th>
-                    <th>PREÇO UNIT</th>
-                    <th>SUBTOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${itensHtml}
-            </tbody>
-        </table>
-
-        <table class="tabela-impressao">
-            <tr>
-                <td colspan="3" class="text-right text-bold">Total:</td>
-                <td class="text-right">${formatarMoeda(ped.valorTotal)}</td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-right">Desconto:</td>
-                <td class="text-right">${formatarMoeda(ped.desconto)}</td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-right text-bold">Valor Final:</td>
-                <td class="text-right text-bold">${formatarMoeda(ped.valorFinal)}</td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-right">Valor Pago:</td>
-                <td class="text-right">${formatarMoeda(ped.totalPago)}</td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-right text-bold">Saldo Devedor:</td>
-                <td class="text-right text-bold">${formatarMoeda(ped.liquido)}</td>
-            </tr>
-        </table>
-
-        <table class="tabela-impressao">
-            <tr><td><strong>PESO TOTAL:</strong> ${formatarNumero(pesoTotal)} KG</td></tr>
-        </table>
-
-        <div class="assinatura-print">
-            <p>ASSINATURA DO CLIENTE</p>
-            <p>____________________________________________________</p>
-        </div>
-        `;
+function gerarHtmlImpressao(ped) {
+    const pesoTotal = (ped.itens || []).reduce((acc, i) => acc + (i.qtd * 50), 0);
+    let itensHtml = '';
+    for(let item of ped.itens) {
+        itensHtml += `<tr>
+            <td style="border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;">${item.produtoNome}</td>
+            <td style="border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;text-align:center;">${formatarNumero(item.qtd)}</td>
+            <td style="border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;text-align:right;">${formatarMoeda(item.valorUnitario)}</td>
+            <td style="border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;text-align:right;">${formatarMoeda(item.subtotal)}</td>
+        </tr>`;
     }
+
+    const estiloCelula = 'border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;';
+    const estiloCabecalho = 'border:1px solid #000;padding:8px 10px;font-size:11px;color:#fff;background-color:#1e5631;font-weight:bold;text-align:center;';
+    const estiloTitulo = 'border:1px solid #000;padding:8px;font-size:16px;font-weight:bold;text-align:center;color:#fff;background-color:#1e5631;';
+    const estiloCentro = 'border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;text-align:center;';
+    const estiloDireito = 'border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;text-align:right;';
+    const estiloNegrito = 'border:1px solid #000;padding:8px 10px;font-size:11px;color:#000;font-weight:bold;';
+
+    return `
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+        <tr><td colspan="4" style="${estiloTitulo}">VIANA FARINHA</td></tr>
+        <tr><td colspan="4" style="${estiloCentro};font-weight:bold;">PEDRO R V DA SILVA LTDA - ME</td></tr>
+        <tr><td colspan="4" style="${estiloCentro}">CNPJ: 09.097.608/0001-50</td></tr>
+        <tr><td colspan="4" style="${estiloCentro};font-weight:bold;font-size:14px;">PEDIDO DE VENDA</td></tr>
+    </table>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+        <tr><td width="20%" style="${estiloNegrito}">DATA:</td><td width="80%" colspan="3" style="${estiloCelula}">${formatarData(ped.data)}</td></tr>
+        <tr><td style="${estiloNegrito}">CLIENTE:</td><td colspan="3" style="${estiloCelula}">${ped.cliente}</td></tr>
+        <tr><td style="${estiloNegrito}">PEDIDO:</td><td colspan="3" style="${estiloCelula}">${ped.numero || 'NOVO'}</td></tr>
+        <tr><td style="${estiloNegrito}">CONDIÇÃO:</td><td colspan="3" style="${estiloCelula}">${ped.condicao || 'Espécie'}</td></tr>
+        <tr><td style="${estiloNegrito}">VENDEDOR:</td><td colspan="3" style="${estiloCelula}">${ped.vendedor || 'Pedro R V da Silva Eirelli'}</td></tr>
+    </table>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+        <thead>
+            <tr>
+                <th style="${estiloCabecalho}">PRODUTO</th>
+                <th style="${estiloCabecalho}">QTDE</th>
+                <th style="${estiloCabecalho}">PREÇO UNIT</th>
+                <th style="${estiloCabecalho}">SUBTOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${itensHtml}
+        </tbody>
+    </table>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+        <tr>
+            <td colspan="3" style="${estiloNegrito};text-align:right;">Total:</td>
+            <td style="${estiloDireito}">${formatarMoeda(ped.valorTotal)}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="${estiloDireito}">Desconto:</td>
+            <td style="${estiloDireito}">${formatarMoeda(ped.desconto)}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="${estiloNegrito};text-align:right;">Valor Final:</td>
+            <td style="${estiloDireito};font-weight:bold;">${formatarMoeda(ped.valorFinal)}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="${estiloDireito}">Valor Pago:</td>
+            <td style="${estiloDireito}">${formatarMoeda(ped.totalPago)}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="${estiloNegrito};text-align:right;">Saldo Devedor:</td>
+            <td style="${estiloDireito};font-weight:bold;">${formatarMoeda(ped.liquido)}</td>
+        </tr>
+    </table>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+        <tr><td style="${estiloCelula}"><strong>PESO TOTAL:</strong> ${formatarNumero(pesoTotal)} KG</td></tr>
+    </table>
+
+    <div style="text-align:center;margin-top:30px;font-size:12px;">
+        <p>ASSINATURA DO CLIENTE</p>
+        <p>____________________________________________________</p>
+    </div>
+    `;
+}
 
     window.imprimirPedidoVisual = () => {
         const cliente = document.getElementById('pedidoCliente').value;
@@ -1212,7 +1211,6 @@
         win.print();
     };
 
-    // Mantida a função original de geração ao GERAR pedido
     function gerarHtmlPedidoFormatado(pedido) {
         let itensHtml = '';
         for(let item of pedido.itens) {
@@ -1276,7 +1274,6 @@
         limparPedido(); renderizarProdutos(); renderizarPedidosAgrupados();
     };
 
-    // DEMAIS FUNÇÕES DE PEDIDOS (DEVOLUÇÕES, EXCLUSÃO, ETC.) MANTIDAS IGUAIS
     window.abrirDevolucao = (pedidoId) => {
         const pedido = pedidos.find(p => p.id === pedidoId);
         if(!pedido) return;
