@@ -42,6 +42,8 @@
         .btn-nova-roca { background: #8b5cf6; color: white; }
         .btn-pdf { background: #dc2626; color: white; }
         .btn-devolver { background: #f59e0b; color: white; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; border: none; cursor: pointer; margin-left: 4px; }
+        .btn-toggle-tabela { background: #1e5631; color: white; border: none; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; margin-left: 10px; }
+        .tabela-colapsada tbody { display: none; }
         .table-wrapper { overflow-x: auto; border-radius: 16px; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; }
         th, td { padding: 10px 12px; text-align: left; vertical-align: top; }
@@ -103,7 +105,7 @@
         .tipo-ambos { background: #fef3c7; color: #92400e; }
         .connection-status { display: flex; align-items: center; gap: 6px; background: white; padding: 5px 14px; border-radius: 40px; font-size: 11px; }
         .lancamentos-tabela { width: 100%; border-collapse: collapse; font-size: 11px; }
-        .lancamentos-tabela th, .lancamentos-tabela td { padding: 8px 6px; }
+        .lancamentos-tabela th, .lancamentos-tabela td { padding: 2px 4px; }
         .lancamentos-tabela th { background: #1e5631; color: white; }
         .produto-valor-editavel { width: 90px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 6px; text-align: right; font-size: 11px; }
         .small-input { width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 6px; text-align: center; }
@@ -134,52 +136,21 @@
         .search-global { background: white; border-radius: 40px; padding: 6px 16px; border: none; width: 200px; outline: none; font-size: 12px; }
 
         /* ESTILOS DA IMPRESSÃO - visíveis também na tela do popup */
-        .tabela-impressao {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 12px;
-        }
-        .tabela-impressao th,
-        .tabela-impressao td {
-            border: 1px solid #000;
-            padding: 8px 10px;
-            font-size: 11px;
-            color: #000;
-            vertical-align: top;
-        }
-        .tabela-impressao th {
-            background-color: #1e5631;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-        }
-        .tabela-impressao .header-title {
-            background-color: #1e5631;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            padding: 8px;
-        }
+        .tabela-impressao { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+        .tabela-impressao th, .tabela-impressao td { border: 1px solid #000; padding: 8px 10px; font-size: 11px; color: #000; vertical-align: top; }
+        .tabela-impressao th { background-color: #1e5631; color: white; font-weight: bold; text-align: center; }
+        .tabela-impressao .header-title { background-color: #1e5631; color: white; font-size: 16px; font-weight: bold; text-align: center; padding: 8px; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .text-bold { font-weight: bold; }
-        .assinatura-print {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-        }
+        .assinatura-print { text-align: center; margin-top: 30px; font-size: 12px; }
 
         @media print {
             body * { visibility: hidden; }
             .print-pedido, .print-pedido * { visibility: visible; }
-            .print-pedido {
-                position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
-                background: white; font-family: Arial, sans-serif; color: #000;
-            }
+            .print-pedido { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; background: white; font-family: Arial, sans-serif; color: #000; }
             .no-print { display: none; }
         }
-
         @media (max-width: 768px) { body { padding: 16px; } .tab-btn { padding: 5px 10px; font-size: 10px; } .card { padding: 16px; } .resumo-grid { grid-template-columns: repeat(2, 1fr); } th, td { padding: 6px 8px; font-size: 10px; } }
     </style>
 </head>
@@ -316,8 +287,7 @@
 <div id="modalDevolucao" class="modal"><div class="modal-content"><h3>DEVOLUÇÃO DE PEDIDO</h3><div id="devolucaoInfo"></div><div id="devolucaoItens"></div><label>MOTIVO (opcional)</label><input type="text" id="devolucaoMotivo"><div class="modal-buttons"><button class="btn-salvar" onclick="confirmarDevolucao()">CONFIRMAR</button><button class="btn-cancelar" onclick="fecharModal('modalDevolucao')">CANCELAR</button></div></div></div>
 <div id="modalEditarCadastro" class="modal"><div class="modal-content"><h3>EDITAR CADASTRO</h3><input type="hidden" id="editCadastroId"><label>NOME</label><input type="text" id="editCadastroNome"><label>APELIDO</label><input type="text" id="editCadastroApelido"><label>CPF/CNPJ</label><input type="text" id="editCadastroDocumento"><label>CONTATO</label><input type="text" id="editCadastroContato"><label>CHAVE PIX</label><input type="text" id="editCadastroPix"><label>E-MAIL</label><input type="email" id="editCadastroEmail"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEdicaoCadastro()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEditarCadastro')">CANCELAR</button></div></div></div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+<script type="module">     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
@@ -526,13 +496,19 @@
     window.excluirCadastro = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "cadastros", id)); };
     window.limparFiltrosCadastro = () => { document.getElementById('filtroTipoCadastro').value = ''; document.getElementById('filtroBuscaCadastro').value = ''; renderizarCadastros(); };
 
-    // ==================== COMPRA (ATUALIZADO) ====================
+    // ==================== COMPRA (COM TODOS OS 7 AJUSTES) ====================
     function atualizarSelects() {
         const fornecedores = cadastros.filter(c => c.tipo === 'fornecedor' || c.tipo === 'ambos');
         const clientes = cadastros.filter(c => c.tipo === 'cliente' || c.tipo === 'ambos');
-        const fornOpcoes = fornecedores.map(f => `<option value="${f.nome || ''}">${f.nome || ''}</option>`).join('');
+        
+        // AJUSTE 6: Ordem alfabética
+        const fornOpcoes = fornecedores
+            .sort((a, b) => (a.nome || '').localeCompare(b.nome || ''))
+            .map(f => `<option value="${f.nome || ''}">${f.nome || ''}</option>`).join('');
         const optsForn = '<option value="">Selecione</option>' + fornOpcoes;
-        const optsCli = '<option value="">Selecione</option>' + clientes.map(c => `<option value="${c.nome || ''}" data-tel="${c.contato || ''}" data-email="${c.email || ''}">${c.nome || ''}</option>`).join('');
+        const optsCli = '<option value="">Selecione</option>' + clientes
+            .sort((a, b) => (a.nome || '').localeCompare(b.nome || ''))
+            .map(c => `<option value="${c.nome || ''}" data-tel="${c.contato || ''}" data-email="${c.email || ''}">${c.nome || ''}</option>`).join('');
         
         const filtroFornLanc = document.getElementById('filtroFornecedorLancamentos');
         if(filtroFornLanc) filtroFornLanc.innerHTML = '<option value="">Todos fornecedores</option>' + fornOpcoes;
@@ -601,14 +577,16 @@
     };
     window.salvarLancamento = async () => {
         const id = document.getElementById('lancamentoId').value;
-        const data = document.getElementById('lancamentoData').value;
+        const dataInput = document.getElementById('lancamentoData').value;
+        const [ano, mes, dia] = dataInput.split('-');
+        const data = `${ano}-${mes}-${dia}`; // AJUSTE 4: Corrigir data
         const fornecedor = document.getElementById('lancamentoFornecedor').value;
         const motorista = document.getElementById('lancamentoMotorista').value || '';
         const renda = parseFloat(document.getElementById('lancamentoRenda').value) || 0;
         const fator = parseFloat(document.getElementById('lancamentoFator').value) || 1.000;
         const peso = parseFloat(document.getElementById('lancamentoPeso').value) || 0;
         const qtdSacos2 = parseFloat(document.getElementById('lancamentoQtdSacos2').value) || 0;
-        if(!data || !fornecedor) return alert('Preencha data e fornecedor!');
+        if(!dataInput || !fornecedor) return alert('Preencha data e fornecedor!');
         const vlTonelada = renda * fator;
         const qtdCx = peso / 50;
         const totalBruto = (peso * vlTonelada) / 1000;
@@ -620,6 +598,21 @@
         fecharModal('modalLancamento');
     };
     window.excluirLancamento = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "lancamentos", id)); };
+    
+    // AJUSTE 7: Duplicar lançamento
+    window.duplicarLancamento = (id) => {
+        const lanc = lancamentos.find(l => l.id === id);
+        if(!lanc) return;
+        document.getElementById('lancamentoId').value = '';
+        document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
+        document.getElementById('lancamentoFornecedor').value = lanc.fornecedor;
+        document.getElementById('lancamentoMotorista').value = lanc.motorista || '';
+        document.getElementById('lancamentoRenda').value = lanc.renda || '';
+        document.getElementById('lancamentoFator').value = lanc.fator || 1.000;
+        document.getElementById('lancamentoPeso').value = lanc.peso || '';
+        document.getElementById('lancamentoQtdSacos2').value = lanc.qtdSacos2 || 0;
+        document.getElementById('modalLancamento').style.display = 'flex';
+    };
     
     function getStatusLancamento(lanc) {
         const pags = pagamentos.filter(p => p.fornecedor === lanc.fornecedor && lanc.data >= p.periodoInicio && lanc.data <= p.periodoFim);
@@ -656,6 +649,21 @@
         
         const tbody = document.getElementById('lancamentosBody');
         if(tbody) {
+            // AJUSTE 1: Botão expandir/recolher
+            const cardLancamentos = tbody.closest('.card');
+            let btnToggle = cardLancamentos.querySelector('.btn-toggle-tabela');
+            if (!btnToggle) {
+                btnToggle = document.createElement('button');
+                btnToggle.className = 'btn-toggle-tabela';
+                btnToggle.textContent = 'Recolher';
+                cardLancamentos.querySelector('.card-header').appendChild(btnToggle);
+                btnToggle.onclick = () => {
+                    const tabela = cardLancamentos.querySelector('table');
+                    tabela.classList.toggle('tabela-colapsada');
+                    btnToggle.textContent = tabela.classList.contains('tabela-colapsada') ? 'Expandir' : 'Recolher';
+                };
+            }
+
             tbody.innerHTML = '';
             let totalS1=0, totalS2=0, totalPeso=0, totalBrutoTab=0;
             for(let l of lancFiltrados) {
@@ -665,7 +673,9 @@
                 totalBrutoTab += l.totalBruto || 0;
                 const status = getStatusLancamento(l);
                 const row = tbody.insertRow();
-                row.insertCell(0).innerText = formatarData(l.data);
+                // AJUSTE 4: Data corrigida (meio-dia para evitar fuso)
+                const dataCorrigida = l.data + 'T12:00:00';
+                row.insertCell(0).innerText = formatarData(dataCorrigida);
                 row.insertCell(1).innerText = l.fornecedor || '';
                 row.insertCell(2).innerText = l.motorista || '';
                 row.insertCell(3).innerHTML = formatarNumero(l.renda||0);
@@ -674,11 +684,14 @@
                 row.insertCell(6).innerHTML = formatarNumero(l.peso||0);
                 row.insertCell(7).innerHTML = formatarNumeroInteiro(l.vlTonelada||0);
                 row.insertCell(8).innerHTML = formatarMoeda(l.totalBruto||0);
-                row.insertCell(9).innerHTML = formatarNumeroInteiro(l.valorCaixa||0);
+                // AJUSTE 2: VLR Caixa em formato moeda
+                row.insertCell(9).innerHTML = formatarMoeda(l.valorCaixa||0);
                 row.insertCell(10).innerHTML = l.qtdSacos1 || 0;
-                row.insertCell(11).innerHTML = formatarNumero(l.qtdSacos2||0);
+                // AJUSTE 3: Sacos 2 sem casa decimal
+                row.insertCell(11).innerHTML = (l.qtdSacos2 || 0).toLocaleString('pt-br', { maximumFractionDigits: 0 });
                 row.insertCell(12).innerHTML = `<span class="status-${status.toLowerCase()}">${status}</span>`;
-                row.insertCell(13).innerHTML = `<button class="btn-acao btn-editar" onclick="editarLancamento('${l.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button>`;
+                // AJUSTE 7: Botão duplicar adicionado
+                row.insertCell(13).innerHTML = `<button class="btn-acao btn-editar" onclick="editarLancamento('${l.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button><button class="btn-acao" onclick="duplicarLancamento('${l.id}')" style="color:#2563eb;" title="Duplicar">📋</button>`;
             }
             if(lancFiltrados.length > 0) {
                 const rowTotais = tbody.insertRow();
@@ -695,7 +708,7 @@
                 rowTotais.insertCell(8).innerHTML = formatarMoeda(totalBrutoTab);
                 rowTotais.insertCell(9).innerText = '';
                 rowTotais.insertCell(10).innerHTML = totalS1;
-                rowTotais.insertCell(11).innerHTML = formatarNumero(totalS2);
+                rowTotais.insertCell(11).innerHTML = (totalS2).toLocaleString('pt-br', { maximumFractionDigits: 0 });
                 rowTotais.insertCell(12).innerText = '';
                 rowTotais.insertCell(13).innerText = '';
             }
