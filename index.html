@@ -17,6 +17,7 @@
         .logo-area { display: flex; align-items: center; gap: 10px; }
         .logo-area h1 { font-size: 16px; color: #1a4a2a; font-weight: 600; }
         .btn-sair { background: #dc2626; color: white; border: none; padding: 6px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 12px; }
+        .btn-perfil { background: #2563eb; color: white; border: none; padding: 6px 16px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 11px; margin-right: 8px; }
         .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
         .tab-btn { background: white; border: none; padding: 8px 16px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .tab-btn:hover { background: #e8f0ea; transform: translateY(-1px); }
@@ -50,6 +51,9 @@
         th { background: #1e5631; color: white; font-weight: 600; white-space: nowrap; }
         td { border-bottom: 1px solid #e2e8f0; background: white; }
         tr:hover td { background: #f0fdf4; }
+        /* Destaque para PENDENTES */
+        .linha-pendente td { background: #fff5f5 !important; }
+        .linha-pendente:hover td { background: #ffe0e0 !important; }
         #tabelaCadastros td, #tabelaCadastros th { padding: 6px 10px; }
         .btn-acao { background: none; border: none; cursor: pointer; font-size: 16px; margin: 0 3px; display: inline-flex; align-items: center; padding: 4px 6px; border-radius: 6px; }
         .btn-editar { color: #f59e0b; }
@@ -135,7 +139,7 @@
         .linha-pedido-duplo-clique:hover { background: #e8f0ea; }
         .search-global { background: white; border-radius: 40px; padding: 6px 16px; border: none; width: 200px; outline: none; font-size: 12px; }
 
-        /* ESTILOS DA IMPRESSÃO - visíveis também na tela do popup */
+        /* ESTILOS DA IMPRESSÃO */
         .tabela-impressao { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
         .tabela-impressao th, .tabela-impressao td { border: 1px solid #000; padding: 8px 10px; font-size: 11px; color: #000; vertical-align: top; }
         .tabela-impressao th { background-color: #1e5631; color: white; font-weight: bold; text-align: center; }
@@ -172,7 +176,13 @@
 <div class="container">
     <div class="top-bar">
         <div class="logo-area"><div class="logo-circle"><span>V</span></div><h1>VIANA FARINHA - SISTEMA COMPLETO</h1></div>
-        <div style="display: flex; align-items: center; gap: 12px;"><input type="text" id="pesquisaGlobal" class="search-global" placeholder="Pesquisar..."><div class="connection-status"><span>🟢</span> <span>Online</span></div><button class="btn-sair" id="btnLogout">SAIR</button></div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <input type="text" id="pesquisaGlobal" class="search-global" placeholder="Pesquisar...">
+            <div class="connection-status"><span>🟢</span> <span>Online</span></div>
+            <!-- MELHORIA 7: Botão Perfil -->
+            <button class="btn-perfil" id="btnPerfil">🔑 PERFIL</button>
+            <button class="btn-sair" id="btnLogout">SAIR</button>
+        </div>
     </div>
 
     <div class="tabs">
@@ -211,13 +221,29 @@
         </div></div>
         <div class="card"><div class="card-header"><h3>LANÇAMENTOS (COMPRAS)</h3><button class="btn-novo" id="btnNovoLancamento">NOVO LANÇAMENTO</button></div><div class="table-wrapper"><table class="lancamentos-tabela" id="tabelaLancamentos"><thead><tr><th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th>RENDA</th><th>FATOR</th><th>QTD CX</th><th>PESO</th><th>VL TONELADA</th><th>TOTAL BRUTO</th><th>VLR CAIXA</th><th>SACOS 1</th><th>SACOS 2</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="lancamentosBody"></tbody></table></div></div>
         <div class="card"><div class="card-header"><h3>CONTROLE DE PAGAMENTOS</h3><div class="filtros-area"><select id="filtroFornecedorPagamentos"><option value="">Todos fornecedores</option></select><input type="date" id="dataInicioPagamentos"><input type="date" id="dataFimPagamentos"><button class="btn-buscar" id="btnBuscarPagamentos">BUSCAR</button><button class="btn-limpar" id="btnLimparFiltrosPagamentos">LIMPAR</button></div><button class="btn-novo" id="btnNovoPagamento">NOVO PAGAMENTO</button></div><div class="table-wrapper"><table id="tabelaPagamentos"><thead><tr><th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th>TOTAL</th><th>FRETE</th><th>ARRANCAÇÃO</th><th>VALOR PAGO</th><th>TIPO</th><th>SALDO</th><th>NOTA</th><th>AÇÕES</th></tr></thead><tbody id="pagamentosBody"></tbody></table></div></div>
-        <div class="card"><h3>RESUMO DA COMPRA</h3><div class="resumo-grid"><div class="resumo-card"><h4>TOTAL BRUTO</h4><div class="valor" id="totalBruto">R$ 0,00</div></div><div class="resumo-card"><h4>TOTAL FRETE</h4><div class="valor" id="totalFrete">R$ 0,00</div></div><div class="resumo-card"><h4>TOTAL ARRANCAÇÃO</h4><div class="valor" id="totalArrancacao">R$ 0,00</div></div><div class="resumo-card resumo-destaque"><h4>TOTAL LÍQUIDO</h4><div class="valor" id="totalLiquido">R$ 0,00</div></div><div class="resumo-card"><h4>VALOR PAGO</h4><div class="valor" id="totalPagoCompra">R$ 0,00</div></div><div class="resumo-card resumo-destaque"><h4>SALDO A PAGAR</h4><div class="valor" id="saldoPagar">R$ 0,00</div></div><div class="resumo-card"><h4>SACOS 1</h4><div class="valor" id="totalSacos1">0</div></div><div class="resumo-card"><h4>SACOS 2</h4><div class="valor" id="totalSacos2">0</div></div></div></div>
+        <div class="card"><h3>RESUMO DA COMPRA</h3>
+        <div class="resumo-grid">
+            <div class="resumo-card"><h4>TOTAL</h4><div class="valor" id="totalBruto">R$ 0,00</div></div>
+            <div class="resumo-card"><h4>TOTAL FRETE</h4><div class="valor" id="totalFrete">R$ 0,00</div></div>
+            <div class="resumo-card"><h4>TOTAL ARRANCAÇÃO</h4><div class="valor" id="totalArrancacao">R$ 0,00</div></div>
+            <div class="resumo-card resumo-destaque"><h4>QUANTIDADE CX</h4><div class="valor" id="totalQtdCx">0</div></div>
+            <div class="resumo-card"><h4>VALOR PAGO</h4><div class="valor" id="totalPagoCompra">R$ 0,00</div></div>
+            <div class="resumo-card resumo-destaque"><h4>SALDO A PAGAR</h4><div class="valor" id="saldoPagar">R$ 0,00</div></div>
+            <div class="resumo-card"><h4>SACOS 1</h4><div class="valor" id="totalSacos1">0</div></div>
+            <div class="resumo-card"><h4>SACOS 2</h4><div class="valor" id="totalSacos2">0</div></div>
+        </div>
+        <!-- MELHORIA 4: Saldo devedor por fornecedor -->
+        <div style="margin-top:16px;padding:12px;background:#f8fafc;border-radius:16px;">
+            <strong>📋 Saldo Devedor por Fornecedor:</strong>
+            <div id="saldoFornecedorContainer" style="margin-top:8px;font-size:11px;"></div>
+        </div>
+        </div>
     </div>
 
     <!-- Aba 3: ESTOQUE -->
     <div id="tabEstoque" class="tab-pane">
         <div class="resumo-grid"><div class="resumo-card"><h4>TOTAL PRODUTOS</h4><div class="valor" id="totalProdutos">0</div></div><div class="resumo-card"><h4>VALOR ESTOQUE</h4><div class="valor" id="valorTotalEstoque">R$ 0,00</div></div></div>
-        <div class="card"><div class="card-header"><h3>PRODUTOS</h3><div><button class="btn-novo" id="btnNovoProduto">NOVO PRODUTO</button><button class="btn-entrada" id="btnEntradaEstoque">ENTRADA</button></div></div><div class="table-wrapper"><table id="tabelaProdutos" class="zebra-table"><thead><tr><th>PRODUTO</th><th>TIPO</th><th>UNIDADE</th><th>ENTRADAS</th><th>SAÍDAS</th><th>ESTOQUE</th><th>VALOR BASE</th><th>VLR ESTOQUE</th><th>CUSTO MANUAL</th><th>CUSTO TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="produtosBody"></tbody></table></div></div>
+        <div class="card"><div class="card-header"><h3>PRODUTOS</h3><div><button class="btn-novo" id="btnNovoProduto">NOVO PRODUTO</button><button class="btn-entrada" id="btnEntradaEstoque">ENTRADA</button></div></div><div class="table-wrapper"><table id="tabelaProdutos" class="zebra-table"><thead><tr><th>PRODUTO</th><th>TIPO</th><th>UNIDADE</th><th>ENTRADAS</th><th>SAÍDAS</th><th>ESTOQUE</th><th>VALOR BASE</th><th>VLR ESTOQUE</th><th>EST. MÍN.</th><th>CUSTO MANUAL</th><th>CUSTO TOTAL</th><th>AÇÕES</th></tr></thead><tbody id="produtosBody"></tbody></table></div></div>
     </div>
 
     <!-- Aba 4: PEDIDOS -->
@@ -275,7 +301,7 @@
 <!-- MODAIS -->
 <div id="modalLancamento" class="modal"><div class="modal-content"><h3>NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA</label><input type="date" id="lancamentoData"><label>FORNECEDOR</label><select id="lancamentoFornecedor"></select><label>MOTORISTA</label><input type="text" id="lancamentoMotorista" placeholder="Opcional"><label>RENDA</label><input type="number" id="lancamentoRenda" step="0.001" placeholder="Valor da renda"><label>FATOR</label><input type="number" id="lancamentoFator" step="0.001" placeholder="Fator multiplicador" value="1.000"><label>PESO</label><input type="number" id="lancamentoPeso" step="0.001" placeholder="Peso em kg"><label>SACOS 2</label><input type="number" id="lancamentoQtdSacos2" step="0.001" placeholder="Opcional"><div id="previewInfo" style="background:#f1f5f9;padding:10px;border-radius:16px;margin:12px 0;font-size:11px;">Preencha os campos</div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
 <div id="modalPagamento" class="modal"><div class="modal-content"><h3>NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:10px;border-radius:16px;margin:10px 0;text-align:center;font-size:12px;">TOTAL: R$ 0,00</div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01" placeholder="Opcional"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01" placeholder="Opcional"><label>VALOR PAGO</label><input type="number" id="pagamentoValor" step="0.01" placeholder="Opcional"><label>TIPO</label><select id="pagamentoTipo"><option>Parcial</option><option>Total</option></select><label>NOTA</label><input type="text" id="pagamentoNota" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
-<div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>CUSTO MANUAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
+<div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>ESTOQUE MÍNIMO</label><input type="number" id="produtoEstoqueMinimo" step="0.001" placeholder="Opcional"><label>CUSTO MANUAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
 <div id="modalEntradaEstoque" class="modal"><div class="modal-content"><h3>ENTRADA ESTOQUE</h3><label>PRODUTO</label><select id="entradaProdutoId"></select><label>QUANTIDADE</label><input type="number" id="entradaQuantidade" step="0.001"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaEstoque()">REGISTRAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaEstoque')">CANCELAR</button></div></div></div>
 <div id="modalRoca" class="modal"><div class="modal-content"><h3>NOVA ROÇA</h3><label>NOME</label><input type="text" id="novaRocaNome"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarNovaRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalRoca')">CANCELAR</button></div></div></div>
 <div id="modalEditarRoca" class="modal"><div class="modal-content"><h3>EDITAR ROÇA</h3><input type="hidden" id="editarRocaId"><label>NOME</label><input type="text" id="editarRocaNome"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEdicaoRoca()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEditarRoca')">CANCELAR</button></div></div></div>
@@ -286,10 +312,12 @@
 <div id="modalVisualizarPedido" class="modal"><div class="modal-content"><h3>DETALHES DO PEDIDO</h3><div id="detalhesPedido"></div><div class="modal-buttons"><button class="btn-cancelar" onclick="fecharModal('modalVisualizarPedido')">FECHAR</button></div></div></div>
 <div id="modalDevolucao" class="modal"><div class="modal-content"><h3>DEVOLUÇÃO DE PEDIDO</h3><div id="devolucaoInfo"></div><div id="devolucaoItens"></div><label>MOTIVO (opcional)</label><input type="text" id="devolucaoMotivo"><div class="modal-buttons"><button class="btn-salvar" onclick="confirmarDevolucao()">CONFIRMAR</button><button class="btn-cancelar" onclick="fecharModal('modalDevolucao')">CANCELAR</button></div></div></div>
 <div id="modalEditarCadastro" class="modal"><div class="modal-content"><h3>EDITAR CADASTRO</h3><input type="hidden" id="editCadastroId"><label>NOME</label><input type="text" id="editCadastroNome"><label>APELIDO</label><input type="text" id="editCadastroApelido"><label>CPF/CNPJ</label><input type="text" id="editCadastroDocumento"><label>CONTATO</label><input type="text" id="editCadastroContato"><label>CHAVE PIX</label><input type="text" id="editCadastroPix"><label>E-MAIL</label><input type="email" id="editCadastroEmail"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEdicaoCadastro()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEditarCadastro')">CANCELAR</button></div></div></div>
+<!-- MELHORIA 7: Modal Trocar Senha -->
+<div id="modalPerfil" class="modal"><div class="modal-content"><h3>🔑 TROCAR SENHA</h3><label>SENHA ATUAL</label><input type="password" id="perfilSenhaAtual"><label>NOVA SENHA</label><input type="password" id="perfilNovaSenha"><label>CONFIRMAR NOVA SENHA</label><input type="password" id="perfilConfirmarSenha"><div id="perfilMsg" style="font-size:11px;margin-top:8px;"></div><div class="modal-buttons"><button class="btn-salvar" onclick="trocarSenha()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPerfil')">CANCELAR</button></div></div></div>
 
-<script type="module">     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+<script type="module">    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBdJe-yB9-oXJG1wZ8VEt5ilIP_d0YQ90s",
@@ -342,6 +370,47 @@
         catch (error) { document.getElementById('loginError').style.display = 'block'; btn.innerHTML = 'ENTRAR'; }
     };
     document.getElementById('btnLogout').onclick = async () => { await signOut(auth); location.reload(); };
+
+    // MELHORIA 7: Botão Perfil
+    document.getElementById('btnPerfil').onclick = () => {
+        document.getElementById('perfilSenhaAtual').value = '';
+        document.getElementById('perfilNovaSenha').value = '';
+        document.getElementById('perfilConfirmarSenha').value = '';
+        document.getElementById('perfilMsg').innerHTML = '';
+        document.getElementById('modalPerfil').style.display = 'flex';
+    };
+
+    // MELHORIA 7: Função trocar senha
+    window.trocarSenha = async () => {
+        const atual = document.getElementById('perfilSenhaAtual').value;
+        const nova = document.getElementById('perfilNovaSenha').value;
+        const confirmar = document.getElementById('perfilConfirmarSenha').value;
+        const msg = document.getElementById('perfilMsg');
+        
+        if (!atual || !nova || !confirmar) {
+            msg.innerHTML = '<span style="color:#dc2626;">Preencha todos os campos!</span>';
+            return;
+        }
+        if (nova !== confirmar) {
+            msg.innerHTML = '<span style="color:#dc2626;">As senhas não coincidem!</span>';
+            return;
+        }
+        if (nova.length < 6) {
+            msg.innerHTML = '<span style="color:#dc2626;">A senha deve ter pelo menos 6 caracteres!</span>';
+            return;
+        }
+        
+        try {
+            const user = auth.currentUser;
+            const credential = EmailAuthProvider.credential(user.email, atual);
+            await reauthenticateWithCredential(user, credential);
+            await updatePassword(user, nova);
+            msg.innerHTML = '<span style="color:#166534;">Senha alterada com sucesso!</span>';
+            setTimeout(() => fecharModal('modalPerfil'), 1500);
+        } catch (error) {
+            msg.innerHTML = '<span style="color:#dc2626;">Senha atual incorreta!</span>';
+        }
+    };
 
     onAuthStateChanged(auth, async (user) => {
         userLoggedIn = !!user;
@@ -408,7 +477,7 @@
         onSnapshot(devolucoesCol, (s) => { devolucoes = s.docs.map(d => ({ id: d.id, ...d.data() })); renderizarPedidosAgrupados(); });
     }
 
-    // ==================== CADASTROS ====================
+    // ==================== CADASTROS (com ordem alfabética) ====================
     window.selecionarTipoCadastro = (tipo) => {
         document.getElementById('cadastroTipo').value = tipo;
         document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('selected'));
@@ -445,9 +514,28 @@
     function renderizarCadastros() {
         const filtro = document.getElementById('filtroTipoCadastro').value;
         const busca = document.getElementById('filtroBuscaCadastro').value.toLowerCase();
-        const filtrados = cadastros.filter(c => (!filtro || c.tipo === filtro) && (!busca || (c.nome || '').toLowerCase().includes(busca) || (c.apelido || '').toLowerCase().includes(busca)));
+        let filtrados = cadastros.filter(c => (!filtro || c.tipo === filtro) && (!busca || (c.nome || '').toLowerCase().includes(busca) || (c.apelido || '').toLowerCase().includes(busca)));
+        // NOVO: Ordenar por nome em ordem alfabética
+        filtrados.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+        
         const tbody = document.getElementById('cadastrosBody');
         if(!tbody) return;
+        
+        // MELHORIA 3: Botão recolher/expandir em Cadastros
+        const cardCadastros = tbody.closest('.card');
+        let btnToggleCad = cardCadastros.querySelector('.btn-toggle-tabela');
+        if (!btnToggleCad) {
+            btnToggleCad = document.createElement('button');
+            btnToggleCad.className = 'btn-toggle-tabela';
+            btnToggleCad.textContent = 'Recolher';
+            cardCadastros.querySelector('.card-header').appendChild(btnToggleCad);
+            btnToggleCad.onclick = () => {
+                const tabela = cardCadastros.querySelector('table');
+                tabela.classList.toggle('tabela-colapsada');
+                btnToggleCad.textContent = tabela.classList.contains('tabela-colapsada') ? 'Expandir' : 'Recolher';
+            };
+        }
+        
         tbody.innerHTML = '';
         filtrados.forEach(c => {
             const row = tbody.insertRow();
@@ -496,12 +584,10 @@
     window.excluirCadastro = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "cadastros", id)); };
     window.limparFiltrosCadastro = () => { document.getElementById('filtroTipoCadastro').value = ''; document.getElementById('filtroBuscaCadastro').value = ''; renderizarCadastros(); };
 
-    // ==================== COMPRA (COM TODOS OS 7 AJUSTES) ====================
+    // ==================== COMPRA (COM MELHORIAS 1,2,4,5) ====================
     function atualizarSelects() {
         const fornecedores = cadastros.filter(c => c.tipo === 'fornecedor' || c.tipo === 'ambos');
         const clientes = cadastros.filter(c => c.tipo === 'cliente' || c.tipo === 'ambos');
-        
-        // AJUSTE 6: Ordem alfabética
         const fornOpcoes = fornecedores
             .sort((a, b) => (a.nome || '').localeCompare(b.nome || ''))
             .map(f => `<option value="${f.nome || ''}">${f.nome || ''}</option>`).join('');
@@ -579,7 +665,7 @@
         const id = document.getElementById('lancamentoId').value;
         const dataInput = document.getElementById('lancamentoData').value;
         const [ano, mes, dia] = dataInput.split('-');
-        const data = `${ano}-${mes}-${dia}`; // AJUSTE 4: Corrigir data
+        const data = `${ano}-${mes}-${dia}`;
         const fornecedor = document.getElementById('lancamentoFornecedor').value;
         const motorista = document.getElementById('lancamentoMotorista').value || '';
         const renda = parseFloat(document.getElementById('lancamentoRenda').value) || 0;
@@ -599,7 +685,6 @@
     };
     window.excluirLancamento = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "lancamentos", id)); };
     
-    // AJUSTE 7: Duplicar lançamento
     window.duplicarLancamento = (id) => {
         const lanc = lancamentos.find(l => l.id === id);
         if(!lanc) return;
@@ -649,7 +734,6 @@
         
         const tbody = document.getElementById('lancamentosBody');
         if(tbody) {
-            // AJUSTE 1: Botão expandir/recolher
             const cardLancamentos = tbody.closest('.card');
             let btnToggle = cardLancamentos.querySelector('.btn-toggle-tabela');
             if (!btnToggle) {
@@ -665,15 +749,19 @@
             }
 
             tbody.innerHTML = '';
-            let totalS1=0, totalS2=0, totalPeso=0, totalBrutoTab=0;
+            let totalS1=0, totalS2=0, totalPeso=0, totalBrutoTab=0, totalQtdCx=0;
             for(let l of lancFiltrados) {
                 totalS1 += l.qtdSacos1 || 0;
                 totalS2 += l.qtdSacos2 || 0;
                 totalPeso += l.peso || 0;
                 totalBrutoTab += l.totalBruto || 0;
+                totalQtdCx += l.qtdCx || 0;
                 const status = getStatusLancamento(l);
                 const row = tbody.insertRow();
-                // AJUSTE 4: Data corrigida (meio-dia para evitar fuso)
+                // MELHORIA 5: Destacar PENDENTES em vermelho
+                if (status === 'PENDENTE') {
+                    row.classList.add('linha-pendente');
+                }
                 const dataCorrigida = l.data + 'T12:00:00';
                 row.insertCell(0).innerText = formatarData(dataCorrigida);
                 row.insertCell(1).innerText = l.fornecedor || '';
@@ -684,13 +772,10 @@
                 row.insertCell(6).innerHTML = formatarNumero(l.peso||0);
                 row.insertCell(7).innerHTML = formatarNumeroInteiro(l.vlTonelada||0);
                 row.insertCell(8).innerHTML = formatarMoeda(l.totalBruto||0);
-                // AJUSTE 2: VLR Caixa em formato moeda
                 row.insertCell(9).innerHTML = formatarMoeda(l.valorCaixa||0);
                 row.insertCell(10).innerHTML = l.qtdSacos1 || 0;
-                // AJUSTE 3: Sacos 2 sem casa decimal
                 row.insertCell(11).innerHTML = (l.qtdSacos2 || 0).toLocaleString('pt-br', { maximumFractionDigits: 0 });
                 row.insertCell(12).innerHTML = `<span class="status-${status.toLowerCase()}">${status}</span>`;
-                // AJUSTE 7: Botão duplicar adicionado
                 row.insertCell(13).innerHTML = `<button class="btn-acao btn-editar" onclick="editarLancamento('${l.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button><button class="btn-acao" onclick="duplicarLancamento('${l.id}')" style="color:#2563eb;" title="Duplicar">📋</button>`;
             }
             if(lancFiltrados.length > 0) {
@@ -719,14 +804,45 @@
             document.getElementById('totalBruto').innerHTML = formatarMoeda(totalBruto);
             document.getElementById('totalFrete').innerHTML = formatarMoeda(totalFrete);
             document.getElementById('totalArrancacao').innerHTML = formatarMoeda(totalArranc);
-            document.getElementById('totalLiquido').innerHTML = formatarMoeda(totalBruto - totalFrete - totalArranc);
+            // MELHORIA 1: Card Quantidade Cx
+            document.getElementById('totalQtdCx').innerHTML = formatarNumeroRedondo(totalQtdCx);
             document.getElementById('totalPagoCompra').innerHTML = formatarMoeda(totalPago);
             document.getElementById('saldoPagar').innerHTML = formatarMoeda(totalBruto - totalFrete - totalArranc - totalPago);
             document.getElementById('totalSacos1').innerHTML = formatarNumeroInteiro(totalS1);
             document.getElementById('totalSacos2').innerHTML = formatarNumeroInteiro(totalS2);
+            
+            // MELHORIA 4: Saldo devedor por fornecedor
+            const fornecedoresUnicos = [...new Set(lancamentos.map(l => l.fornecedor).filter(Boolean))];
+            let saldoHtml = '';
+            fornecedoresUnicos.sort().forEach(forn => {
+                const totalForn = lancamentos.filter(l => l.fornecedor === forn).reduce((a, l) => a + (l.totalBruto || 0), 0);
+                const pagoForn = pagamentos.filter(p => p.fornecedor === forn).reduce((a, p) => a + (p.valor || 0), 0);
+                const freteForn = pagamentos.filter(p => p.fornecedor === forn).reduce((a, p) => a + (p.frete || 0), 0);
+                const arrancForn = pagamentos.filter(p => p.fornecedor === forn).reduce((a, p) => a + (p.arrancacao || 0), 0);
+                const saldo = totalForn - freteForn - arrancForn - pagoForn;
+                if (saldo > 0.01) {
+                    saldoHtml += `<span style="display:inline-block;margin-right:16px;margin-bottom:4px;">• <strong>${forn}:</strong> <span style="color:#dc2626;">${formatarMoeda(saldo)}</span></span>`;
+                }
+            });
+            document.getElementById('saldoFornecedorContainer').innerHTML = saldoHtml || '<span style="color:#166534;">✅ Todos os fornecedores estão quitados!</span>';
         }
         const tbodyPag = document.getElementById('pagamentosBody');
         if(tbodyPag) {
+            // MELHORIA 2: Botão recolher/expandir em Pagamentos
+            const cardPagamentos = tbodyPag.closest('.card');
+            let btnTogglePag = cardPagamentos.querySelector('.btn-toggle-tabela');
+            if (!btnTogglePag) {
+                btnTogglePag = document.createElement('button');
+                btnTogglePag.className = 'btn-toggle-tabela';
+                btnTogglePag.textContent = 'Recolher';
+                cardPagamentos.querySelector('.card-header').appendChild(btnTogglePag);
+                btnTogglePag.onclick = () => {
+                    const tabela = cardPagamentos.querySelector('table');
+                    tabela.classList.toggle('tabela-colapsada');
+                    btnTogglePag.textContent = tabela.classList.contains('tabela-colapsada') ? 'Expandir' : 'Recolher';
+                };
+            }
+            
             tbodyPag.innerHTML = '';
             let totalPeriodoTab=0, totalFreteTab=0, totalArrancTab=0, totalPagoTab=0;
             for(let p of pagFiltrados) {
@@ -957,7 +1073,7 @@
     document.getElementById('btnNovoLancamento').onclick = () => window.abrirModalLancamento();
     document.getElementById('btnNovoPagamento').onclick = () => window.abrirModalPagamento();
 
-    // ==================== ESTOQUE ====================
+    // ==================== ESTOQUE (COM MELHORIA 6) ====================
     function renderizarProdutos() {
         const tbody = document.getElementById('produtosBody');
         if(!tbody) return;
@@ -975,9 +1091,11 @@
             row.insertCell(5).innerHTML = formatarNumero(estoque);
             row.insertCell(6).innerHTML = formatarMoeda(p.valorUnitario || 0);
             row.insertCell(7).innerHTML = formatarMoeda(estoque * (p.valorUnitario || 0));
-            row.insertCell(8).innerHTML = `<input type="number" class="produto-valor-editavel" id="custoManual_${p.id}" value="${custoManual}" step="0.01" onchange="atualizarCustoManual('${p.id}', this.value)">`;
-            row.insertCell(9).innerHTML = formatarMoeda(custoTotal);
-            row.insertCell(10).innerHTML = `<button class="btn-acao btn-editar" onclick="editarProduto('${p.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirProduto('${p.id}')">🗑️</button>`;
+            // MELHORIA 6: Estoque mínimo
+            row.insertCell(8).innerHTML = p.estoqueMinimo ? formatarNumero(p.estoqueMinimo) : '-';
+            row.insertCell(9).innerHTML = `<input type="number" class="produto-valor-editavel" id="custoManual_${p.id}" value="${custoManual}" step="0.01" onchange="atualizarCustoManual('${p.id}', this.value)">`;
+            row.insertCell(10).innerHTML = formatarMoeda(custoTotal);
+            row.insertCell(11).innerHTML = `<button class="btn-acao btn-editar" onclick="editarProduto('${p.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirProduto('${p.id}')">🗑️</button>`;
         });
         document.getElementById('totalProdutos').innerHTML = produtos.reduce((a,p)=>a+((p.entrada||0)-(p.saidas||0)),0);
         document.getElementById('valorTotalEstoque').innerHTML = formatarMoeda(produtos.reduce((a,p)=>a+(((p.entrada||0)-(p.saidas||0))*(p.valorUnitario||0)),0));
@@ -990,6 +1108,7 @@
         document.getElementById('produtoUnidade').value = 'Sacas';
         document.getElementById('produtoEntrada').value = '';
         document.getElementById('produtoValorUnitario').value = '';
+        document.getElementById('produtoEstoqueMinimo').value = '';
         document.getElementById('produtoCustoManual').value = '';
         document.getElementById('modalProduto').style.display = 'flex';
     };
@@ -1002,6 +1121,7 @@
             document.getElementById('produtoUnidade').value = p.unidade || 'Sacas';
             document.getElementById('produtoEntrada').value = p.entrada || 0;
             document.getElementById('produtoValorUnitario').value = p.valorUnitario || 0;
+            document.getElementById('produtoEstoqueMinimo').value = p.estoqueMinimo || '';
             document.getElementById('produtoCustoManual').value = p.custoManual || '';
             document.getElementById('modalProduto').style.display = 'flex';
         }
@@ -1010,9 +1130,10 @@
         const id = document.getElementById('produtoId').value;
         const nome = document.getElementById('produtoNome').value.trim();
         const entrada = parseFloat(document.getElementById('produtoEntrada').value) || 0;
+        const estoqueMinimo = parseFloat(document.getElementById('produtoEstoqueMinimo').value) || 0;
         if(!nome) return alert('Preencha o nome!');
         const saidas = id ? (produtos.find(x=>x.id===id)?.saidas||0) : 0;
-        const data = { nome, tipo: document.getElementById('produtoTipo').value, unidade: document.getElementById('produtoUnidade').value, entrada, saidas, valorUnitario: parseFloat(document.getElementById('produtoValorUnitario').value) || 0, custoManual: parseFloat(document.getElementById('produtoCustoManual').value) || 0 };
+        const data = { nome, tipo: document.getElementById('produtoTipo').value, unidade: document.getElementById('produtoUnidade').value, entrada, saidas, valorUnitario: parseFloat(document.getElementById('produtoValorUnitario').value) || 0, custoManual: parseFloat(document.getElementById('produtoCustoManual').value) || 0, estoqueMinimo };
         if(id) await updateDoc(doc(db, "produtos", id), data);
         else await addDoc(produtosCol, data);
         fecharModal('modalProduto');
@@ -1659,7 +1780,7 @@ function gerarHtmlImpressao(ped) {
     document.getElementById('btnAtualizarResumo').onclick = () => { renderizarPrestacoes(); renderizarResumoCompleto(); };
     document.getElementById('btnExportarResumo').onclick = () => window.exportarResumoExcel();
 
-    // ==================== LUCRO ====================
+    // ==================== LUCRO (COM MELHORIA 6 - ALERTAS) ====================
     function atualizarLucro() {
         const mesAno = document.getElementById('lucroMes').value;
         if(!mesAno) return;
@@ -1694,10 +1815,13 @@ function gerarHtmlImpressao(ped) {
         const ws = XLSX.utils.json_to_sheet([data]); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Lucro'); XLSX.writeFile(wb, `relatorio_lucro_${mesAno}.xlsx`); mostrarFeedback('Exportado!');
     }
     function atualizarAlertas() {
-        const estoqueBaixo = produtos.filter(p => ((p.entrada||0) - (p.saidas||0)) < 20);
-        const pendentes = pedidos.filter(p => (p.liquido || 0) > 0).length;
         let alertasHtml = '<h3>⚠️ ALERTAS E ATENÇÕES</h3>';
-        if(estoqueBaixo.length > 0) alertasHtml += `<div class="alert-item warning">📦 Estoque baixo: ${estoqueBaixo.map(p => `${p.nome} (${((p.entrada||0)-(p.saidas||0))})`).join(', ')}</div>`;
+        // MELHORIA 6: Alerta de estoque mínimo por produto
+        const estoqueBaixo = produtos.filter(p => ((p.entrada||0) - (p.saidas||0)) <= (p.estoqueMinimo || 20));
+        if(estoqueBaixo.length > 0) {
+            alertasHtml += `<div class="alert-item warning">📦 Estoque baixo: ${estoqueBaixo.map(p => `${p.nome} (${((p.entrada||0)-(p.saidas||0))})`).join(', ')}</div>`;
+        }
+        const pendentes = pedidos.filter(p => (p.liquido || 0) > 0).length;
         if(pendentes > 0) alertasHtml += `<div class="alert-item warning">💰 ${pendentes} pedido(s) pendente(s) de pagamento</div>`;
         if(estoqueBaixo.length === 0 && pendentes === 0) alertasHtml += '<div class="alert-item">✅ Nenhum alerta no momento.</div>';
         document.getElementById('alertasContainer').innerHTML = alertasHtml;
