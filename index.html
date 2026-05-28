@@ -33,7 +33,7 @@
         .filtros-area { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #f8fafc; padding: 8px 14px; border-radius: 50px; margin-bottom: 8px; }
         .filtros-area select, .filtros-area input { padding: 6px 12px; border: 2px solid #e2e8f0; border-radius: 40px; background: white; font-size: 11px; }
         
-        .btn-buscar, .btn-limpar, .btn-novo, .btn-salvar, .btn-cancelar, .btn-gerar, .btn-imprimir, .btn-exportar, .btn-entrada, .btn-nova-roca, .btn-pdf, .btn-excluir-lote, .btn-devolver { padding: 6px 14px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; font-size: 11px; }
+        .btn-buscar, .btn-limpar, .btn-novo, .btn-salvar, .btn-cancelar, .btn-gerar, .btn-imprimir, .btn-exportar, .btn-entrada, .btn-nova-roca, .btn-pdf, .btn-excluir-lote, .btn-devolver, .btn-confirmar-pedido { padding: 6px 14px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; font-size: 11px; }
         .btn-buscar { background: #1e5631; color: white; }
         .btn-limpar { background: #6c757d; color: white; }
         .btn-novo { background: #1e5631; color: white; }
@@ -47,6 +47,7 @@
         .btn-pdf { background: #dc2626; color: white; }
         .btn-excluir-lote { background: #dc2626; color: white; }
         .btn-devolver { background: #f59e0b; color: white; }
+        .btn-confirmar-pedido { background: #8b5cf6; color: white; }
         .btn-toggle-tabela { background: #1e5631; color: white; border: none; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; cursor: pointer; margin-left: 8px; }
         
         .tabela-colapsada tbody { display: none; }
@@ -55,6 +56,24 @@
         th, td { padding: 8px 8px; text-align: left; vertical-align: middle; }
         th { background: #1e5631; color: white; font-weight: 600; white-space: nowrap; }
         td { border-bottom: 1px solid #e2e8f0; background: white; }
+        
+        /* HOVER CORRIGIDO - MAIOR PRIORIDADE */
+        .table-wrapper tbody tr:hover,
+        .table-wrapper tbody tr:hover td,
+        .zebra-table tbody tr:hover,
+        .zebra-table tbody tr:hover td,
+        table tbody tr:hover,
+        table tbody tr:hover td {
+            background-color: #eef5ff !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+        }
+        
+        .itens-pedido-container { background: #f8fafc; border-radius: 16px; overflow: hidden; margin-top: 10px; }
+        .itens-pedido-container table { width: 100%; border-collapse: collapse; }
+        .itens-pedido-container th { background: #1e5631; color: white; padding: 12px 10px; font-size: 11px; font-weight: 600; }
+        .itens-pedido-container td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        .itens-pedido-container tr:last-child td { border-bottom: none; }
         
         .btn-acao { background: none; border: none; cursor: pointer; font-size: 14px; margin: 0 2px; display: inline-flex; align-items: center; justify-content: center; padding: 4px 6px; border-radius: 4px; }
         .btn-editar { color: #f59e0b; }
@@ -309,6 +328,15 @@
             font-weight: 800;
         }
         
+        .pedido-actions-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin: 16px 0;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
         @media (max-width: 768px) { 
             body { padding: 12px; padding-bottom: 90px; } 
             .tab-btn { padding: 6px 10px; font-size: 10px; } 
@@ -359,7 +387,9 @@
         <button class="tab-btn" data-tab="tabDRE">📊 DRE</button>
     </div>
 
-    <!-- ABA 1: CADASTROS -->
+    <!-- ============================================ -->
+    <!-- GUIA 1: CADASTROS (Fornecedores e Clientes) -->
+    <!-- ============================================ -->
     <div id="tabCadastros" class="tab-pane">
         <div class="card">
             <div class="card-header"><h3>NOVO CADASTRO</h3></div>
@@ -383,13 +413,17 @@
         </div>
     </div>
 
-    <!-- ABA 2: COMPRA DE MANDIOCA -->
+    <!-- ============================================ -->
+    <!-- GUIA 2: COMPRA DE MANDIOCA (Apenas compras) -->
+    <!-- ============================================ -->
     <div id="tabCompra" class="tab-pane active">
         <div class="card">
             <div class="card-header"><h3>FILTROS</h3></div>
             <div class="filtros-area">
-                <input type="date" id="dataInicioCompra"><input type="date" id="dataFimCompra">
+                <input type="date" id="dataInicioCompra" placeholder="Data Início">
+                <input type="date" id="dataFimCompra" placeholder="Data Fim">
                 <select id="filtroFornecedorLancamentos"><option value="">Todos fornecedores</option></select>
+                <input type="text" id="filtroMotorista" placeholder="Motorista...">
                 <select id="filtroStatusLancamentos"><option value="">Todos status</option><option value="PAGO TOTAL">✅ PAGO TOTAL</option><option value="PAGO PARCIAL">🟡 PAGO PARCIAL</option><option value="PENDENTE">🔴 PENDENTE</option></select>
                 <button class="btn-buscar" id="btnBuscarCompra">BUSCAR</button>
                 <button class="btn-limpar" id="btnLimparFiltrosCompra">LIMPAR</button>
@@ -421,7 +455,9 @@
         </div>
     </div>
 
-    <!-- ABA 3: ESTOQUE -->
+    <!-- ============================================ -->
+    <!-- GUIA 3: ESTOQUE (Apenas produtos, entradas/saídas) -->
+    <!-- ============================================ -->
     <div id="tabEstoque" class="tab-pane">
         <div class="resumo-grid"><div class="resumo-card"><h4>TOTAL PRODUTOS</h4><div class="valor" id="totalProdutos">0</div></div><div class="resumo-card"><h4>VALOR ESTOQUE</h4><div class="valor" id="valorTotalEstoque">R$ 0,00</div></div></div>
         <div class="card">
@@ -448,7 +484,9 @@
         </div>
     </div>
 
-    <!-- ABA 4: PEDIDOS -->
+    <!-- ============================================ -->
+    <!-- GUIA 4: PEDIDOS -->
+    <!-- ============================================ -->
     <div id="tabPedidos" class="tab-pane">
         <div class="pedido-card">
             <div class="pedido-header"><h2>📝 NOVO PEDIDO</h2></div>
@@ -456,7 +494,7 @@
                 <div class="pedido-info-grid">
                     <div class="pedido-info-card">
                         <label>📅 DATA DO PEDIDO</label>
-                        <div class="info-value"><input type="date" id="pedidoData" value="2026-05-25" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100%;"></div>
+                        <div class="info-value"><input type="date" id="pedidoData" value="2026-05-28" style="border:1px solid #e2e8f0; border-radius:10px; padding:6px 10px; width:100%;"></div>
                     </div>
                     <div class="pedido-info-card">
                         <label>👤 CLIENTE</label>
@@ -481,7 +519,7 @@
                 <button class="btn-novo" style="margin-top:8px;" onclick="adicionarLinhaTemp()">+ ADICIONAR ITEM</button>
 
                 <div class="section-title">✅ ITENS CONFIRMADOS</div>
-                <div id="itensConfirmadosDiv"><div style="text-align:center;padding:40px;background:#f8fafc;border-radius:16px;color:#94a3b8;">🛒 Nenhum item adicionado</div></div>
+                <div id="itensConfirmadosDiv" class="itens-pedido-container"><div style="text-align:center;padding:40px;background:#f8fafc;border-radius:16px;color:#94a3b8;">🛒 Nenhum item adicionado</div></div>
 
                 <div class="section-title">📊 RESUMO DO PEDIDO</div>
                 <div class="resumo-pedido">
@@ -515,7 +553,12 @@
                 </div>
 
                 <div class="assinatura">_________________________________<br>ASSINATURA DO CLIENTE</div>
-                <div class="action-buttons"><button class="btn-limpar" onclick="limparPedido()">LIMPAR</button><button class="btn-imprimir" onclick="imprimirPedidoVisual()">IMPRIMIR</button><button class="btn-gerar" onclick="gerarPedido()">GERAR PEDIDO</button></div>
+                
+                <div class="pedido-actions-bar">
+                    <button class="btn-confirmar-pedido" id="btnConfirmarPedido">✅ CONFIRMAR LANÇAMENTO</button>
+                </div>
+                
+                <div class="action-buttons"><button class="btn-limpar" onclick="limparPedido()">LIMPAR</button><button class="btn-imprimir" id="btnImprimirPedido">IMPRIMIR</button><button class="btn-gerar" id="btnGerarPedidoAcao">GERAR PEDIDO</button></div>
             </div>
         </div>
         
@@ -531,7 +574,9 @@
         </div>
     </div>
 
-    <!-- ABA 5: ROCA ENTRADAS/DESPESAS -->
+    <!-- ============================================ -->
+    <!-- GUIA 5: ROCA (ENTRADAS/DESPESAS) -->
+    <!-- ============================================ -->
     <div id="tabRocaEntradas" class="tab-pane">
         <div class="card">
             <div class="card-header"><h3>ROÇAS CADASTRADAS</h3><button class="btn-nova-roca" id="btnNovaRocaHeader">NOVA ROÇA</button></div>
@@ -585,7 +630,9 @@
         </div>
     </div>
 
-    <!-- ABA 6: ROCA PRESTAÇÃO+RESUMO -->
+    <!-- ============================================ -->
+    <!-- GUIA 6: ROCA (PRESTAÇÃO+RESUMO) -->
+    <!-- ============================================ -->
     <div id="tabRocaResumo" class="tab-pane">
         <div class="roca-filtros-area">
             <div class="filtro-group">
@@ -626,7 +673,9 @@
         </div>
     </div>
 
-    <!-- ABA 7: DRE -->
+    <!-- ============================================ -->
+    <!-- GUIA 7: DRE -->
+    <!-- ============================================ -->
     <div id="tabDRE" class="tab-pane">
         <div class="card" style="text-align:center;">
             <div class="filtros-area" style="justify-content:center;">
@@ -669,7 +718,7 @@
 <!-- MODAIS -->
 <div id="modalLancamento" class="modal"><div class="modal-content"><h3>NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA</label><input type="date" id="lancamentoData"><label>FORNECEDOR</label><select id="lancamentoFornecedor"></select><label>MOTORISTA</label><input type="text" id="lancamentoMotorista" placeholder="Opcional"><label>RENDA</label><input type="number" id="lancamentoRenda" step="0.001"><label>FATOR</label><input type="number" id="lancamentoFator" step="0.001" value="1.000"><label>PESO</label><input type="number" id="lancamentoPeso" step="0.001"><label>SACOS 2</label><input type="number" id="lancamentoQtdSacos2" step="0.001"><label>STATUS</label><select id="lancamentoStatus"><option value="PENDENTE">🔴 PENDENTE</option><option value="PAGO PARCIAL">🟡 PAGO PARCIAL</option><option value="PAGO TOTAL">✅ PAGO TOTAL</option></select><div id="previewInfo" style="background:#f1f5f9;padding:8px;border-radius:12px;margin:10px 0;font-size:10px;">Preencha os campos</div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
 
-<div id="modalPagamento" class="modal"><div class="modal-content"><h3>NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:8px;border-radius:12px;margin:8px 0;text-align:center;font-size:11px;">TOTAL: R$ 0,00 | Já Pago: R$ 0,00 | Saldo: R$ 0,00</div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01"><label>VALOR PAGO (MANDIOCA)</label><input type="number" id="pagamentoValor" step="0.01"><label>ORIGEM</label><select id="pagamentoOrigem"><option value="">Selecione</option><option>Sicred PJ</option><option>Sicred Agro</option><option>Brasil PJ</option><option>Brasil PF</option><option>Bradesco</option></select><label>DESTINATÁRIO</label><input type="text" id="pagamentoDestinatario" placeholder="Quem recebeu"><label>OBSERVAÇÃO</label><input type="text" id="pagamentoObs" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
+<div id="modalPagamento" class="modal"><div class="modal-content"><h3>NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:8px;border-radius:12px;margin:8px 0;text-align:center;font-size:11px;">TOTAL: R$ 0,00 | Já Pago: R$ 0,00 | Saldo: R$ 0,00</div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01"><label>VALOR PAGO (MANDIOCA)</label><input type="number" id="pagamentoValor" step="0.01"><label>ORIGEM</label><select id="pagamentoOrigem"><option value="">Selecione</option><option>Sicred PJ</option><option>Sicred Agro</option><option>Brasil PJ</option><option>Brasil PF</option><option>Bradesco</option><option value="Espécie">💰 Espécie</option></select><label>DESTINATÁRIO</label><input type="text" id="pagamentoDestinatario" placeholder="Quem recebeu"><label>OBSERVAÇÃO</label><input type="text" id="pagamentoObs" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
 
 <div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>ESTOQUE MÍNIMO</label><input type="number" id="produtoEstoqueMinimo" step="0.001"><label>CUSTO OPERACIONAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
 
@@ -710,7 +759,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence);
 
-// Coleções
 const cadastrosCol = collection(db, "cadastros");
 const lancamentosCol = collection(db, "lancamentos");
 const pagamentosCol = collection(db, "pagamentos");
@@ -732,6 +780,7 @@ let produtoFiltroTexto = '';
 const ITENS_POR_PAGINA = 20;
 let paginaCadastros = 1, paginaLancamentos = 1, paginaPagamentos = 1, paginaProdutos = 1, paginaRocas = 1, paginaEntradasRoca = 1, paginaDespesasRoca = 1, paginaPrestacoes = 1, paginaHistorico = 1, paginaCustosIndiretos = 1;
 let historicoSelecionados = new Set();
+let pedidoConfirmado = false;
 
 function formatarMoeda(v) { return (v || 0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
 function formatarNumero(v) { return (v || 0).toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -762,7 +811,14 @@ function getStatusLancamento(lanc) {
     return 'PENDENTE';
 }
 
+function fornecedorEstaQuitado(fornecedor) {
+    const lancsFornecedor = lancamentos.filter(l => l.fornecedor === fornecedor);
+    if (lancsFornecedor.length === 0) return true;
+    return lancsFornecedor.every(l => getStatusLancamento(l) === 'PAGO TOTAL');
+}
+
 function calcularSaldoFornecedor(fornecedor) {
+    if (fornecedorEstaQuitado(fornecedor)) return 0;
     const lancsFornecedor = lancamentos.filter(l => l.fornecedor === fornecedor);
     let totalDevido = lancsFornecedor.reduce((sum, l) => sum + (l.totalBruto || 0), 0);
     let totalPago = 0;
@@ -906,6 +962,7 @@ function atualizarRodape() {
     document.getElementById('rodapeLucro').innerText = formatarMoeda(vendasMes - comprasMes);
 }
 
+// ==================== CADASTROS ====================
 window.limparFormularioCadastro = () => {
     document.getElementById('editandoCadastroId').value = '';
     document.getElementById('cadastroNome').value = '';
@@ -1042,6 +1099,7 @@ function atualizarSelectHistorico() {
     if(sel) sel.innerHTML = '<option value="">Todos os Produtos</option>' + produtos.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
 }
 
+// ==================== COMPRA DE MANDIOCA ====================
 window.abrirModalLancamento = () => {
     document.getElementById('lancamentoId').value = '';
     document.getElementById('lancamentoData').value = new Date().toISOString().split('T')[0];
@@ -1122,6 +1180,7 @@ function atualizarTelaCompra() {
     const di = document.getElementById('dataInicioCompra').value;
     const df = document.getElementById('dataFimCompra').value;
     const ffl = document.getElementById('filtroFornecedorLancamentos')?.value || '';
+    const fMotorista = document.getElementById('filtroMotorista')?.value.toLowerCase() || '';
     const fsl = document.getElementById('filtroStatusLancamentos')?.value || '';
     
     let lancFiltrados = lancamentos.filter(l => {
@@ -1129,7 +1188,8 @@ function atualizarTelaCompra() {
         const ini = di ? new Date(di).getTime() : -Infinity;
         const fim = df ? new Date(df).getTime() : Infinity;
         const fo = !ffl || l.fornecedor === ffl;
-        return fo && dl >= ini && dl <= fim;
+        const fm = !fMotorista || (l.motorista || '').toLowerCase().includes(fMotorista);
+        return fo && fm && dl >= ini && dl <= fim;
     });
     if(fsl) lancFiltrados = lancFiltrados.filter(l => getStatusLancamento(l) === fsl);
     lancFiltrados.sort((a,b) => new Date(b.data) - new Date(a.data));
@@ -1257,7 +1317,8 @@ function atualizarTelaCompra() {
             rt.insertCell(0).innerText = 'TOTAIS';
             rt.insertCell(1).innerText = '';
             rt.insertCell(2).innerText = '';
-            rt.insertCell(3).innerHTML = formatarMoeda(tpt);
+            // TOTALIZADOR DA COLUNA TOTAL REMOVIDO
+            // rt.insertCell(3).innerHTML = formatarMoeda(tpt);  // REMOVIDO
             rt.insertCell(4).innerHTML = formatarMoeda(tft);
             rt.insertCell(5).innerHTML = formatarMoeda(tat);
             rt.insertCell(6).innerHTML = formatarMoeda(tpgt);
@@ -1359,6 +1420,7 @@ document.getElementById('btnLimparFiltrosCompra').onclick = () => {
     document.getElementById('dataInicioCompra').value = '';
     document.getElementById('dataFimCompra').value = '';
     document.getElementById('filtroFornecedorLancamentos').value = '';
+    document.getElementById('filtroMotorista').value = '';
     document.getElementById('filtroStatusLancamentos').value = '';
     paginaLancamentos = 1; paginaPagamentos = 1;
     atualizarTelaCompra();
@@ -1366,10 +1428,12 @@ document.getElementById('btnLimparFiltrosCompra').onclick = () => {
 document.getElementById('btnNovoLancamento').onclick = () => window.abrirModalLancamento();
 document.getElementById('btnNovoPagamento').onclick = () => window.abrirModalPagamento();
 
+// PDF
 document.getElementById('btnGerarPDF').onclick = () => {
     const dataInicio = document.getElementById('dataInicioCompra').value;
     const dataFim = document.getElementById('dataFimCompra').value;
     const filtroFornecedor = document.getElementById('filtroFornecedorLancamentos')?.value || '';
+    const filtroMotorista = document.getElementById('filtroMotorista')?.value || '';
     const filtroStatus = document.getElementById('filtroStatusLancamentos')?.value || '';
     
     let lancFiltrados = lancamentos.filter(l => {
@@ -1377,7 +1441,8 @@ document.getElementById('btnGerarPDF').onclick = () => {
         const ini = dataInicio ? new Date(dataInicio).getTime() : -Infinity;
         const fim = dataFim ? new Date(dataFim).getTime() : Infinity;
         const fo = !filtroFornecedor || l.fornecedor === filtroFornecedor;
-        return fo && dl >= ini && dl <= fim;
+        const fm = !filtroMotorista || (l.motorista || '').toLowerCase().includes(filtroMotorista.toLowerCase());
+        return fo && fm && dl >= ini && dl <= fim;
     });
     if(filtroStatus) lancFiltrados = lancFiltrados.filter(l => getStatusLancamento(l) === filtroStatus);
     lancFiltrados.sort((a,b) => new Date(a.data) - new Date(b.data));
@@ -1399,21 +1464,20 @@ document.getElementById('btnGerarPDF').onclick = () => {
     const totalArrancacao = pagFiltrados.reduce((a,p) => a + (p.arrancacao || 0), 0);
     const totalPagoMandioca = pagFiltrados.reduce((a,p) => a + (p.valor || 0), 0);
     const totalPagoGeral = pagFiltrados.reduce((a,p) => a + calcularTotalPagoPagamento(p), 0);
-    const saldoPagar = totalBruto - totalPagoGeral;
     
-    let tabelaLancamentos = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%; font-size:10px;"><thead><tr style="background:#e0e0e0;"><th>DATA</th><th>FORNECEDOR</th><th>RENDA</th><th>QTD CX</th><th>VALOR CAIXA</th><th>VL TONELADA</th><th>PESO</th><th>TOTAL BRUTO</th><th>STATUS</th></thead><tbody>';
+    let tabelaLancamentos = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%; font-size:10px;"><thead><tr style="background:#e0e0e0;"><th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th>RENDA</th><th>QTD CX</th><th>VALOR CAIXA</th><th>VL TONELADA</th><th>PESO</th><th>TOTAL BRUTO</th><th>STATUS</th></thead><tbody>';
     for(const l of lancFiltrados) {
         const st = getStatusLancamento(l);
-        tabelaLancamentos += `<tr><td align="center">${formatarData(l.data)}</td><td>${l.fornecedor || ''}</td><td align="right">${formatarNumero(l.renda || 0)}</td><td align="right">${formatarNumeroRedondo(l.qtdCx || 0)}</td><td align="right">${formatarMoeda(l.valorCaixa || 0)}</td><td align="right">${formatarNumeroInteiro(l.vlTonelada || 0)}</td><td align="right">${formatarNumero(l.peso || 0)}</td><td align="right">${formatarMoeda(l.totalBruto || 0)}</td><td align="center">${st}</td></tr>`;
+        tabelaLancamentos += `<tr><td align="center">${formatarData(l.data)}</td><td>${l.fornecedor || ''}</td><td>${l.motorista || ''}</td><td align="right">${formatarNumero(l.renda || 0)}</td><td align="right">${formatarNumeroRedondo(l.qtdCx || 0)}</td><td align="right">${formatarMoeda(l.valorCaixa || 0)}</td><td align="right">${formatarNumeroInteiro(l.vlTonelada || 0)}</td><td align="right">${formatarNumero(l.peso || 0)}</td><td align="right">${formatarMoeda(l.totalBruto || 0)}</td><td align="center">${st}</td></tr>`;
     }
-    tabelaLancamentos += '<tr style="font-weight:bold; background:#f5f5f5;"><td align="right" colspan="3">TOTAIS</td><td align="right">'+formatarNumeroRedondo(totalQtdCx)+'</td><td align="right"></td><td align="right"></td><td align="right">'+formatarNumero(totalPeso)+'</td><td align="right">'+formatarMoeda(totalBruto)+'</td><td align="right"></td></tr></tbody></table>';
+    tabelaLancamentos += '<tr style="font-weight:bold; background:#f5f5f5;"><td align="right" colspan="4">TOTAIS</td><td align="right">'+formatarNumeroRedondo(totalQtdCx)+'</td><td align="right"></td><td align="right"></td><td align="right">'+formatarNumero(totalPeso)+'</td><td align="right">'+formatarMoeda(totalBruto)+'</td><td align="right"></td></tr></tbody></table>';
     
-    let tabelaPagamentos = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%; font-size:10px; margin-top:25px;"><thead><tr style="background:#e0e0e0;"><th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th>FRETE</th><th>ARRANCAÇÃO</th><th>VALOR PAGO</th><th>TOTAL PAGO</th><th>ORIGEM</th></thead><tbody>';
+    let tabelaPagamentos = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%; font-size:10px; margin-top:25px;"><thead><tr style="background:#e0e0e0;"><th>DATA</th><th>PERÍODO</th><th>FRETE</th><th>ARRANCAÇÃO</th><th>VALOR PAGO</th><th>TOTAL PAGO</th><th>ORIGEM</th><th>DESTINATÁRIO</th></thead><tbody>';
     for(const p of pagFiltrados) {
         const totalPago = calcularTotalPagoPagamento(p);
-        tabelaPagamentos += `<tr><td align="center">${formatarData(p.data)}</td><td>${p.fornecedor || ''}</td><td align="center">${formatarData(p.periodoInicio)} → ${formatarData(p.periodoFim)}</td><td align="right">${formatarMoeda(p.frete || 0)}</td><td align="right">${formatarMoeda(p.arrancacao || 0)}</td><td align="right">${formatarMoeda(p.valor || 0)}</td><td align="right">${formatarMoeda(totalPago)}</td><td align="center">${p.origem || '-'}</td></tr>`;
+        tabelaPagamentos += `<tr><td align="center">${formatarData(p.data)}</td><td align="center">${formatarData(p.periodoInicio)} → ${formatarData(p.periodoFim)}</td><td align="right">${formatarMoeda(p.frete || 0)}</td><td align="right">${formatarMoeda(p.arrancacao || 0)}</td><td align="right">${formatarMoeda(p.valor || 0)}</td><td align="right">${formatarMoeda(totalPago)}</td><td align="center">${p.origem || '-'}</td><td align="center">${p.destinatario || '-'}</td></tr>`;
     }
-    tabelaPagamentos += '<tr style="font-weight:bold; background:#f5f5f5;"><td align="right" colspan="3">TOTAIS</td><td align="right">'+formatarMoeda(totalFrete)+'</td><td align="right">'+formatarMoeda(totalArrancacao)+'</td><td align="right">'+formatarMoeda(totalPagoMandioca)+'</td><td align="right">'+formatarMoeda(totalPagoGeral)+'</td><td align="right"></td></tr></tbody></table>';
+    tabelaPagamentos += '<tr style="font-weight:bold; background:#f5f5f5;"><td align="right" colspan="2">TOTAIS</td><td align="right">'+formatarMoeda(totalFrete)+'</td><td align="right">'+formatarMoeda(totalArrancacao)+'</td><td align="right">'+formatarMoeda(totalPagoMandioca)+'</td><td align="right">'+formatarMoeda(totalPagoGeral)+'</td><td align="right"></td><td align="right"></td></tr></tbody></table>';
     
     const totalLiquido = totalBruto - totalFrete - totalArrancacao;
     const pendente = totalLiquido - totalPagoMandioca;
@@ -1430,7 +1494,7 @@ document.getElementById('btnGerarPDF').onclick = () => {
     win.document.write(`<!DOCTYPE html><html><head><title>Relatório de Compras - Viana Farinha</title><meta charset="UTF-8"><style>body{font-family:Arial;padding:20px} h1{text-align:center} .periodo{text-align:center;margin-bottom:20px} table{font-size:10px} th{background:#e0e0e0}</style></head><body>
         <h1>VIANA FARINHA</h1><div style="text-align:center">PEDRO R V DA SILVA LTDA - ME<br>CNPJ: 09.097.608/0001-50</div>
         <h2 style="text-align:center">RELATÓRIO DE COMPRAS</h2>
-        <div class="periodo">Período: ${dataInicio ? formatarData(dataInicio) : 'Início'} até ${dataFim ? formatarData(dataFim) : 'Hoje'}${filtroFornecedor ? ' | Fornecedor: '+filtroFornecedor : ''}${filtroStatus ? ' | Status: '+filtroStatus : ''}</div>
+        <div class="periodo">Período: ${dataInicio ? formatarData(dataInicio) : 'Início'} até ${dataFim ? formatarData(dataFim) : 'Hoje'}${filtroFornecedor ? ' | Fornecedor: '+filtroFornecedor : ''}${filtroMotorista ? ' | Motorista: '+filtroMotorista : ''}${filtroStatus ? ' | Status: '+filtroStatus : ''}</div>
         <h3>LANÇAMENTOS DE COMPRA</h3>${tabelaLancamentos}
         <h3>PAGAMENTOS REALIZADOS</h3>${tabelaPagamentos}
         ${resumoFinanceiro}
@@ -1440,6 +1504,7 @@ document.getElementById('btnGerarPDF').onclick = () => {
     win.print();
 };
 
+// ==================== ESTOQUE ====================
 window.filtrarProdutos = () => { produtoFiltroTexto = document.getElementById('filtroBuscaProduto').value.toLowerCase(); paginaProdutos = 1; renderizarProdutos(); };
 window.limparFiltroProdutos = () => { document.getElementById('filtroBuscaProduto').value = ''; produtoFiltroTexto = ''; paginaProdutos = 1; renderizarProdutos(); };
 
@@ -1624,6 +1689,7 @@ window.limparHistoricoSelecionados = async () => {
     }
 };
 
+// ==================== PEDIDOS ====================
 window.carregarDadosCliente = () => {
     const sel = document.getElementById('pedidoCliente');
     const opt = sel.options[sel.selectedIndex];
@@ -1656,6 +1722,7 @@ window.confirmarItem = (btn) => {
     renderizarItens();
     div.remove();
     calcularTotais();
+    pedidoConfirmado = false;
 };
 
 function renderizarItens() {
@@ -1668,14 +1735,14 @@ function renderizarItens() {
     container.innerHTML = `
         <div style="background:#f8fafc;border-radius:16px;overflow:hidden;margin-top:10px;">
             <table style="width:100%;border-collapse:collapse;">
-                <thead><tr style="background:#1e5631;color:white;"><th style="padding:10px;">PRODUTO</th><th style="width:80px;padding:10px;text-align:center;">QTD</th><th style="width:120px;padding:10px;text-align:right;">PREÇO UNIT</th><th style="width:130px;padding:10px;text-align:right;">SUBTOTAL</th><th style="width:60px;padding:10px;text-align:center;"></th> </table></thead>
-                <tbody>${itensPedido.map((item, idx) => `<tr><td style="padding:10px;font-weight:600;">${item.produtoNome}<td style="padding:10px;text-align:center;">${formatarNumero(item.qtd)}<td style="padding:10px;text-align:right;">${formatarMoeda(item.valorUnitario)}<td style="padding:10px;text-align:right;">${formatarMoeda(item.subtotal)}<td style="padding:10px;text-align:center;"><button class="btn-acao btn-excluir" onclick="removerItem(${idx})" style="background:none;border:none;cursor:pointer;font-size:16px;color:#ef4444;">🗑️</button>`).join('')}</tbody>
+                <thead><tr style="background:#1e5631;color:white;"><th style="padding:12px 10px;">PRODUTO</th><th style="width:80px;padding:12px 10px;text-align:center;">QTD</th><th style="width:120px;padding:12px 10px;text-align:right;">PREÇO UNIT</th><th style="width:130px;padding:12px 10px;text-align:right;">SUBTOTAL</th><th style="width:60px;padding:12px 10px;text-align:center;"></th>  </tr></thead>
+                <tbody>${itensPedido.map((item, idx) => `<tr><td style="padding:10px;font-weight:600;">${item.produtoNome}</td><td style="padding:10px;text-align:center;">${formatarNumero(item.qtd)}</td><td style="padding:10px;text-align:right;">${formatarMoeda(item.valorUnitario)}</td><td style="padding:10px;text-align:right;">${formatarMoeda(item.subtotal)}</td><td style="padding:10px;text-align:center;"><button class="btn-acao btn-excluir" onclick="removerItem(${idx})" style="background:none;border:none;cursor:pointer;font-size:16px;color:#ef4444;">🗑️</button></td></tr>`).join('')}</tbody>
             </table>
         </div>
     `;
 }
 
-window.removerItem = (idx) => { itensPedido.splice(idx,1); renderizarItens(); calcularTotais(); };
+window.removerItem = (idx) => { itensPedido.splice(idx,1); renderizarItens(); calcularTotais(); pedidoConfirmado = false; };
 function calcularTotais() {
     const vt = itensPedido.reduce((a,i) => a + i.subtotal, 0);
     const desc = parseFloat(document.getElementById('pedidoDesconto').value) || 0;
@@ -1709,18 +1776,37 @@ window.limparPedido = () => {
     document.getElementById('pedidoEmail').value = '';
     calcularTotais();
     atualizarSelectsProdutos();
+    pedidoConfirmado = false;
     mostrarFeedback('Formulário limpo!');
+};
+
+window.confirmarPedido = () => {
+    const cli = document.getElementById('pedidoCliente').value;
+    if(!cli) { alert('Selecione um cliente!'); return; }
+    if(itensPedido.length === 0) { alert('Adicione pelo menos um item!'); return; }
+    pedidoConfirmado = true;
+    mostrarFeedback('✅ Pedido confirmado! Agora você pode gerar ou imprimir.');
+};
+
+window.gerarPedidoFinal = async () => {
+    if(!pedidoConfirmado) { alert('⚠️ Confirme o lançamento primeiro clicando em "CONFIRMAR LANÇAMENTO"!'); return; }
+    await gerarPedido();
+};
+
+window.imprimirPedidoFinal = () => {
+    if(!pedidoConfirmado) { alert('⚠️ Confirme o lançamento primeiro clicando em "CONFIRMAR LANÇAMENTO"!'); return; }
+    imprimirPedidoVisual();
 };
 
 function gerarHtmlImpressao(ped) {
     const pt = (ped.itens || []).reduce((a, i) => a + (i.qtd * 50), 0);
     let itensHtml = '';
     for(let i of ped.itens) {
-        itensHtml += `<tr><td style="border:1px solid #000;padding:8px;">${i.produtoNome}<td style="border:1px solid #000;padding:8px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:8px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:8px;text-align:right;">${formatarMoeda(i.subtotal)}`;
+        itensHtml += `<tr><td style="border:1px solid #000;padding:8px;">${i.produtoNome}</td><td style="border:1px solid #000;padding:8px;text-align:center;">${formatarNumero(i.qtd)}</td><td style="border:1px solid #000;padding:8px;text-align:right;">${formatarMoeda(i.valorUnitario)}</td><td style="border:1px solid #000;padding:8px;text-align:right;">${formatarMoeda(i.subtotal)}</td></tr>`;
     }
     const vendedorNome = ped.vendedor ? ped.vendedor.split('|')[0] : 'Pedro R V da Silva Eirelli';
     const vendedorCnpj = ped.vendedor ? ped.vendedor.split('|')[1] || '09.097.608/0001-50' : '09.097.608/0001-50';
-    return `<!DOCTYPE html><html><head><title>Pedido ${ped.numero || 'NOVO'}</title><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial;background:white;padding:20px;}@page{size:A4;margin:1.5cm;}.header{text-align:center;margin-bottom:20px;}.header h1{font-size:18px;}.vendedor{font-size:11px;}.cnpj{font-size:9px;}.info-table{width:100%;border-collapse:collapse;margin:12px 0;border:1px solid #000;}.info-table td{border:1px solid #000;padding:8px;font-size:11px;}.info-label{font-weight:bold;width:100px;background:#f5f5f5;}.itens-table{width:100%;border-collapse:collapse;margin:15px 0;}.itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;}.itens-table td{border:1px solid #000;padding:6px;}.totals-table{width:100%;margin-top:15px;border-collapse:collapse;}.totals-table td{padding:5px 8px;}.signature{margin-top:30px;text-align:center;border-top:1px dashed #999;padding-top:15px;}.footer{margin-top:20px;text-align:center;font-size:8px;color:#666;}.print-buttons{text-align:center;margin-top:15px;padding:10px;border-top:1px solid #ccc;}.btn-print{background:#1e5631;color:white;padding:6px 15px;margin:0 8px;border:none;border-radius:4px;cursor:pointer;}.btn-cancel{background:#dc2626;color:white;padding:6px 15px;margin:0 8px;border:none;border-radius:4px;cursor:pointer;}@media print{.print-buttons{display:none;}}</style></head><body><div class="container"><div class="header"><h1>VIANA FARINHA</h1><div class="vendedor">${vendedorNome}</div><div class="cnpj">CNPJ: ${vendedorCnpj}</div><div class="titulo-pedido" style="font-size:14px;font-weight:bold;text-align:center;margin:10px 0;padding-bottom:5px;border-bottom:1px solid #000;">PEDIDO DE VENDA</div></div><table class="info-table"><tr><td class="info-label">DATA:</td><td>${formatarData(ped.data)}</td><td class="info-label">CLIENTE:</td><td><strong>${ped.cliente}</strong></td></tr><tr><td class="info-label">PEDIDO Nº:</td><td>${ped.numero || 'NOVO'}</td><td class="info-label">CONDIÇÃO:</td><td>${ped.condicao || 'Espécie'}</td></tr></table><table class="itens-table"><thead><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></thead><tbody>${itensHtml || '<tr><td colspan="4" style="text-align:center;">Nenhum item</td>'}</tbody></table><table class="totals-table"><tr><td class="label">TOTAL:</td><td class="value">${formatarMoeda(ped.valorTotal)}</td></tr><tr><td class="label">DESCONTO:</td><td class="value">${formatarMoeda(ped.desconto)}</td></tr><tr><td class="label"><strong>VALOR FINAL:</strong></td><td class="value"><strong>${formatarMoeda(ped.valorFinal)}</strong></td></tr><td><td class="label">VALOR PAGO:</td><td class="value">${formatarMoeda(ped.totalPago)}</td></tr><tr><td class="label">SALDO DEVEDOR:</td><td class="value">${formatarMoeda(ped.liquido)}</td></tr><tr><td class="label">PESO TOTAL:</td><td class="value">${formatarNumero(pt)} KG</td></tr></table><div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div><div class="footer">Documento emitido por sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}</div><div class="print-buttons"><button class="btn-print" onclick="window.print()">IMPRIMIR</button><button class="btn-cancel" onclick="window.close()">CANCELAR</button></div></div></body></html>`;
+    return `<!DOCTYPE html><html><head><title>Pedido ${ped.numero || 'NOVO'}</title><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial;background:white;padding:20px;}@page{size:A4;margin:1.5cm;}.header{text-align:center;margin-bottom:20px;}.header h1{font-size:18px;}.vendedor{font-size:11px;}.cnpj{font-size:9px;}.info-table{width:100%;border-collapse:collapse;margin:12px 0;border:1px solid #000;}.info-table td{border:1px solid #000;padding:8px;font-size:11px;}.info-label{font-weight:bold;width:100px;background:#f5f5f5;}.itens-table{width:100%;border-collapse:collapse;margin:15px 0;}.itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;}.itens-table td{border:1px solid #000;padding:6px;}.totals-table{width:100%;margin-top:15px;border-collapse:collapse;}.totals-table td{padding:5px 8px;}.signature{margin-top:30px;text-align:center;border-top:1px dashed #999;padding-top:15px;}.footer{margin-top:20px;text-align:center;font-size:8px;color:#666;}.print-buttons{text-align:center;margin-top:15px;padding:10px;border-top:1px solid #ccc;}.btn-print{background:#1e5631;color:white;padding:6px 15px;margin:0 8px;border:none;border-radius:4px;cursor:pointer;}.btn-cancel{background:#dc2626;color:white;padding:6px 15px;margin:0 8px;border:none;border-radius:4px;cursor:pointer;}@media print{.print-buttons{display:none;}}</style></head><body><div class="container"><div class="header"><h1>VIANA FARINHA</h1><div class="vendedor">${vendedorNome}</div><div class="cnpj">CNPJ: ${vendedorCnpj}</div><div class="titulo-pedido" style="font-size:14px;font-weight:bold;text-align:center;margin:10px 0;padding-bottom:5px;border-bottom:1px solid #000;">PEDIDO DE VENDA</div></div><table class="info-table"><tr><td class="info-label">DATA:</td><td>${formatarData(ped.data)}</td><td class="info-label">CLIENTE:</td><td><strong>${ped.cliente}</strong></td></tr><tr><td class="info-label">PEDIDO Nº:</td><td>${ped.numero || 'NOVO'}</td><td class="info-label">CONDIÇÃO:</td><td>${ped.condicao || 'Espécie'}</td></tr></table><table class="itens-table"><thead><tr><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></tr></thead><tbody>${itensHtml || '<tr><td colspan="4" style="text-align:center;">Nenhum item</td></tr>'}</tbody></table><table class="totals-table"><tr><td class="label">TOTAL:</td><td class="value">${formatarMoeda(ped.valorTotal)}</td></tr><tr><td class="label">DESCONTO:</td><td class="value">${formatarMoeda(ped.desconto)}</td></tr><tr><td class="label"><strong>VALOR FINAL:</strong></td><td class="value"><strong>${formatarMoeda(ped.valorFinal)}</strong></td></tr><tr><td class="label">VALOR PAGO:</td><td class="value">${formatarMoeda(ped.totalPago)}</td></tr><tr><td class="label">SALDO DEVEDOR:</td><td class="value">${formatarMoeda(ped.liquido)}</td></tr><tr><td class="label">PESO TOTAL:</td><td class="value">${formatarNumero(pt)} KG</td></tr></table><div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div><div class="footer">Documento emitido por sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}</div><div class="print-buttons"><button class="btn-print" onclick="window.print()">IMPRIMIR</button><button class="btn-cancel" onclick="window.close()">CANCELAR</button></div></div></body></html>`;
 }
 
 window.imprimirPedidoVisual = () => {
@@ -1777,7 +1863,12 @@ window.gerarPedido = async () => {
     limparPedido();
     renderizarProdutos();
     renderizarPedidosAgrupados();
+    pedidoConfirmado = false;
 };
+
+document.getElementById('btnConfirmarPedido').onclick = () => window.confirmarPedido();
+document.getElementById('btnGerarPedidoAcao').onclick = () => window.gerarPedidoFinal();
+document.getElementById('btnImprimirPedido').onclick = () => window.imprimirPedidoFinal();
 
 window.abrirPagamentoPedido = (pid) => {
     const ped = pedidos.find(p => p.id === pid);
@@ -1889,9 +1980,9 @@ window.visualizarPedido = (num) => {
     const ped = pedidos.find(p => p.numero === num);
     if(ped) {
         const pago = pagamentosPedidos.filter(pp => pp.pedidoNumero === num).reduce((a,pp) => a + (pp.valor || 0), 0);
-        let html = `<h3>Pedido ${ped.numero}</h3><p>Cliente: ${ped.cliente}</p><p>Data: ${formatarData(ped.data)}</p><p>Valor Final: ${formatarMoeda(ped.valorFinal)} | Pago: ${formatarMoeda(pago)} | Saldo: ${formatarMoeda((ped.valorFinal || 0) - pago)}</p><table border="1" style="border-collapse:collapse;width:100%"><thead><th>Produto</th><th>Qtd</th><th>Valor Unit</th><th>Subtotal</th></thead><tbody>`;
+        let html = `<h3>Pedido ${ped.numero}</h3><p>Cliente: ${ped.cliente}</p><p>Data: ${formatarData(ped.data)}</p><p>Valor Final: ${formatarMoeda(ped.valorFinal)} | Pago: ${formatarMoeda(pago)} | Saldo: ${formatarMoeda((ped.valorFinal || 0) - pago)}</p><table border="1" style="border-collapse:collapse;width:100%"><thead><tr><th>Produto</th><th>Qtd</th><th>Valor Unit</th><th>Subtotal</th></tr></thead><tbody>`;
         (ped.itens || []).forEach(i => html += `<tr><td style="font-weight:600;">${i.produtoNome}<td align="right">${formatarNumero(i.qtd)}<td align="right">${formatarMoeda(i.valorUnitario)}<td align="right">${formatarMoeda(i.subtotal)}`);
-        html += `</tbody></table>`;
+        html += `</tbody></tr>`;
         document.getElementById('detalhesPedido').innerHTML = html;
         document.getElementById('modalVisualizarPedido').style.display = 'flex';
     }
@@ -1972,6 +2063,7 @@ document.getElementById('btnLimparFiltrosPedidos').onclick = () => {
     renderizarPedidosAgrupados();
 };
 
+// ==================== ROÇAS ====================
 function renderizarRocasLista() {
     let filtradas = [...rocas];
     const total = filtradas.length;
@@ -2102,6 +2194,7 @@ document.getElementById('btnNovaPrestacao').onclick = () => { document.getElemen
 document.getElementById('btnAtualizarResumo').onclick = () => { paginaPrestacoes = 1; renderizarPrestacoes(); renderizarResumoCompleto(); };
 document.getElementById('btnExportarResumo').onclick = () => mostrarFeedback('Exportado!');
 
+// ==================== DRE ====================
 function atualizarDRE() {
     const ma = document.getElementById('dreMes')?.value || '2026-05';
     const [a,m] = ma.split('-');
