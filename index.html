@@ -142,6 +142,28 @@
         
         .pedido-actions-bar { display: flex; justify-content: flex-end; gap: 12px; margin: 16px 0; padding-top: 12px; border-top: 1px solid #e2e8f0; }
         
+        /* CORREÇÃO 3: Cards de resumo em pedidos */
+        .resumo-pedidos-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+        .resumo-pedido-card {
+            background: linear-gradient(145deg, #1e5631, #2d6a4f);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .resumo-pedido-card.total { background: linear-gradient(145deg, #1e5631, #2d6a4f); }
+        .resumo-pedido-card.pago { background: linear-gradient(145deg, #059669, #047857); }
+        .resumo-pedido-card.saldo { background: linear-gradient(145deg, #d97706, #b45309); }
+        .resumo-pedido-card h4 { font-size: 11px; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .resumo-pedido-card .valor { font-size: 22px; font-weight: 800; }
+        
         @media (max-width: 768px) { 
             body { padding: 12px; padding-bottom: 90px; } 
             .tab-btn { padding: 6px 10px; font-size: 10px; } 
@@ -150,6 +172,7 @@
             .pedido-info-grid { grid-template-columns: 1fr; }
             .pedido-payment-row { grid-template-columns: 1fr; }
             .resumo-pedido { grid-template-columns: 1fr; }
+            .resumo-pedidos-cards { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -340,6 +363,21 @@
             </div>
             <div id="pedidosContainer"></div>
             <div id="paginacaoPedidos" class="paginacao"></div>
+            <!-- CORREÇÃO 3: Cards de resumo em pedidos -->
+            <div class="resumo-pedidos-cards">
+                <div class="resumo-pedido-card total">
+                    <h4>💰 VALOR TOTAL</h4>
+                    <div class="valor" id="resumoPedidosValorTotal">R$ 0,00</div>
+                </div>
+                <div class="resumo-pedido-card pago">
+                    <h4>✅ TOTAL PAGO</h4>
+                    <div class="valor" id="resumoPedidosTotalPago">R$ 0,00</div>
+                </div>
+                <div class="resumo-pedido-card saldo">
+                    <h4>📈 TOTAL RECEBIDO (SALDO)</h4>
+                    <div class="valor" id="resumoPedidosTotalSaldo">R$ 0,00</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -362,6 +400,9 @@
 <div id="modalPagamento" class="modal"><div class="modal-content"><h3>💰 NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:8px;border-radius:12px;margin:8px 0;font-size:11px;"></div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01"><label>VALOR PAGO (MANDIOCA)</label><input type="number" id="pagamentoValor" step="0.01"><label>ORIGEM</label><select id="pagamentoOrigem"><option>Sicred PJ</option><option>Sicred Agro</option><option>Brasil PJ</option><option>Brasil PF</option><option>Bradesco</option><option>Espécie</option></select><label>DESTINATÁRIO</label><input type="text" id="pagamentoDestinatario"><label>OBSERVAÇÃO</label><input type="text" id="pagamentoObs"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
 
 <div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>ESTOQUE MÍNIMO</label><input type="number" id="produtoEstoqueMinimo" step="0.001"><label>CUSTO OPERACIONAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
+
+<!-- CORREÇÃO 1: Modal de Entrada em Estoque -->
+<div id="modalEntradaEstoque" class="modal"><div class="modal-content"><h3>📦 REGISTRAR ENTRADA DE PRODUTO</h3><label>PRODUTO</label><select id="entradaProdutoSelect"><option value="">Selecione um produto</option></select><label>QUANTIDADE</label><input type="number" id="entradaQuantidade" step="0.001" placeholder="Quantidade"><label>DATA</label><input type="date" id="entradaData"><label>OBSERVAÇÃO</label><input type="text" id="entradaObs" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaEstoque()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaEstoque')">CANCELAR</button></div></div></div>
 
 <div id="modalEditarPedido" class="modal"><div class="modal-content"><h3>✏️ EDITAR PEDIDO</h3><input type="hidden" id="editPedidoId"><div id="editPedidoInfo" style="margin-bottom: 16px;"></div><label>DESCONTO (R$)</label><input type="number" id="editPedidoDesconto" step="0.01" oninput="calcularEditPedido()"><label>VALOR PAGO (R$)</label><input type="number" id="editPedidoPago" step="0.01" oninput="calcularEditPedido()"><div id="editPedidoPreview" style="background:#f1f5f9;padding:10px;border-radius:12px;margin:12px 0;"></div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEdicaoPedido()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEditarPedido')">CANCELAR</button></div></div></div>
 
@@ -705,7 +746,7 @@ function atualizarTelaCompra() {
 function mudarPaginaLancamentos(delta){ paginaLancamentos+=delta; atualizarTelaCompra(); }
 window.mudarPaginaLancamentos = mudarPaginaLancamentos;
 
-// PDF - CORES DOS CABEÇALHOS PRETAS (#000000)
+// PDF
 document.getElementById('btnGerarPDF').onclick = () => {
     const di = document.getElementById('dataInicioCompra').value, df = document.getElementById('dataFimCompra').value;
     const ffl = document.getElementById('filtroFornecedorLancamentos')?.value || '';
@@ -779,6 +820,57 @@ function renderizarProdutos() {
 }
 function mudarPaginaProdutos(delta){ paginaProdutos+=delta; renderizarProdutos(); }
 window.mudarPaginaProdutos = mudarPaginaProdutos;
+
+// CORREÇÃO 1: Botão ENTRADA no Estoque - Funcionalidade de entrada
+function atualizarSelectProdutosEstoque() {
+    const select = document.getElementById('entradaProdutoSelect');
+    if(select) {
+        select.innerHTML = '<option value="">Selecione um produto</option>' + 
+            produtos.sort((a,b)=> (a.codigo || '').localeCompare(b.codigo || '')).map(p => `<option value="${p.id}">${p.nome} (${p.codigo || 'SEM COD'}) - Estoque: ${formatarNumero((p.entrada||0)-(p.saidas||0))}</option>`).join('');
+    }
+}
+
+window.abrirModalEntradaEstoque = () => {
+    atualizarSelectProdutosEstoque();
+    document.getElementById('entradaQuantidade').value = '';
+    document.getElementById('entradaData').value = new Date().toISOString().split('T')[0];
+    document.getElementById('entradaObs').value = '';
+    document.getElementById('modalEntradaEstoque').style.display = 'flex';
+};
+
+window.salvarEntradaEstoque = async () => {
+    const produtoId = document.getElementById('entradaProdutoSelect').value;
+    const quantidade = parseFloat(document.getElementById('entradaQuantidade').value) || 0;
+    const data = document.getElementById('entradaData').value;
+    const obs = document.getElementById('entradaObs').value || '';
+    
+    if(!produtoId) { alert('Selecione um produto!'); return; }
+    if(quantidade <= 0) { alert('Informe uma quantidade válida!'); return; }
+    
+    const produto = produtos.find(p => p.id === produtoId);
+    if(!produto) return;
+    
+    const novaEntrada = (produto.entrada || 0) + quantidade;
+    
+    await updateDoc(doc(db, "produtos", produtoId), { entrada: novaEntrada });
+    
+    // Registrar no histórico de movimentação (opcional)
+    await addDoc(historicoPrecosCol, {
+        produtoId: produtoId,
+        data: data,
+        tipo: 'entrada_estoque',
+        valorAnterior: produto.entrada || 0,
+        valorNovo: novaEntrada,
+        obs: obs,
+        quantidade: quantidade
+    });
+    
+    fecharModal('modalEntradaEstoque');
+    mostrarFeedback(`Entrada de ${formatarNumero(quantidade)} ${produto.unidade || 'unidades'} registrada com sucesso!`);
+    await carregarDadosIniciais();
+    renderizarProdutos();
+};
+
 window.abrirModalProduto = () => { document.getElementById('produtoId').value = ''; document.getElementById('produtoNome').value = ''; document.getElementById('produtoTipo').value = 'Farinha'; document.getElementById('produtoUnidade').value = 'Sacas'; document.getElementById('produtoEntrada').value = ''; document.getElementById('produtoValorUnitario').value = ''; document.getElementById('produtoEstoqueMinimo').value = ''; document.getElementById('produtoCustoManual').value = ''; document.getElementById('modalProduto').style.display = 'flex'; };
 window.editarProduto = (id) => { const p = produtos.find(x => x.id === id); if(p) { document.getElementById('produtoId').value = p.id; document.getElementById('produtoNome').value = p.nome; document.getElementById('produtoTipo').value = p.tipo; document.getElementById('produtoUnidade').value = p.unidade; document.getElementById('produtoEntrada').value = p.entrada; document.getElementById('produtoValorUnitario').value = p.valorUnitario; document.getElementById('produtoEstoqueMinimo').value = p.estoqueMinimo; document.getElementById('produtoCustoManual').value = p.custoManual; document.getElementById('modalProduto').style.display = 'flex'; } };
 window.salvarProduto = async () => { 
@@ -820,11 +912,11 @@ window.salvarProduto = async () => {
     mostrarFeedback('Produto salvo!'); 
 };
 window.excluirProduto = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "produtos", id)); };
-window.abrirModalEntradaEstoque = () => { alert('Funcionalidade de entrada em estoque em desenvolvimento. Utilize o botão NOVO PRODUTO para adicionar produtos.'); };
+
 document.getElementById('btnNovoProduto').onclick = () => window.abrirModalProduto();
 document.getElementById('btnEntradaEstoque').onclick = () => window.abrirModalEntradaEstoque();
 
-// HISTÓRICO DE PREÇOS - EXCLUIR SELECIONADO
+// HISTÓRICO DE PREÇOS
 function renderizarHistoricoPrecos() {
     let filtrados = [...historicoPrecos];
     const prodFiltro = document.getElementById('filtroHistoricoProduto')?.value || '';
@@ -975,16 +1067,16 @@ function gerarImpressaoPedido() {
     let itensHtml = ''; itensPedido.forEach(i => { itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; });
     const html = `<!DOCTYPE html><html><head><title>Pedido</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px} @page{size:A4;margin:1.5cm;} .header{text-align:center;margin-bottom:15px;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;} .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} .itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;} .itens-table td{border:1px solid #000;padding:6px;color:#000000} .totals-table{width:100%;margin-top:15px;} .totals-table td{color:#000000} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;} .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}</style></head><body>
         <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA</h3></div>
-        <table class="info-table"><tr><td class="info-label">DATA:</td><td>${formatarData(dt)}</td><td class="info-label">CLIENTE:</td><td style="color:#000000"><strong>${cli}</strong></td></tr>
+        <table class="info-table"><tr><td class="info-label">DATA:</td><td style="color:#000000">${formatarData(dt)}</td><td class="info-label">CLIENTE:</td><td style="color:#000000"><strong>${cli}</strong></td></tr>
         <tr><td class="info-label">CONDIÇÃO:</td><td style="color:#000000">${cond}</td><td class="info-label">PESO TOTAL:</td><td style="color:#000000">${formatarNumero(pt)} KG</td></tr>
-        <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero(qt)} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${gerarNumeroPedido()}</td></tr></table>
+        <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero(qt)} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${gerarNumeroPedido()}</td></tr></tr>
         <div class="resumo-pedido"><strong>RESUMO DO PEDIDO</strong><br>Qtd Total: ${formatarNumero(qt)} | Peso Total: ${formatarNumero(pt)} kg | Valor Total: ${formatarMoeda(vt)}</div>
         <table class="itens-table"><thead><tr style="background:#000;color:#000000;font-weight:bold"><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></thead><tbody>${itensHtml}</tbody></table>
         <table class="totals-table"><tr><td style="color:#000000">TOTAL:</td><td style="color:#000000">${formatarMoeda(vt)}</td></tr>
         <tr><td style="color:#000000">DESCONTO:</td><td style="color:#000000">${formatarMoeda(desc)}</td></tr>
         <tr style="font-weight:bold;"><td style="color:#000000">VALOR FINAL:</td><td style="color:#000000">${formatarMoeda(vf)}</td></tr>
         <tr><td style="color:#000000">VALOR PAGO:</td><td style="color:#000000">${formatarMoeda(tp)}</td></tr>
-        <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(liq)}</td></tr></table>
+        <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(liq)}<td style="color:#000000"></td></tr></table>
         <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
         <div class="footer">Documento emitido por sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}</div>
         </body></html>`;
@@ -1008,19 +1100,53 @@ async function gerarPedido() {
     pedidoConfirmado = false;
 }
 
-// PEDIDOS REALIZADOS - PAGINAÇÃO E TOTAIS
+// CORREÇÃO 2: FILTRO DE PERÍODO EM PEDIDOS - CORREÇÃO DA COMPARAÇÃO DE DATAS
+// CORREÇÃO 3: CARDS DE RESUMO EM PEDIDOS
 function renderizarPedidos() {
-    const di = document.getElementById('filtroPedidosDataInicio').value, df = document.getElementById('filtroPedidosDataFim').value, cliFiltro = document.getElementById('filtroPedidosCliente').value;
-    let pedidosFiltrados = [...pedidos]; 
-    if(di) pedidosFiltrados = pedidosFiltrados.filter(p => p.data >= di); 
-    if(df) pedidosFiltrados = pedidosFiltrados.filter(p => p.data <= df); 
+    const di = document.getElementById('filtroPedidosDataInicio').value;
+    const df = document.getElementById('filtroPedidosDataFim').value;
+    const cliFiltro = document.getElementById('filtroPedidosCliente').value;
+    
+    let pedidosFiltrados = [...pedidos];
+    
+    // CORREÇÃO: Filtro de data corrigido - usando objetos Date para comparação correta
+    if(di) {
+        const dataInicio = new Date(di);
+        dataInicio.setHours(0, 0, 0, 0);
+        pedidosFiltrados = pedidosFiltrados.filter(p => {
+            const dataPedido = new Date(p.data);
+            dataPedido.setHours(0, 0, 0, 0);
+            return dataPedido >= dataInicio;
+        });
+    }
+    if(df) {
+        const dataFim = new Date(df);
+        dataFim.setHours(23, 59, 59, 999);
+        pedidosFiltrados = pedidosFiltrados.filter(p => {
+            const dataPedido = new Date(p.data);
+            dataPedido.setHours(0, 0, 0, 0);
+            return dataPedido <= dataFim;
+        });
+    }
     if(cliFiltro) pedidosFiltrados = pedidosFiltrados.filter(p => p.cliente === cliFiltro);
+    
     pedidosFiltrados.sort((a,b) => new Date(b.data) - new Date(a.data));
     pedidosFiltradosGlobal = pedidosFiltrados;
-    const total = pedidosFiltradosGlobal.length, inicio = (paginaPedidos - 1) * ITENS_POR_PAGINA, paginados = pedidosFiltradosGlobal.slice(inicio, inicio + ITENS_POR_PAGINA);
+    const total = pedidosFiltradosGlobal.length;
+    const inicio = (paginaPedidos - 1) * ITENS_POR_PAGINA;
+    const paginados = pedidosFiltradosGlobal.slice(inicio, inicio + ITENS_POR_PAGINA);
     const container = document.getElementById('pedidosContainer');
-    if(paginados.length === 0) { container.innerHTML = '<div class="card" style="text-align:center;padding:20px;">Nenhum pedido encontrado</div>'; return; }
     
+    if(paginados.length === 0) { 
+        container.innerHTML = '<div class="card" style="text-align:center;padding:20px;">Nenhum pedido encontrado</div>'; 
+        // Atualizar cards com zero
+        document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(0);
+        document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(0);
+        document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(0);
+        return; 
+    }
+    
+    // Totais da página para o rodapé
     let totalValorFinal = 0, totalPago = 0, totalSaldo = 0;
     paginados.forEach(p => {
         const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0);
@@ -1029,6 +1155,21 @@ function renderizarPedidos() {
         totalPago += pagoPedido;
         totalSaldo += saldo;
     });
+    
+    // CORREÇÃO 3: Totais dos CARDS (todos os pedidos filtrados, não apenas da página)
+    let totalGeralValorFinal = 0, totalGeralPago = 0, totalGeralSaldo = 0;
+    pedidosFiltradosGlobal.forEach(p => {
+        const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0);
+        const saldo = (p.valorFinal || 0) - pagoPedido;
+        totalGeralValorFinal += (p.valorFinal || 0);
+        totalGeralPago += pagoPedido;
+        totalGeralSaldo += saldo;
+    });
+    
+    // Atualizar cards de resumo
+    document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(totalGeralValorFinal);
+    document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(totalGeralPago);
+    document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(totalGeralSaldo);
     
     let html = `<div class="pedidos-tabela-wrapper"><table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr style="background:#1e5631;color:white;"><th>NÚMERO</th><th>DATA</th><th>CLIENTE</th><th class="text-right">TOTAL</th><th class="text-right">PAGO</th><th class="text-right">SALDO</th><th>STATUS</th><th class="text-center">AÇÕES</th></thead><tbody>`;
     paginados.forEach(p => { 
@@ -1039,7 +1180,7 @@ function renderizarPedidos() {
         else if(statusText === 'PENDENTE') statusClass = 'status-pendente';
         else if(statusText === 'PARCIAL') statusClass = 'status-parcial';
         else statusClass = 'status-pendente';
-        html += `<tr><td style="color:#000000"><strong>${p.numero}</strong></td><td style="color:#000000">${formatarData(p.data)}</td><td style="color:#000000"><strong>${p.cliente}</strong></td><td class="text-right" style="color:#000000">${formatarMoeda(p.valorFinal)}</td><td class="text-right" style="color:#000000">${formatarMoeda(pagoPedido)}</td><td class="text-right" style="color:${saldo > 0 ? '#dc2626' : '#166534'}">${formatarMoeda(saldo)}</td><td class="text-center"><span class="${statusClass}">${statusText}</span></td><td class="text-center"><button class="btn-acao btn-visualizar" onclick="visualizarPedido('${p.numero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${p.id}')">✏️</button><button class="btn-acao" onclick="reimprimirPedido('${p.numero}')">🖨️</button><button class="btn-acao btn-excluir" onclick="excluirPedido('${p.id}')">🗑️</button></td></tr>`; 
+        html += `<tr><td style="color:#000000"><strong>${p.numero}</strong></td><td style="color:#000000">${formatarData(p.data)}</td><td style="color:#000000"><strong>${p.cliente}</strong></td><td class="text-right" style="color:#000000">${formatarMoeda(p.valorFinal)}</td><td class="text-right" style="color:#000000">${formatarMoeda(pagoPedido)}</td><td class="text-right" style="color:${saldo > 0 ? '#dc2626' : '#166534'}">${formatarMoeda(saldo)}</td><td class="text-center"><span class="${statusClass}">${statusText}</span></td><td class="text-center"><button class="btn-acao btn-visualizar" onclick="visualizarPedido('${p.numero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${p.id}')">✏️</button><button class="btn-acao" onclick="reimprimirPedido('${p.numero}')">🖨️</button><button class="btn-acao btn-excluir" onclick="excluirPedido('${p.id}')">🗑️</button></td>`; 
     });
     html += `</tbody><tfoot><tr style="font-weight:bold;background:#e8f0ea;"><td colspan="3" style="text-align:right;"><strong>TOTAIS DA PÁGINA:</strong></td><td class="text-right"><strong>${formatarMoeda(totalValorFinal)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalSaldo)}</strong></td><td colspan="2"></td></tr></tfoot></table></div>`;
     container.innerHTML = html;
@@ -1048,7 +1189,11 @@ function renderizarPedidos() {
     if(paginas <= 1) { pagDiv.innerHTML = ''; return; }
     pagDiv.innerHTML = `<button ${paginaPedidos <= 1 ? 'disabled' : ''} onclick="mudarPaginaPedidos(-1)">←</button><span>${paginaPedidos} / ${paginas}</span><button ${paginaPedidos >= paginas ? 'disabled' : ''} onclick="mudarPaginaPedidos(1)">→</button>`;
 }
-function mudarPaginaPedidos(delta) { paginaPedidos += delta; renderizarPedidos(); }
+
+function mudarPaginaPedidos(delta) { 
+    paginaPedidos += delta; 
+    renderizarPedidos(); 
+}
 window.mudarPaginaPedidos = mudarPaginaPedidos;
 window.visualizarPedido = (num) => { const p = pedidos.find(p => p.numero === num); if(p) alert(`Pedido ${p.numero}\nCliente: ${p.cliente}\nData: ${formatarData(p.data)}\nTotal: ${formatarMoeda(p.valorFinal)}\nItens: ${p.itens?.length || 0}`); };
 
@@ -1059,7 +1204,7 @@ window.reimprimirPedido = (num) => {
         const vendedorCnpj = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[1]; 
         let itensHtml = ''; 
         (p.itens || []).forEach(i => { 
-            itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td></tr>`; 
+            itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</tr>`; 
         }); 
         const html = `<!DOCTYPE html><html><head><title>Pedido ${p.numero}</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px} @page{size:A4;margin:1.5cm;} .header{text-align:center;margin-bottom:15px;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;color:#000000} .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} .itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;} .itens-table td{border:1px solid #000;padding:6px;color:#000000} .totals-table{width:100%;margin-top:15px;} .totals-table td{color:#000000} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;} .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}</style></head><body>
             <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA - REIMPRESSÃO</h3></div>
@@ -1072,7 +1217,7 @@ window.reimprimirPedido = (num) => {
             <tr><td style="color:#000000">DESCONTO:</td><td style="color:#000000">${formatarMoeda(p.desconto || 0)}</td></tr>
             <tr style="font-weight:bold;"><td style="color:#000000">VALOR FINAL:</td><td style="color:#000000">${formatarMoeda(p.valorFinal)}</td></tr>
             <tr><td style="color:#000000">VALOR PAGO:</td><td style="color:#000000">${formatarMoeda(p.totalPago || 0)}</td></tr>
-            <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(p.liquido || 0)}</td></tr></tr>
+            <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(p.liquido || 0)}</td></tr></table>
             <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
             <div class="footer">Reimpresso em ${new Date().toLocaleString('pt-br')}</div>
             </body></html>`;
