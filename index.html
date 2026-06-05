@@ -142,7 +142,6 @@
         
         .pedido-actions-bar { display: flex; justify-content: flex-end; gap: 12px; margin: 16px 0; padding-top: 12px; border-top: 1px solid #e2e8f0; }
         
-        /* CORREÇÃO 3: Cards de resumo em pedidos */
         .resumo-pedidos-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -363,7 +362,6 @@
             </div>
             <div id="pedidosContainer"></div>
             <div id="paginacaoPedidos" class="paginacao"></div>
-            <!-- CORREÇÃO 3: Cards de resumo em pedidos -->
             <div class="resumo-pedidos-cards">
                 <div class="resumo-pedido-card total">
                     <h4>💰 VALOR TOTAL</h4>
@@ -384,9 +382,9 @@
     <!-- GUIA DRE -->
     <div id="tabDRE" class="tab-pane">
         <div class="card"><div class="filtros-area"><label>Mês/Ano:</label><input type="month" id="dreMes" value="2026-05"><button class="btn-buscar" id="btnAtualizarDRE">ATUALIZAR</button><button class="btn-exportar" id="btnExportarDRE">EXPORTAR</button></div></div>
+        <div class="card"><div class="card-header"><h3>CUSTOS INDIRETOS</h3><button class="btn-novo" id="btnNovoCustoIndireto">LANÇAR CUSTO</button></div><div class="table-wrapper"><table id="tabelaCustosIndiretos"><thead><th>DATA</th><th>DESCRIÇÃO</th><th>VALOR</th><th>AÇÕES</th></thead><tbody id="custosIndiretosBody"></tbody></table></div><div class="paginacao" id="paginacaoCustosIndiretos"></div></div>
         <div class="dre-grid"><div class="dre-box" id="dreEntradasBox"><h4>ENTRADAS (RECEITAS / VENDAS)</h4></div><div class="dre-box" id="dreSaidasBox"><h4>SAÍDAS (CUSTOS E DESPESAS)</h4></div></div>
         <div class="dre-box" id="dreResultBox"><h4>DRE</h4></div>
-        <div class="card"><div class="card-header"><h3>CUSTOS INDIRETOS</h3><button class="btn-novo" id="btnNovoCustoIndireto">LANÇAR CUSTO</button></div><div class="table-wrapper"><table id="tabelaCustosIndiretos"><thead><th>DATA</th><th>DESCRIÇÃO</th><th>VALOR</th><th>AÇÕES</th></thead><tbody id="custosIndiretosBody"></tbody></table></div><div class="paginacao" id="paginacaoCustosIndiretos"></div></div>
         <div class="card"><div id="alertasContainer" style="padding:10px;">Carregando alertas...</div></div>
     </div>
 </div></div>
@@ -401,7 +399,6 @@
 
 <div id="modalProduto" class="modal"><div class="modal-content"><h3>PRODUTO</h3><input type="hidden" id="produtoId"><label>NOME</label><input type="text" id="produtoNome"><label>TIPO</label><select id="produtoTipo"><option>Farinha</option><option>Farofa</option><option>Granel</option></select><label>UNIDADE</label><select id="produtoUnidade"><option>Sacas</option><option>Kg</option></select><label>ENTRADA INICIAL</label><input type="number" id="produtoEntrada" step="0.001"><label>VALOR BASE</label><input type="number" id="produtoValorUnitario" step="0.01"><label>ESTOQUE MÍNIMO</label><input type="number" id="produtoEstoqueMinimo" step="0.001"><label>CUSTO OPERACIONAL</label><input type="number" id="produtoCustoManual" step="0.01"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarProduto()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalProduto')">CANCELAR</button></div></div></div>
 
-<!-- CORREÇÃO 1: Modal de Entrada em Estoque -->
 <div id="modalEntradaEstoque" class="modal"><div class="modal-content"><h3>📦 REGISTRAR ENTRADA DE PRODUTO</h3><label>PRODUTO</label><select id="entradaProdutoSelect"><option value="">Selecione um produto</option></select><label>QUANTIDADE</label><input type="number" id="entradaQuantidade" step="0.001" placeholder="Quantidade"><label>DATA</label><input type="date" id="entradaData"><label>OBSERVAÇÃO</label><input type="text" id="entradaObs" placeholder="Opcional"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEntradaEstoque()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEntradaEstoque')">CANCELAR</button></div></div></div>
 
 <div id="modalEditarPedido" class="modal"><div class="modal-content"><h3>✏️ EDITAR PEDIDO</h3><input type="hidden" id="editPedidoId"><div id="editPedidoInfo" style="margin-bottom: 16px;"></div><label>DESCONTO (R$)</label><input type="number" id="editPedidoDesconto" step="0.01" oninput="calcularEditPedido()"><label>VALOR PAGO (R$)</label><input type="number" id="editPedidoPago" step="0.01" oninput="calcularEditPedido()"><div id="editPedidoPreview" style="background:#f1f5f9;padding:10px;border-radius:12px;margin:12px 0;"></div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarEdicaoPedido()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalEditarPedido')">CANCELAR</button></div></div></div>
@@ -447,7 +444,12 @@ function formatarMoeda(v) { return (v || 0).toLocaleString('pt-br', { style: 'cu
 function formatarNumero(v) { return (v || 0).toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function formatarNumeroInteiro(v) { return (v || 0).toLocaleString('pt-br', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 function formatarNumeroRedondo(v) { return Math.round(v || 0).toLocaleString('pt-br'); }
-function formatarData(data) { return data ? new Date(data).toLocaleDateString('pt-br') : ''; }
+function formatarData(data) { 
+    if (!data) return '';
+    if (data instanceof Date) return data.toLocaleDateString('pt-br');
+    const d = converterDataParaDate(data);
+    return d ? d.toLocaleDateString('pt-br') : '';
+}
 function formatarDataInput(data) { return data ? new Date(data).toISOString().split('T')[0] : ''; }
 function mostrarFeedback(msg) { let fb = document.getElementById('feedback'); fb.innerText = msg; fb.style.display = 'block'; setTimeout(() => fb.style.display = 'none', 3000); }
 function showLoading(show) { document.getElementById('loading').style.display = show ? 'flex' : 'none'; }
@@ -467,6 +469,50 @@ function gerarNumeroPedido() {
     }
     ultimoNumeroPedido++;
     return `PR${ultimoNumeroPedido.toString().padStart(5, '0')}`;
+}
+
+// ==============================================
+// FUNÇÃO CORRIGIDA DE CONVERSÃO DE DATA (VERSÃO MELHORADA)
+// ==============================================
+function converterDataParaDate(dataStr) {
+    if (!dataStr) return null;
+    
+    // Se já for um objeto Date válido
+    if (dataStr instanceof Date && !isNaN(dataStr.getTime())) return dataStr;
+    
+    // Formato ISO yyyy-mm-dd (input date)
+    if (dataStr.includes('-') && dataStr.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const [ano, mes, dia] = dataStr.split('-');
+        // Criar data UTC para evitar timezone
+        const date = new Date(Date.UTC(parseInt(ano), parseInt(mes) - 1, parseInt(dia)));
+        if (!isNaN(date.getTime())) return date;
+    }
+    
+    // Formato brasileiro dd/mm/yyyy
+    if (dataStr.includes('/')) {
+        const partes = dataStr.split('/');
+        if (partes.length === 3) {
+            const dia = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1;
+            const ano = parseInt(partes[2], 10);
+            // Criar data UTC para evitar timezone
+            const date = new Date(Date.UTC(ano, mes, dia));
+            if (!isNaN(date.getTime())) return date;
+        }
+    }
+    
+    // Tentativa genérica
+    const date = new Date(dataStr);
+    return isNaN(date.getTime()) ? null : date;
+}
+
+// Função auxiliar para comparar datas (apenas a parte da data, sem hora)
+function dataParaTimestamp(dataStr) {
+    const data = converterDataParaDate(dataStr);
+    if (!data) return null;
+    // Retorna timestamp do início do dia UTC
+    data.setUTCHours(0, 0, 0, 0);
+    return data.getTime();
 }
 
 window.toggleTabelaCadastros = () => { 
@@ -706,57 +752,224 @@ function mudarPaginaPagamentos(delta) { paginaAtualPagamentos += delta; renderiz
 window.mudarPaginaPagamentos = mudarPaginaPagamentos;
 
 function atualizarTelaCompra() {
-    const di = document.getElementById('dataInicioCompra').value, df = document.getElementById('dataFimCompra').value;
+    const di = document.getElementById('dataInicioCompra').value;
+    const df = document.getElementById('dataFimCompra').value;
     const ffl = document.getElementById('filtroFornecedorLancamentos')?.value || '';
     const fMotorista = document.getElementById('filtroMotoristaSelect')?.value || '';
     const fsl = document.getElementById('filtroStatusLancamentos')?.value || '';
     
-    let lancFiltrados = lancamentos.filter(l => { const dl = new Date(l.data).getTime(); const ini = di ? new Date(di).getTime() : -Infinity; const fim = df ? new Date(df).getTime() : Infinity; const fo = !ffl || l.fornecedor === ffl; const fm = !fMotorista || (l.motorista||'') === fMotorista; return fo && fm && dl >= ini && dl <= fim; });
+    let lancFiltrados = [...lancamentos];
+    
+    // Filtro de data INÍCIO com timestamp UTC
+    if (di) {
+        const timestampInicio = dataParaTimestamp(di);
+        if (timestampInicio !== null) {
+            lancFiltrados = lancFiltrados.filter(l => {
+                const timestampLanc = dataParaTimestamp(l.data);
+                return timestampLanc !== null && timestampLanc >= timestampInicio;
+            });
+        }
+    }
+    
+    // Filtro de data FIM com timestamp UTC
+    if (df) {
+        const timestampFim = dataParaTimestamp(df);
+        if (timestampFim !== null) {
+            lancFiltrados = lancFiltrados.filter(l => {
+                const timestampLanc = dataParaTimestamp(l.data);
+                return timestampLanc !== null && timestampLanc <= timestampFim;
+            });
+        }
+    }
+    
+    if(ffl) lancFiltrados = lancFiltrados.filter(l => l.fornecedor === ffl);
+    if(fMotorista) lancFiltrados = lancFiltrados.filter(l => (l.motorista||'') === fMotorista);
     if(fsl) lancFiltrados = lancFiltrados.filter(l => getStatusLancamento(l) === fsl);
-    lancFiltrados.sort((a,b)=>new Date(b.data)-new Date(a.data));
+    
+    lancFiltrados.sort((a,b)=> {
+        const ta = dataParaTimestamp(a.data);
+        const tb = dataParaTimestamp(b.data);
+        if (ta === null || tb === null) return 0;
+        return tb - ta;
+    });
     const totalLanc = lancFiltrados.length, inicioLanc = (paginaLancamentos-1)*ITENS_POR_PAGINA;
     const lancPaginados = lancFiltrados.slice(inicioLanc, inicioLanc+ITENS_POR_PAGINA);
     
-    let pagFiltrados = pagamentos.filter(p => { const fo = !ffl || p.fornecedor === ffl; const ppi = p.periodoInicio ? new Date(p.periodoInicio).getTime() : 0; const ppf = p.periodoFim ? new Date(p.periodoFim).getTime() : Infinity; const ini = di ? new Date(di).getTime() : -Infinity; const fim = df ? new Date(df).getTime() : Infinity; return fo && ppi >= ini && ppf <= fim; });
-    if(fMotorista) { const fornecedoresCMotorista = lancamentos.filter(l => l.motorista === fMotorista).map(l => l.fornecedor); pagFiltrados = pagFiltrados.filter(p => fornecedoresCMotorista.includes(p.fornecedor)); }
-    pagFiltrados.sort((a,b)=>new Date(b.data)-new Date(a.data));
-    pagamentosFiltradosGlobal = pagFiltrados; paginaAtualPagamentos = 1; renderizarPagamentosPaginados();
+    let pagFiltrados = [...pagamentos];
     
-    const tbody = document.getElementById('lancamentosBody'); tbody.innerHTML = '';
+    if (di) {
+        const timestampInicio = dataParaTimestamp(di);
+        if (timestampInicio !== null) {
+            pagFiltrados = pagFiltrados.filter(p => {
+                if (!p.periodoInicio) return true;
+                const timestampPag = dataParaTimestamp(p.periodoInicio);
+                return timestampPag === null || timestampPag >= timestampInicio;
+            });
+        }
+    }
+    
+    if (df) {
+        const timestampFim = dataParaTimestamp(df);
+        if (timestampFim !== null) {
+            pagFiltrados = pagFiltrados.filter(p => {
+                if (!p.periodoFim) return true;
+                const timestampPag = dataParaTimestamp(p.periodoFim);
+                return timestampPag === null || timestampPag <= timestampFim;
+            });
+        }
+    }
+    
+    if(ffl) pagFiltrados = pagFiltrados.filter(p => p.fornecedor === ffl);
+    
+    if(fMotorista) { 
+        const fornecedoresCMotorista = lancamentos.filter(l => l.motorista === fMotorista).map(l => l.fornecedor); 
+        pagFiltrados = pagFiltrados.filter(p => fornecedoresCMotorista.includes(p.fornecedor)); 
+    }
+    
+    pagFiltrados.sort((a,b)=> {
+        const ta = dataParaTimestamp(a.data);
+        const tb = dataParaTimestamp(b.data);
+        if (ta === null || tb === null) return 0;
+        return tb - ta;
+    });
+    pagamentosFiltradosGlobal = pagFiltrados; 
+    paginaAtualPagamentos = 1; 
+    renderizarPagamentosPaginados();
+    
+    const tbody = document.getElementById('lancamentosBody'); 
+    tbody.innerHTML = '';
     let s1=0,s2=0,peso=0,bruto=0,qcx=0;
-    lancPaginados.forEach(l => { s1+=l.qtdSacos1||0; s2+=l.qtdSacos2||0; peso+=l.peso||0; bruto+=l.totalBruto||0; qcx+=l.qtdCx||0; const st = getStatusLancamento(l); let sc=''; if(st==='PAGO TOTAL') sc='status-quitado'; else if(st==='PAGO PARCIAL') sc='status-parcial'; else sc='status-pendente'; const row = tbody.insertRow(); row.insertCell(0).innerHTML=formatarData(l.data); row.insertCell(1).innerHTML=l.fornecedor||''; row.insertCell(2).innerHTML=l.motorista||''; row.insertCell(3).innerHTML=formatarNumero(l.renda||0); row.insertCell(4).innerHTML=formatarNumero(l.fator||1); row.insertCell(5).innerHTML=formatarNumeroRedondo(l.qtdCx||0); row.insertCell(6).innerHTML=formatarNumero(l.peso||0); row.insertCell(7).innerHTML=formatarNumeroInteiro(l.vlTonelada||0); row.insertCell(8).innerHTML=formatarMoeda(l.totalBruto||0); row.insertCell(9).innerHTML=formatarMoeda(l.valorCaixa||0); row.insertCell(10).innerHTML=l.qtdSacos1||0; row.insertCell(11).innerHTML=(l.qtdSacos2||0).toLocaleString(); row.insertCell(12).innerHTML=`<span class="${sc}">${st}</span>`; row.insertCell(13).innerHTML=`<button class="btn-acao btn-editar" onclick="editarLancamento('${l.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button><button class="btn-acao" onclick="duplicarLancamento('${l.id}')">📋</button>`;
+    
+    lancPaginados.forEach(l => { 
+        s1+=l.qtdSacos1||0; 
+        s2+=l.qtdSacos2||0; 
+        peso+=l.peso||0; 
+        bruto+=l.totalBruto||0; 
+        qcx+=l.qtdCx||0; 
+        const st = getStatusLancamento(l); 
+        let sc=''; 
+        if(st==='PAGO TOTAL') sc='status-quitado'; 
+        else if(st==='PAGO PARCIAL') sc='status-parcial'; 
+        else sc='status-pendente'; 
+        const row = tbody.insertRow(); 
+        row.insertCell(0).innerHTML=formatarData(l.data); 
+        row.insertCell(1).innerHTML=l.fornecedor||''; 
+        row.insertCell(2).innerHTML=l.motorista||''; 
+        row.insertCell(3).innerHTML=formatarNumero(l.renda||0); 
+        row.insertCell(4).innerHTML=formatarNumero(l.fator||1); 
+        row.insertCell(5).innerHTML=formatarNumeroRedondo(l.qtdCx||0); 
+        row.insertCell(6).innerHTML=formatarNumero(l.peso||0); 
+        row.insertCell(7).innerHTML=formatarNumeroInteiro(l.vlTonelada||0); 
+        row.insertCell(8).innerHTML=formatarMoeda(l.totalBruto||0); 
+        row.insertCell(9).innerHTML=formatarMoeda(l.valorCaixa||0); 
+        row.insertCell(10).innerHTML=l.qtdSacos1||0; 
+        row.insertCell(11).innerHTML=(l.qtdSacos2||0).toLocaleString(); 
+        row.insertCell(12).innerHTML=`<span class="${sc}">${st}</span>`; 
+        row.insertCell(13).innerHTML=`<button class="btn-acao btn-editar" onclick="editarLancamento('${l.id}')">✏️</button><button class="btn-acao btn-excluir" onclick="excluirLancamento('${l.id}')">🗑️</button><button class="btn-acao" onclick="duplicarLancamento('${l.id}')">📋</button>`;
         row.cells[13].style.textAlign = 'center';
     });
-    if(lancPaginados.length>0){ const rt=tbody.insertRow(); rt.style.fontWeight='bold'; rt.style.background='#e8f0ea'; rt.insertCell(0).innerHTML='TOTAIS'; for(let i=1;i<5;i++) rt.insertCell(i).innerHTML=''; rt.insertCell(5).innerHTML=formatarNumeroRedondo(qcx); rt.insertCell(6).innerHTML=formatarNumero(peso); rt.insertCell(7).innerHTML=''; rt.insertCell(8).innerHTML=formatarMoeda(bruto); rt.insertCell(9).innerHTML=''; rt.insertCell(10).innerHTML=s1; rt.insertCell(11).innerHTML=s2.toLocaleString(); rt.insertCell(12).innerHTML=''; rt.insertCell(13).innerHTML=''; }
-    const pagDiv = document.getElementById('paginacaoLancamentos'); const paginas = Math.ceil(totalLanc/ITENS_POR_PAGINA);
-    if(paginas<=1) pagDiv.innerHTML=''; else pagDiv.innerHTML = `<button ${paginaLancamentos<=1?'disabled':''} onclick="mudarPaginaLancamentos(-1)">←</button><span>${paginaLancamentos}/${paginas}</span><button ${paginaLancamentos>=paginas?'disabled':''} onclick="mudarPaginaLancamentos(1)">→</button>`;
+    
+    if(lancPaginados.length>0){ 
+        const rt=tbody.insertRow(); 
+        rt.style.fontWeight='bold'; 
+        rt.style.background='#e8f0ea'; 
+        rt.insertCell(0).innerHTML='TOTAIS'; 
+        for(let i=1;i<5;i++) rt.insertCell(i).innerHTML=''; 
+        rt.insertCell(5).innerHTML=formatarNumeroRedondo(qcx); 
+        rt.insertCell(6).innerHTML=formatarNumero(peso); 
+        rt.insertCell(7).innerHTML=''; 
+        rt.insertCell(8).innerHTML=formatarMoeda(bruto); 
+        rt.insertCell(9).innerHTML=''; 
+        rt.insertCell(10).innerHTML=s1; 
+        rt.insertCell(11).innerHTML=s2.toLocaleString(); 
+        rt.insertCell(12).innerHTML=''; 
+        rt.insertCell(13).innerHTML=''; 
+    }
+    
+    const pagDiv = document.getElementById('paginacaoLancamentos'); 
+    const paginas = Math.ceil(totalLanc/ITENS_POR_PAGINA);
+    if(paginas<=1) pagDiv.innerHTML=''; 
+    else pagDiv.innerHTML = `<button ${paginaLancamentos<=1?'disabled':''} onclick="mudarPaginaLancamentos(-1)">←</button><span>${paginaLancamentos}/${paginas}</span><button ${paginaLancamentos>=paginas?'disabled':''} onclick="mudarPaginaLancamentos(1)">→</button>`;
     
     const tb = lancFiltrados.reduce((a,l)=>a+(l.totalBruto||0),0);
     const tf = pagFiltrados.reduce((a,p)=>a+(p.frete||0),0);
     const ta = pagFiltrados.reduce((a,p)=>a+(p.arrancacao||0),0);
     const totalPagoGeral = pagFiltrados.reduce((a,p)=>a+calcularTotalPagoPagamento(p),0);
-    document.getElementById('totalBruto').innerHTML=formatarMoeda(tb); document.getElementById('totalFrete').innerHTML=formatarMoeda(tf); document.getElementById('totalArrancacao').innerHTML=formatarMoeda(ta); document.getElementById('totalQtdCx').innerHTML=formatarNumeroRedondo(lancFiltrados.reduce((a,l)=>a+(l.qtdCx||0),0)); document.getElementById('totalPagoCompra').innerHTML=formatarMoeda(totalPagoGeral); document.getElementById('saldoPagar').innerHTML=formatarMoeda(Math.max(0,tb-totalPagoGeral)); document.getElementById('totalSacos1').innerHTML=formatarNumeroInteiro(s1); document.getElementById('totalSacos2').innerHTML=formatarNumeroInteiro(s2);
+    document.getElementById('totalBruto').innerHTML=formatarMoeda(tb); 
+    document.getElementById('totalFrete').innerHTML=formatarMoeda(tf); 
+    document.getElementById('totalArrancacao').innerHTML=formatarMoeda(ta); 
+    document.getElementById('totalQtdCx').innerHTML=formatarNumeroRedondo(lancFiltrados.reduce((a,l)=>a+(l.qtdCx||0),0)); 
+    document.getElementById('totalPagoCompra').innerHTML=formatarMoeda(totalPagoGeral); 
+    document.getElementById('saldoPagar').innerHTML=formatarMoeda(Math.max(0,tb-totalPagoGeral)); 
+    document.getElementById('totalSacos1').innerHTML=formatarNumeroInteiro(s1); 
+    document.getElementById('totalSacos2').innerHTML=formatarNumeroInteiro(s2);
     
     const fornecedoresUnicos = [...new Set(lancFiltrados.map(l=>l.fornecedor).filter(Boolean))];
     let htmlSaldo='<div style="display:flex;flex-wrap:wrap;gap:16px;">';
-    for(const f of fornecedoresUnicos.sort()){ const lancsF=lancFiltrados.filter(l=>l.fornecedor===f); let totalDevido=lancsF.reduce((s,l)=>s+(l.totalBruto||0),0); let totalPago=pagFiltrados.filter(p=>p.fornecedor===f).reduce((s,p)=>s+calcularTotalPagoPagamento(p),0); const saldo=totalDevido-totalPago; if(saldo>0.01) htmlSaldo+=`<span style="background:#fef3c7;padding:6px 12px;border-radius:30px;">• <strong>${f}:</strong> <span style="color:#dc2626;font-weight:bold;">${formatarMoeda(saldo)}</span></span>`; else if(saldo<=0.01&&saldo>=-0.01) htmlSaldo+=`<span style="background:#dcfce7;padding:6px 12px;border-radius:30px;">• <strong>${f}:</strong> <span style="color:#166534;">✅ QUITADO</span></span>`; }
+    for(const f of fornecedoresUnicos.sort()){ 
+        const lancsF=lancFiltrados.filter(l=>l.fornecedor===f); 
+        let totalDevido=lancsF.reduce((s,l)=>s+(l.totalBruto||0),0); 
+        let totalPago=pagFiltrados.filter(p=>p.fornecedor===f).reduce((s,p)=>s+calcularTotalPagoPagamento(p),0); 
+        const saldo=totalDevido-totalPago; 
+        if(saldo>0.01) htmlSaldo+=`<span style="background:#fef3c7;padding:6px 12px;border-radius:30px;">• <strong>${f}:</strong> <span style="color:#dc2626;font-weight:bold;">${formatarMoeda(saldo)}</span></span>`; 
+        else if(saldo<=0.01&&saldo>=-0.01) htmlSaldo+=`<span style="background:#dcfce7;padding:6px 12px;border-radius:30px;">• <strong>${f}:</strong> <span style="color:#166534;">✅ QUITADO</span></span>`; 
+    }
     htmlSaldo+='</div>';
     document.getElementById('saldoFornecedorContainer').innerHTML=htmlSaldo||'<span>✅ Todos os fornecedores estão quitados!</span>';
 }
 function mudarPaginaLancamentos(delta){ paginaLancamentos+=delta; atualizarTelaCompra(); }
 window.mudarPaginaLancamentos = mudarPaginaLancamentos;
 
-// PDF
+// PDF CORRIGIDO - Layout alinhado e profissional
 document.getElementById('btnGerarPDF').onclick = () => {
-    const di = document.getElementById('dataInicioCompra').value, df = document.getElementById('dataFimCompra').value;
+    const di = document.getElementById('dataInicioCompra').value;
+    const df = document.getElementById('dataFimCompra').value;
     const ffl = document.getElementById('filtroFornecedorLancamentos')?.value || '';
     const fMotorista = document.getElementById('filtroMotoristaSelect')?.value || '';
     const fsl = document.getElementById('filtroStatusLancamentos')?.value || '';
-    let lancFiltrados = lancamentos.filter(l => { const dl = new Date(l.data).getTime(); const ini = di ? new Date(di).getTime() : -Infinity; const fim = df ? new Date(df).getTime() : Infinity; const fo = !ffl || l.fornecedor === ffl; const fm = !fMotorista || (l.motorista||'') === fMotorista; return fo && fm && dl >= ini && dl <= fim; });
-    if(fsl) lancFiltrados = lancFiltrados.filter(l => getStatusLancamento(l) === fsl);
-    lancFiltrados.sort((a,b)=>new Date(a.data)-new Date(b.data));
-    let pagFiltrados = pagamentos.filter(p => { const fo = !ffl || p.fornecedor === ffl; const ppi = p.periodoInicio ? new Date(p.periodoInicio).getTime() : 0; const ppf = p.periodoFim ? new Date(p.periodoFim).getTime() : Infinity; const ini = di ? new Date(di).getTime() : -Infinity; const fim = df ? new Date(df).getTime() : Infinity; return fo && ppi >= ini && ppf <= fim; });
-    if(fMotorista) { const fornecedoresCMotorista = lancamentos.filter(l => l.motorista === fMotorista).map(l => l.fornecedor); pagFiltrados = pagFiltrados.filter(p => fornecedoresCMotorista.includes(p.fornecedor)); }
+    
+    // Filtrar lançamentos
+    let lancFiltrados = lancamentos.filter(l => {
+        const timestampLanc = dataParaTimestamp(l.data);
+        const timestampInicio = di ? dataParaTimestamp(di) : null;
+        const timestampFim = df ? dataParaTimestamp(df) : null;
+        let dataOk = true;
+        if (timestampInicio !== null) dataOk = dataOk && (timestampLanc !== null && timestampLanc >= timestampInicio);
+        if (timestampFim !== null) dataOk = dataOk && (timestampLanc !== null && timestampLanc <= timestampFim);
+        const fo = !ffl || l.fornecedor === ffl;
+        const fm = !fMotorista || (l.motorista||'') === fMotorista;
+        const fs = !fsl || getStatusLancamento(l) === fsl;
+        return fo && fm && fs && dataOk;
+    });
+    lancFiltrados.sort((a,b) => {
+        const ta = dataParaTimestamp(a.data);
+        const tb = dataParaTimestamp(b.data);
+        if (ta === null || tb === null) return 0;
+        return ta - tb;
+    });
+    
+    // Filtrar pagamentos
+    let pagFiltrados = pagamentos.filter(p => {
+        const fo = !ffl || p.fornecedor === ffl;
+        let periodoOk = true;
+        if (di && p.periodoInicio) {
+            const timestampInicio = dataParaTimestamp(di);
+            const timestampPag = dataParaTimestamp(p.periodoInicio);
+            if (timestampInicio !== null && timestampPag !== null) periodoOk = periodoOk && timestampPag >= timestampInicio;
+        }
+        if (df && p.periodoFim) {
+            const timestampFim = dataParaTimestamp(df);
+            const timestampPag = dataParaTimestamp(p.periodoFim);
+            if (timestampFim !== null && timestampPag !== null) periodoOk = periodoOk && timestampPag <= timestampFim;
+        }
+        return fo && periodoOk;
+    });
+    if(fMotorista) { 
+        const fornecedoresCMotorista = lancamentos.filter(l => l.motorista === fMotorista).map(l => l.fornecedor); 
+        pagFiltrados = pagFiltrados.filter(p => fornecedoresCMotorista.includes(p.fornecedor)); 
+    }
+    
+    // Totais
     const totalBruto = lancFiltrados.reduce((a,l)=>a+(l.totalBruto||0),0);
     const totalQtdCx = lancFiltrados.reduce((a,l)=>a+(l.qtdCx||0),0);
     const totalPeso = lancFiltrados.reduce((a,l)=>a+(l.peso||0),0);
@@ -767,38 +980,170 @@ document.getElementById('btnGerarPDF').onclick = () => {
     const totalLiquido = totalBruto - totalFrete - totalArrancacao;
     const saldoDevedor = totalLiquido - totalPagoMandioca;
     
-    let html = `<!DOCTYPE html><html><head><title>Relatório Compras</title><meta charset="UTF-8"><style>
-        body{font-family:Arial;font-size:10px;padding:20px} 
-        table{border-collapse:collapse;width:100%;margin-bottom:15px} 
-        th,td{border:1px solid #000;padding:6px} 
-        th{background:#000000;color:#000000;font-weight:bold} 
-        td{color:#000000}
-        .text-right{text-align:right} 
-        .text-center{text-align:center} 
-        .resumo-table{width:auto;margin:0 auto} 
-        .resumo-table td{padding:8px 15px;color:#000000} 
-        .saldo-vermelho{color:#dc2626;font-weight:bold}
-    </style></head><body>
-        <h2 style="text-align:center;">VIANA FARINHA</h2>
-        <h3 style="text-align:center;">RELATÓRIO DE COMPRAS DE MANDIOCA</h3>
-        <p>Período: ${di || 'início'} até ${df || 'hoje'} | Fornecedor: ${ffl || 'todos'} | Motorista: ${fMotorista || 'todos'}</p>
-        <h3>LANÇAMENTOS DE COMPRA</h3>
-        <table><thead><tr style="background:#000000;color:#000000;font-weight:bold"><th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th class="text-right">RENDA</th><th class="text-right">QTD CX</th><th class="text-right">VALOR CAIXA</th><th class="text-right">VL TONELADA</th><th class="text-right">PESO</th><th class="text-right">TOTAL BRUTO</th><th>STATUS</th></thead><tbody>`;
-    lancFiltrados.forEach(l => { html += `<tr><td style="color:#000000">${formatarData(l.data)}</td><td style="color:#000000">${l.fornecedor}</td><td style="color:#000000">${l.motorista||'-'}</td><td class="text-right" style="color:#000000">${formatarNumero(l.renda||0)}</td><td class="text-right" style="color:#000000">${formatarNumeroRedondo(l.qtdCx||0)}</td><td class="text-right" style="color:#000000">${formatarMoeda(l.valorCaixa||0)}</td><td class="text-right" style="color:#000000">${formatarNumeroInteiro(l.vlTonelada||0)}</td><td class="text-right" style="color:#000000">${formatarNumero(l.peso||0)}</td><td class="text-right" style="color:#000000">${formatarMoeda(l.totalBruto||0)}</td><td class="text-center" style="color:#000000">${getStatusLancamento(l)}</td>`; });
-    html += `<tr style="font-weight:bold;background:#f0f0f0;"><td colspan="4">TOTAIS</td><td class="text-right">${formatarNumeroRedondo(totalQtdCx)}</td><td class="text-right"></td><td class="text-right"></td><td class="text-right">${formatarNumero(totalPeso)}</td><td class="text-right">${formatarMoeda(totalBruto)}</td><td></td></tr></tbody></table>
-        <h3>PAGAMENTOS REALIZADOS</h3>
-        <table><thead><tr style="background:#000000;color:#000000;font-weight:bold"><th>DATA</th><th>PERÍODO</th><th class="text-right">FRETE</th><th class="text-right">ARRANCAÇÃO</th><th class="text-right">VALOR PAGO</th><th class="text-right">TOTAL PAGO</th><th>ORIGEM</th><th>DESTINATÁRIO</th></thead><tbody>`;
-    pagFiltrados.forEach(p => { const totalPago = calcularTotalPagoPagamento(p); html += `<tr><td style="color:#000000">${formatarData(p.data)}</td><td style="color:#000000">${formatarData(p.periodoInicio)} → ${formatarData(p.periodoFim)}</td><td class="text-right" style="color:#000000">${formatarMoeda(p.frete||0)}</td><td class="text-right" style="color:#000000">${formatarMoeda(p.arrancacao||0)}</td><td class="text-right" style="color:#000000">${formatarMoeda(p.valor||0)}</td><td class="text-right" style="color:#000000">${formatarMoeda(totalPago)}</td><td style="color:#000000">${p.origem||'-'}</td><td style="color:#000000">${p.destinatario||'-'}</td>`; });
-    html += `<tr style="font-weight:bold;background:#f0f0f0;"><td colspan="2">TOTAIS</td><td class="text-right">${formatarMoeda(totalFrete)}</td><td class="text-right">${formatarMoeda(totalArrancacao)}</td><td class="text-right">${formatarMoeda(totalPagoMandioca)}</td><td class="text-right">${formatarMoeda(totalPagoGeral)}</td><td colspan="2"></td></tr></tbody></table>
-        <h3>RESUMO FINANCEIRO</h3>
-        <table class="resumo-table" style="width:100%;max-width:500px;margin:0 auto;"><tr><td>Total Bruto Mandioca</td><td class="text-right">${formatarMoeda(totalBruto)}</td></tr>
-        <tr><td>(-) Frete (pago pelo comprador)</td><td class="text-right">${formatarMoeda(totalFrete)}</td></tr>
-        <tr><td>(-) Arrancação (paga pelo comprador)</td><td class="text-right">${formatarMoeda(totalArrancacao)}</td></tr>
-        <tr style="border-top:1px solid #000;"><td><strong>= Total Líquido a Pagar ao Fornecedor</strong></td><td class="text-right"><strong>${formatarMoeda(totalLiquido)}</strong></td></tr>
-        <tr><td>(-) Valor Pago em Dinheiro/PIX ao Fornecedor</td><td class="text-right">${formatarMoeda(totalPagoMandioca)}</td></tr>
-        <tr style="border-top:2px solid #000;"><td><strong>= Saldo Devedor (RESTANTE)</strong></td><td class="text-right"><strong class="saldo-vermelho">${formatarMoeda(saldoDevedor)}</strong></td></tr></table>
-        <p style="text-align:center;margin-top:20px;">Gerado em ${new Date().toLocaleString('pt-br')}</p></body></html>`;
-    const win = window.open('', '_blank'); win.document.write(html); win.document.close(); win.print();
+    let html = `<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Relatório Compras Mandioca</title>
+        <meta charset="UTF-8">
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+                font-family: 'Courier New', Courier, monospace; 
+                font-size: 11px; 
+                padding: 20px; 
+                background: white;
+            }
+            h1 { font-size: 18px; text-align: center; margin-bottom: 5px; }
+            h2 { font-size: 14px; text-align: center; margin-bottom: 15px; color: #1e5631; }
+            h3 { font-size: 12px; margin: 15px 0 8px 0; background: #1e5631; color: white; padding: 5px 10px; }
+            .info-periodo { text-align: center; margin-bottom: 20px; font-size: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
+            table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin-bottom: 20px;
+                font-size: 9px;
+            }
+            th, td { 
+                border: 1px solid #000; 
+                padding: 6px 4px; 
+                text-align: left;
+                vertical-align: top;
+            }
+            th { 
+                background: #1e5631; 
+                color: white; 
+                font-weight: bold;
+                text-align: center;
+            }
+            .text-right { text-align: right; }
+            .text-center { text-align: center; }
+            .total-row { background: #e8f0ea; font-weight: bold; }
+            .resumo-box {
+                margin-top: 20px;
+                border: 2px solid #1e5631;
+                padding: 10px;
+                width: 100%;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .resumo-box table { margin-bottom: 0; }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                font-size: 8px;
+                border-top: 1px dashed #ccc;
+                padding-top: 10px;
+            }
+            .saldo-vermelho { color: #dc2626; font-weight: bold; }
+            .saldo-verde { color: #166534; font-weight: bold; }
+            @media print {
+                body { margin: 0; padding: 10px; }
+                .no-print { display: none; }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>VIANA FARINHA</h1>
+        <h2>RELATÓRIO DE COMPRAS DE MANDIOCA</h2>
+        <div class="info-periodo">
+            <strong>Período:</strong> ${di || 'início'} até ${df || 'hoje'} | 
+            <strong>Fornecedor:</strong> ${ffl || 'todos'} | 
+            <strong>Motorista:</strong> ${fMotorista || 'todos'} |
+            <strong>Status:</strong> ${fsl || 'todos'}
+        </div>
+        
+        <h3>📋 LANÇAMENTOS DE COMPRA</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th class="text-right">RENDA</th><th class="text-right">QTD CX</th><th class="text-right">PESO (kg)</th><th class="text-right">VL TONELADA</th><th class="text-right">TOTAL BRUTO</th><th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    
+    lancFiltrados.forEach(l => { 
+        html += `<tr>
+            <td class="text-center">${formatarData(l.data)}</td>
+            <td>${l.fornecedor || ''}</td>
+            <td>${l.motorista || '-'}</td>
+            <td class="text-right">${formatarNumero(l.renda||0)}</td>
+            <td class="text-right">${formatarNumeroRedondo(l.qtdCx||0)}</td>
+            <td class="text-right">${formatarNumero(l.peso||0)}</td>
+            <td class="text-right">${formatarNumeroInteiro(l.vlTonelada||0)}</td>
+            <td class="text-right">${formatarMoeda(l.totalBruto||0)}</td>
+            <td class="text-center">${getStatusLancamento(l)}</td>
+        </tr>`; 
+    });
+    
+    html += `<tr class="total-row">
+        <td colspan="4" class="text-right"><strong>TOTAIS</strong></td>
+        <td class="text-right"><strong>${formatarNumeroRedondo(totalQtdCx)}</strong></td>
+        <td class="text-right"><strong>${formatarNumero(totalPeso)}</strong></td>
+        <td class="text-right"></td>
+        <td class="text-right"><strong>${formatarMoeda(totalBruto)}</strong></td>
+        <td></td>
+    </tr>
+            </tbody>
+        </table>
+        
+        <h3>💰 PAGAMENTOS REALIZADOS</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th class="text-right">FRETE</th><th class="text-right">ARRANCAÇÃO</th><th class="text-right">VALOR PAGO</th><th class="text-right">TOTAL PAGO</th><th>ORIGEM</th><th>DESTINATÁRIO</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    
+    pagFiltrados.forEach(p => { 
+        const totalPago = calcularTotalPagoPagamento(p); 
+        html += `<tr>
+            <td class="text-center">${formatarData(p.data)}</td>
+            <td>${p.fornecedor || ''}</td>
+            <td>${formatarData(p.periodoInicio)} → ${formatarData(p.periodoFim)}</td>
+            <td class="text-right">${formatarMoeda(p.frete||0)}</td>
+            <td class="text-right">${formatarMoeda(p.arrancacao||0)}</td>
+            <td class="text-right">${formatarMoeda(p.valor||0)}</td>
+            <td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td>
+            <td>${p.origem||'-'}</td>
+            <td>${p.destinatario||'-'}</td>
+        </tr>`; 
+    });
+    
+    html += `<tr class="total-row">
+        <td colspan="3" class="text-right"><strong>TOTAIS</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalFrete)}</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalArrancacao)}</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalPagoMandioca)}</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalPagoGeral)}</strong></td>
+        <td colspan="2"></td>
+    </tr>
+            </tbody>
+        </table>
+        
+        <div class="resumo-box">
+            <h3 style="margin:0 0 10px 0; text-align:center;">📊 RESUMO FINANCEIRO</h3>
+            <table style="border:none;">
+                <tr><td style="border:none;">Total Bruto Mandioca</td><td style="border:none;" class="text-right">${formatarMoeda(totalBruto)}</td></tr>
+                <tr><td style="border:none;">(-) Frete (pago pelo comprador)</td><td style="border:none;" class="text-right">${formatarMoeda(totalFrete)}</td></tr>
+                <tr><td style="border:none;">(-) Arrancação (paga pelo comprador)</td><td style="border:none;" class="text-right">${formatarMoeda(totalArrancacao)}</td></tr>
+                <tr style="border-top:1px solid #000;"><td style="border:none;"><strong>= Total Líquido a Pagar</strong></td><td style="border:none;" class="text-right"><strong>${formatarMoeda(totalLiquido)}</strong></td></tr>
+                <tr><td style="border:none;">(-) Valor Pago ao Fornecedor</td><td style="border:none;" class="text-right">${formatarMoeda(totalPagoMandioca)}</td></tr>
+                <tr style="border-top:2px solid #000;"><td style="border:none;"><strong>= Saldo Devedor</strong></td><td style="border:none;" class="text-right"><strong class="${saldoDevedor > 0 ? 'saldo-vermelho' : 'saldo-verde'}">${formatarMoeda(saldoDevedor)}</strong></td></tr>
+            </table>
+        </div>
+        
+        <div class="footer">
+            Documento gerado pelo sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}<br>
+            "Senhor, abençoai o meu trabalho!"
+        </div>
+    </body>
+    </html>`;
+    
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
 };
 
 // ESTOQUE
@@ -821,7 +1166,6 @@ function renderizarProdutos() {
 function mudarPaginaProdutos(delta){ paginaProdutos+=delta; renderizarProdutos(); }
 window.mudarPaginaProdutos = mudarPaginaProdutos;
 
-// CORREÇÃO 1: Botão ENTRADA no Estoque - Funcionalidade de entrada
 function atualizarSelectProdutosEstoque() {
     const select = document.getElementById('entradaProdutoSelect');
     if(select) {
@@ -854,7 +1198,6 @@ window.salvarEntradaEstoque = async () => {
     
     await updateDoc(doc(db, "produtos", produtoId), { entrada: novaEntrada });
     
-    // Registrar no histórico de movimentação (opcional)
     await addDoc(historicoPrecosCol, {
         produtoId: produtoId,
         data: data,
@@ -922,13 +1265,40 @@ function renderizarHistoricoPrecos() {
     const prodFiltro = document.getElementById('filtroHistoricoProduto')?.value || '';
     const di = document.getElementById('filtroHistoricoDataInicio')?.value || '';
     const df = document.getElementById('filtroHistoricoDataFim')?.value || '';
+    
     if(prodFiltro) filtrados = filtrados.filter(h => h.produtoId === prodFiltro);
-    if(di) filtrados = filtrados.filter(h => h.data >= di);
-    if(df) filtrados = filtrados.filter(h => h.data <= df);
-    filtrados.sort((a,b)=>new Date(b.data)-new Date(a.data));
+    
+    if (di) {
+        const timestampInicio = dataParaTimestamp(di);
+        if (timestampInicio !== null) {
+            filtrados = filtrados.filter(h => {
+                const timestampHist = dataParaTimestamp(h.data);
+                return timestampHist !== null && timestampHist >= timestampInicio;
+            });
+        }
+    }
+    
+    if (df) {
+        const timestampFim = dataParaTimestamp(df);
+        if (timestampFim !== null) {
+            filtrados = filtrados.filter(h => {
+                const timestampHist = dataParaTimestamp(h.data);
+                return timestampHist !== null && timestampHist <= timestampFim;
+            });
+        }
+    }
+    
+    filtrados.sort((a,b)=> {
+        const ta = dataParaTimestamp(a.data);
+        const tb = dataParaTimestamp(b.data);
+        if (ta === null || tb === null) return 0;
+        return tb - ta;
+    });
     const total = filtrados.length, inicio = (paginaHistorico-1)*ITENS_POR_PAGINA;
     filtrados = filtrados.slice(inicio, inicio+ITENS_POR_PAGINA);
-    const tbody = document.getElementById('historicoBody'); tbody.innerHTML = '';
+    const tbody = document.getElementById('historicoBody'); 
+    tbody.innerHTML = '';
+    
     filtrados.forEach(h => { 
         const prod = produtos.find(p=>p.id===h.produtoId); 
         const v = ((h.valorNovo - h.valorAnterior) / h.valorAnterior * 100); 
@@ -951,6 +1321,7 @@ function renderizarHistoricoPrecos() {
         row.insertCell(6).innerHTML = formatarMoeda(h.valorNovo); 
         row.insertCell(7).innerHTML = `<span style="color:${cor}">${v>=0?'+':''}${pct}%</span>`; 
     });
+    
     const pagDiv = document.getElementById('paginacaoHistorico'); 
     const paginas = Math.ceil(total/ITENS_POR_PAGINA);
     if(paginas<=1) pagDiv.innerHTML=''; 
@@ -1069,14 +1440,16 @@ function gerarImpressaoPedido() {
         <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA</h3></div>
         <table class="info-table"><tr><td class="info-label">DATA:</td><td style="color:#000000">${formatarData(dt)}</td><td class="info-label">CLIENTE:</td><td style="color:#000000"><strong>${cli}</strong></td></tr>
         <tr><td class="info-label">CONDIÇÃO:</td><td style="color:#000000">${cond}</td><td class="info-label">PESO TOTAL:</td><td style="color:#000000">${formatarNumero(pt)} KG</td></tr>
-        <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero(qt)} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${gerarNumeroPedido()}</td></tr></tr>
+        <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero(qt)} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${gerarNumeroPedido()}</td></tr>
+        </table>
         <div class="resumo-pedido"><strong>RESUMO DO PEDIDO</strong><br>Qtd Total: ${formatarNumero(qt)} | Peso Total: ${formatarNumero(pt)} kg | Valor Total: ${formatarMoeda(vt)}</div>
         <table class="itens-table"><thead><tr style="background:#000;color:#000000;font-weight:bold"><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></thead><tbody>${itensHtml}</tbody></table>
         <table class="totals-table"><tr><td style="color:#000000">TOTAL:</td><td style="color:#000000">${formatarMoeda(vt)}</td></tr>
         <tr><td style="color:#000000">DESCONTO:</td><td style="color:#000000">${formatarMoeda(desc)}</td></tr>
         <tr style="font-weight:bold;"><td style="color:#000000">VALOR FINAL:</td><td style="color:#000000">${formatarMoeda(vf)}</td></tr>
         <tr><td style="color:#000000">VALOR PAGO:</td><td style="color:#000000">${formatarMoeda(tp)}</td></tr>
-        <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(liq)}<td style="color:#000000"></td></tr></table>
+        <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(liq)}</td></tr>
+        </table>
         <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
         <div class="footer">Documento emitido por sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}</div>
         </body></html>`;
@@ -1100,8 +1473,7 @@ async function gerarPedido() {
     pedidoConfirmado = false;
 }
 
-// CORREÇÃO 2: FILTRO DE PERÍODO EM PEDIDOS - CORREÇÃO DA COMPARAÇÃO DE DATAS
-// CORREÇÃO 3: CARDS DE RESUMO EM PEDIDOS
+// FUNÇÃO RENDERIZAR PEDIDOS CORRIGIDA
 function renderizarPedidos() {
     const di = document.getElementById('filtroPedidosDataInicio').value;
     const df = document.getElementById('filtroPedidosDataFim').value;
@@ -1109,44 +1481,56 @@ function renderizarPedidos() {
     
     let pedidosFiltrados = [...pedidos];
     
-    // CORREÇÃO: Filtro de data corrigido - usando objetos Date para comparação correta
-    if(di) {
-        const dataInicio = new Date(di);
-        dataInicio.setHours(0, 0, 0, 0);
-        pedidosFiltrados = pedidosFiltrados.filter(p => {
-            const dataPedido = new Date(p.data);
-            dataPedido.setHours(0, 0, 0, 0);
-            return dataPedido >= dataInicio;
-        });
+    // Filtro de data INÍCIO com timestamp UTC
+    if (di) {
+        const timestampInicio = dataParaTimestamp(di);
+        if (timestampInicio !== null) {
+            pedidosFiltrados = pedidosFiltrados.filter(p => {
+                const timestampPedido = dataParaTimestamp(p.data);
+                return timestampPedido !== null && timestampPedido >= timestampInicio;
+            });
+        }
     }
-    if(df) {
-        const dataFim = new Date(df);
-        dataFim.setHours(23, 59, 59, 999);
-        pedidosFiltrados = pedidosFiltrados.filter(p => {
-            const dataPedido = new Date(p.data);
-            dataPedido.setHours(0, 0, 0, 0);
-            return dataPedido <= dataFim;
-        });
-    }
-    if(cliFiltro) pedidosFiltrados = pedidosFiltrados.filter(p => p.cliente === cliFiltro);
     
-    pedidosFiltrados.sort((a,b) => new Date(b.data) - new Date(a.data));
+    // Filtro de data FIM com timestamp UTC
+    if (df) {
+        const timestampFim = dataParaTimestamp(df);
+        if (timestampFim !== null) {
+            pedidosFiltrados = pedidosFiltrados.filter(p => {
+                const timestampPedido = dataParaTimestamp(p.data);
+                return timestampPedido !== null && timestampPedido <= timestampFim;
+            });
+        }
+    }
+    
+    // Filtro de cliente
+    if (cliFiltro) {
+        pedidosFiltrados = pedidosFiltrados.filter(p => p.cliente === cliFiltro);
+    }
+    
+    // Ordenar por data (mais recente primeiro)
+    pedidosFiltrados.sort((a, b) => {
+        const ta = dataParaTimestamp(a.data);
+        const tb = dataParaTimestamp(b.data);
+        if (ta === null || tb === null) return 0;
+        return tb - ta;
+    });
+    
     pedidosFiltradosGlobal = pedidosFiltrados;
     const total = pedidosFiltradosGlobal.length;
     const inicio = (paginaPedidos - 1) * ITENS_POR_PAGINA;
     const paginados = pedidosFiltradosGlobal.slice(inicio, inicio + ITENS_POR_PAGINA);
     const container = document.getElementById('pedidosContainer');
     
-    if(paginados.length === 0) { 
-        container.innerHTML = '<div class="card" style="text-align:center;padding:20px;">Nenhum pedido encontrado</div>'; 
-        // Atualizar cards com zero
+    if (paginados.length === 0) { 
+        container.innerHTML = '<div class="card" style="text-align:center;padding:20px;">Nenhum pedido encontrado no período selecionado</div>'; 
         document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(0);
         document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(0);
         document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(0);
         return; 
     }
     
-    // Totais da página para o rodapé
+    // Calcular totais da página
     let totalValorFinal = 0, totalPago = 0, totalSaldo = 0;
     paginados.forEach(p => {
         const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0);
@@ -1156,7 +1540,7 @@ function renderizarPedidos() {
         totalSaldo += saldo;
     });
     
-    // CORREÇÃO 3: Totais dos CARDS (todos os pedidos filtrados, não apenas da página)
+    // Calcular totais gerais
     let totalGeralValorFinal = 0, totalGeralPago = 0, totalGeralSaldo = 0;
     pedidosFiltradosGlobal.forEach(p => {
         const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0);
@@ -1166,27 +1550,48 @@ function renderizarPedidos() {
         totalGeralSaldo += saldo;
     });
     
-    // Atualizar cards de resumo
     document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(totalGeralValorFinal);
     document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(totalGeralPago);
     document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(totalGeralSaldo);
     
     let html = `<div class="pedidos-tabela-wrapper"><table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr style="background:#1e5631;color:white;"><th>NÚMERO</th><th>DATA</th><th>CLIENTE</th><th class="text-right">TOTAL</th><th class="text-right">PAGO</th><th class="text-right">SALDO</th><th>STATUS</th><th class="text-center">AÇÕES</th></thead><tbody>`;
+    
     paginados.forEach(p => { 
         const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0); 
         const saldo = (p.valorFinal || 0) - pagoPedido; 
         let statusClass = '', statusText = p.status || 'PENDENTE';
-        if(statusText === 'QUITADO') statusClass = 'status-quitado';
-        else if(statusText === 'PENDENTE') statusClass = 'status-pendente';
-        else if(statusText === 'PARCIAL') statusClass = 'status-parcial';
+        if (statusText === 'QUITADO') statusClass = 'status-quitado';
+        else if (statusText === 'PENDENTE') statusClass = 'status-pendente';
+        else if (statusText === 'PARCIAL') statusClass = 'status-parcial';
         else statusClass = 'status-pendente';
-        html += `<tr><td style="color:#000000"><strong>${p.numero}</strong></td><td style="color:#000000">${formatarData(p.data)}</td><td style="color:#000000"><strong>${p.cliente}</strong></td><td class="text-right" style="color:#000000">${formatarMoeda(p.valorFinal)}</td><td class="text-right" style="color:#000000">${formatarMoeda(pagoPedido)}</td><td class="text-right" style="color:${saldo > 0 ? '#dc2626' : '#166534'}">${formatarMoeda(saldo)}</td><td class="text-center"><span class="${statusClass}">${statusText}</span></td><td class="text-center"><button class="btn-acao btn-visualizar" onclick="visualizarPedido('${p.numero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${p.id}')">✏️</button><button class="btn-acao" onclick="reimprimirPedido('${p.numero}')">🖨️</button><button class="btn-acao btn-excluir" onclick="excluirPedido('${p.id}')">🗑️</button></td>`; 
+        
+        html += `<tr>
+            <td style="color:#000000"><strong>${p.numero}</strong></td>
+            <td style="color:#000000">${formatarData(p.data)}</td>
+            <td style="color:#000000"><strong>${p.cliente}</strong></td>
+            <td class="text-right" style="color:#000000">${formatarMoeda(p.valorFinal)}</td>
+            <td class="text-right" style="color:#000000">${formatarMoeda(pagoPedido)}</td>
+            <td class="text-right" style="color:${saldo > 0 ? '#dc2626' : '#166534'}">${formatarMoeda(saldo)}</td>
+            <td class="text-center"><span class="${statusClass}">${statusText}</span></td>
+            <td class="text-center"><button class="btn-acao btn-visualizar" onclick="visualizarPedido('${p.numero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${p.id}')">✏️</button><button class="btn-acao" onclick="reimprimirPedido('${p.numero}')">🖨️</button><button class="btn-acao btn-excluir" onclick="excluirPedido('${p.id}')">🗑️</button></td>
+        </tr>`; 
     });
-    html += `</tbody><tfoot><tr style="font-weight:bold;background:#e8f0ea;"><td colspan="3" style="text-align:right;"><strong>TOTAIS DA PÁGINA:</strong></td><td class="text-right"><strong>${formatarMoeda(totalValorFinal)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalSaldo)}</strong></td><td colspan="2"></td></tr></tfoot></table></div>`;
+    
+    html += `</tbody><tfoot><tr style="font-weight:bold;background:#e8f0ea;"><td colspan="3" style="text-align:right;"><strong>TOTAIS DA PÁGINA:</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalValorFinal)}</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td>
+        <td class="text-right"><strong>${formatarMoeda(totalSaldo)}</strong></td>
+        <td colspan="2"></td>
+    </tr></tfoot></table></div>`;
+    
     container.innerHTML = html;
+    
     const pagDiv = document.getElementById('paginacaoPedidos'); 
     const paginas = Math.ceil(total / ITENS_POR_PAGINA);
-    if(paginas <= 1) { pagDiv.innerHTML = ''; return; }
+    if (paginas <= 1) { 
+        pagDiv.innerHTML = ''; 
+        return; 
+    }
     pagDiv.innerHTML = `<button ${paginaPedidos <= 1 ? 'disabled' : ''} onclick="mudarPaginaPedidos(-1)">←</button><span>${paginaPedidos} / ${paginas}</span><button ${paginaPedidos >= paginas ? 'disabled' : ''} onclick="mudarPaginaPedidos(1)">→</button>`;
 }
 
@@ -1204,20 +1609,22 @@ window.reimprimirPedido = (num) => {
         const vendedorCnpj = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[1]; 
         let itensHtml = ''; 
         (p.itens || []).forEach(i => { 
-            itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</tr>`; 
+            itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; 
         }); 
         const html = `<!DOCTYPE html><html><head><title>Pedido ${p.numero}</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px} @page{size:A4;margin:1.5cm;} .header{text-align:center;margin-bottom:15px;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;color:#000000} .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} .itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;} .itens-table td{border:1px solid #000;padding:6px;color:#000000} .totals-table{width:100%;margin-top:15px;} .totals-table td{color:#000000} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;} .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}</style></head><body>
             <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA - REIMPRESSÃO</h3></div>
             <table class="info-table"><tr><td class="info-label">DATA:</td><td style="color:#000000">${formatarData(p.data)}</td><td class="info-label">CLIENTE:</td><td style="color:#000000"><strong>${p.cliente}</strong></td></tr>
             <tr><td class="info-label">CONDIÇÃO:</td><td style="color:#000000">${p.condicao || 'Espécie'}</td><td class="info-label">PESO TOTAL:</td><td style="color:#000000">${formatarNumero((p.itens || []).reduce((a,i)=>a+(i.qtd*50),0))} KG</td></tr>
-            <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${p.numero}</td></tr></table>
+            <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${p.numero}</td></tr>
+            </table>
             <div class="resumo-pedido"><strong>RESUMO DO PEDIDO</strong><br>Qtd Total: ${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} | Peso Total: ${formatarNumero((p.itens || []).reduce((a,i)=>a+(i.qtd*50),0))} kg | Valor Total: ${formatarMoeda(p.valorTotal)}</div>
             <table class="itens-table"><thead><tr style="background:#000;color:#000000;font-weight:bold"><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></thead><tbody>${itensHtml}</tbody></table>
             <table class="totals-table"><tr><td style="color:#000000">TOTAL:</td><td style="color:#000000">${formatarMoeda(p.valorTotal)}</td></tr>
             <tr><td style="color:#000000">DESCONTO:</td><td style="color:#000000">${formatarMoeda(p.desconto || 0)}</td></tr>
             <tr style="font-weight:bold;"><td style="color:#000000">VALOR FINAL:</td><td style="color:#000000">${formatarMoeda(p.valorFinal)}</td></tr>
             <tr><td style="color:#000000">VALOR PAGO:</td><td style="color:#000000">${formatarMoeda(p.totalPago || 0)}</td></tr>
-            <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(p.liquido || 0)}</td></tr></table>
+            <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(p.liquido || 0)}</td></tr>
+            </table>
             <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
             <div class="footer">Reimpresso em ${new Date().toLocaleString('pt-br')}</div>
             </body></html>`;
