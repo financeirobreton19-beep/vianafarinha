@@ -208,7 +208,6 @@
         <button class="tab-btn" data-tab="tabDRE">📊 DRE</button>
     </div>
 
-    <!-- GUIA CADASTROS -->
     <div id="tabCadastros" class="tab-pane">
         <div class="card">
             <div class="card-header"><h3>NOVO CADASTRO</h3></div>
@@ -232,7 +231,6 @@
         </div>
     </div>
 
-    <!-- GUIA COMPRA DE MANDIOCA -->
     <div id="tabCompra" class="tab-pane active">
         <div class="card">
             <div class="card-header"><h3>🔍 FILTROS</h3></div>
@@ -253,9 +251,7 @@
             <div class="table-wrapper">
                 <table id="tabelaLancamentos" style="min-width: 1200px;">
                     <thead>
-                        <tr>
-                            <th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th class="text-right">RENDA</th><th class="text-right">FATOR</th><th class="text-right">QTD CX</th><th class="text-right">PESO</th><th class="text-right">VL TONELADA</th><th class="text-right">TOTAL BRUTO</th><th class="text-right">VLR CAIXA</th><th class="text-right">SACOS 1</th><th class="text-right">SACOS 2</th><th>STATUS</th><th class="text-center">AÇÕES</th>
-                        </tr>
+                        <tr><th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th class="text-right">RENDA</th><th class="text-right">FATOR</th><th class="text-right">QTD CX</th><th class="text-right">PESO</th><th class="text-right">VL TONELADA</th><th class="text-right">TOTAL BRUTO</th><th class="text-right">VLR CAIXA</th><th class="text-right">SACOS 1</th><th class="text-right">SACOS 2</th><th>STATUS</th><th class="text-center">AÇÕES</th></tr>
                     </thead>
                     <tbody id="lancamentosBody"></tbody>
                     <tfoot id="lancamentosFoot"></tfoot>
@@ -268,11 +264,7 @@
             <div class="card-header"><h3>💰 CONTROLE DE PAGAMENTOS</h3><button class="btn-novo" id="btnNovoPagamento">NOVO PAGAMENTO</button><button class="btn-toggle-tabela" onclick="toggleTabelaPagamentos()">RECOLHER</button></div>
             <div class="table-wrapper">
                 <table id="tabelaPagamentos" style="min-width: 1300px;">
-                    <thead>
-                        <tr>
-                            <th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th class="text-right">TOTAL</th><th class="text-right">FRETE</th><th class="text-right">ARRANCAÇÃO</th><th class="text-right">VALOR PAGO</th><th class="text-right">TOTAL PAGO</th><th class="text-right">SALDO</th><th>ORIGEM</th><th>DESTINATÁRIO</th><th>OBS</th><th class="text-center">AÇÕES</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th class="text-right">TOTAL</th><th class="text-right">FRETE</th><th class="text-right">ARRANCAÇÃO</th><th class="text-right">VALOR PAGO</th><th class="text-right">TOTAL PAGO</th><th class="text-right">SALDO</th><th>ORIGEM</th><th>DESTINATÁRIO</th><th>OBS</th><th class="text-center">AÇÕES</th></tr></thead>
                     <tbody id="pagamentosBody"></tbody>
                     <tfoot id="pagamentosFoot"></tfoot>
                 </table>
@@ -300,7 +292,6 @@
         </div>
     </div>
 
-    <!-- GUIA ESTOQUE -->
     <div id="tabEstoque" class="tab-pane">
         <div class="resumo-grid"><div class="resumo-card"><h4>TOTAL PRODUTOS</h4><div class="valor" id="totalProdutos">0</div></div><div class="resumo-card"><h4>VALOR ESTOQUE</h4><div class="valor" id="valorTotalEstoque">R$ 0,00</div></div></div>
         <div class="card">
@@ -321,7 +312,6 @@
         </div>
     </div>
 
-    <!-- GUIA PEDIDOS -->
     <div id="tabPedidos" class="tab-pane">
         <div class="pedido-card">
             <div class="pedido-header"><h2>📝 NOVO PEDIDO</h2></div>
@@ -363,23 +353,13 @@
             <div id="pedidosContainer"></div>
             <div id="paginacaoPedidos" class="paginacao"></div>
             <div class="resumo-pedidos-cards">
-                <div class="resumo-pedido-card total">
-                    <h4>💰 VALOR TOTAL</h4>
-                    <div class="valor" id="resumoPedidosValorTotal">R$ 0,00</div>
-                </div>
-                <div class="resumo-pedido-card pago">
-                    <h4>✅ TOTAL PAGO</h4>
-                    <div class="valor" id="resumoPedidosTotalPago">R$ 0,00</div>
-                </div>
-                <div class="resumo-pedido-card saldo">
-                    <h4>📈 TOTAL RECEBIDO (SALDO)</h4>
-                    <div class="valor" id="resumoPedidosTotalSaldo">R$ 0,00</div>
-                </div>
+                <div class="resumo-pedido-card total"><h4>💰 VALOR TOTAL</h4><div class="valor" id="resumoPedidosValorTotal">R$ 0,00</div></div>
+                <div class="resumo-pedido-card pago"><h4>✅ TOTAL PAGO</h4><div class="valor" id="resumoPedidosTotalPago">R$ 0,00</div></div>
+                <div class="resumo-pedido-card saldo"><h4>📈 TOTAL RECEBIDO (SALDO)</h4><div class="valor" id="resumoPedidosTotalSaldo">R$ 0,00</div></div>
             </div>
         </div>
     </div>
 
-    <!-- GUIA DRE -->
     <div id="tabDRE" class="tab-pane">
         <div class="card"><div class="filtros-area"><label>Mês/Ano:</label><input type="month" id="dreMes" value="2026-05"><button class="btn-buscar" id="btnAtualizarDRE">ATUALIZAR</button><button class="btn-exportar" id="btnExportarDRE">EXPORTAR</button></div></div>
         <div class="card"><div class="card-header"><h3>CUSTOS INDIRETOS</h3><button class="btn-novo" id="btnNovoCustoIndireto">LANÇAR CUSTO</button></div><div class="table-wrapper"><table id="tabelaCustosIndiretos"><thead><th>DATA</th><th>DESCRIÇÃO</th><th>VALOR</th><th>AÇÕES</th></thead><tbody id="custosIndiretosBody"></tbody></table></div><div class="paginacao" id="paginacaoCustosIndiretos"></div></div>
@@ -392,7 +372,6 @@
 <div class="rodape-bar"><span>Cadastros: <strong id="rodapeCadastros">0</strong></span><span>Lançamentos: <strong id="rodapeLancamentos">0</strong></span><span>Pedidos: <strong id="rodapePedidos">0</strong></span><span class="rodape-frase">"Senhor, abençoai o meu trabalho! Hiona Medeiros"</span></div>
 <div id="feedback" class="feedback"></div><div id="loading" class="loading"><div class="loading-content">Carregando...</div></div>
 
-<!-- MODAIS -->
 <div id="modalLancamento" class="modal"><div class="modal-content"><h3>📝 NOVO LANÇAMENTO</h3><input type="hidden" id="lancamentoId"><label>DATA</label><input type="date" id="lancamentoData"><label>FORNECEDOR</label><select id="lancamentoFornecedor"></select><label>MOTORISTA</label><input type="text" id="lancamentoMotorista"><label>RENDA</label><input type="number" id="lancamentoRenda" step="0.001"><label>FATOR</label><input type="number" id="lancamentoFator" step="0.001" value="1.000"><label>PESO (kg)</label><input type="number" id="lancamentoPeso" step="0.001"><label>SACOS 2</label><input type="number" id="lancamentoQtdSacos2" step="0.001"><label>STATUS</label><select id="lancamentoStatus"><option value="PENDENTE">🔴 PENDENTE</option><option value="PAGO PARCIAL">🟡 PAGO PARCIAL</option><option value="PAGO TOTAL">✅ PAGO TOTAL</option></select><div id="previewInfo" style="background:#f1f5f9;padding:8px;border-radius:12px;margin:10px 0;font-size:10px;"></div><div class="modal-buttons"><button class="btn-salvar" onclick="salvarLancamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalLancamento')">CANCELAR</button></div></div></div>
 
 <div id="modalPagamento" class="modal"><div class="modal-content"><h3>💰 NOVO PAGAMENTO</h3><input type="hidden" id="pagamentoId"><label>DATA</label><input type="date" id="pagamentoData"><label>FORNECEDOR</label><select id="pagamentoFornecedor"></select><label>PERÍODO INÍCIO</label><input type="date" id="pagamentoPeriodoInicio"><label>PERÍODO FIM</label><input type="date" id="pagamentoPeriodoFim"><div id="totalPeriodoDisplay" style="background:#e8f0ea;padding:8px;border-radius:12px;margin:8px 0;font-size:11px;"></div><label>FRETE</label><input type="number" id="pagamentoFrete" step="0.01"><label>ARRANCAÇÃO</label><input type="number" id="pagamentoArrancacao" step="0.01"><label>VALOR PAGO (MANDIOCA)</label><input type="number" id="pagamentoValor" step="0.01"><label>ORIGEM</label><select id="pagamentoOrigem"><option>Sicred PJ</option><option>Sicred Agro</option><option>Brasil PJ</option><option>Brasil PF</option><option>Bradesco</option><option>Espécie</option></select><label>DESTINATÁRIO</label><input type="text" id="pagamentoDestinatario"><label>OBSERVAÇÃO</label><input type="text" id="pagamentoObs"><div class="modal-buttons"><button class="btn-salvar" onclick="salvarPagamento()">SALVAR</button><button class="btn-cancelar" onclick="fecharModal('modalPagamento')">CANCELAR</button></div></div></div>
@@ -450,7 +429,6 @@ function formatarData(data) {
     const d = converterDataParaDate(data);
     return d ? d.toLocaleDateString('pt-br') : '';
 }
-function formatarDataInput(data) { return data ? new Date(data).toISOString().split('T')[0] : ''; }
 function mostrarFeedback(msg) { let fb = document.getElementById('feedback'); fb.innerText = msg; fb.style.display = 'block'; setTimeout(() => fb.style.display = 'none', 3000); }
 function showLoading(show) { document.getElementById('loading').style.display = show ? 'flex' : 'none'; }
 window.fecharModal = function(id) { document.getElementById(id).style.display = 'none'; };
@@ -463,80 +441,47 @@ function gerarNumeroPedido() {
             const match = p.numero?.match(/PR(\d+)/);
             return match ? parseInt(match[1]) : 0;
         }).filter(n => n > 0);
-        if (numeros.length > 0) {
-            ultimoNumeroPedido = Math.max(...numeros);
-        }
+        if (numeros.length > 0) ultimoNumeroPedido = Math.max(...numeros);
     }
     ultimoNumeroPedido++;
     return `PR${ultimoNumeroPedido.toString().padStart(5, '0')}`;
 }
 
-// ==============================================
-// FUNÇÃO CORRIGIDA DE CONVERSÃO DE DATA (VERSÃO MELHORADA)
-// ==============================================
 function converterDataParaDate(dataStr) {
     if (!dataStr) return null;
-    
-    // Se já for um objeto Date válido
     if (dataStr instanceof Date && !isNaN(dataStr.getTime())) return dataStr;
-    
-    // Formato ISO yyyy-mm-dd (input date)
     if (dataStr.includes('-') && dataStr.match(/^\d{4}-\d{2}-\d{2}/)) {
         const [ano, mes, dia] = dataStr.split('-');
-        // Criar data UTC para evitar timezone
         const date = new Date(Date.UTC(parseInt(ano), parseInt(mes) - 1, parseInt(dia)));
         if (!isNaN(date.getTime())) return date;
     }
-    
-    // Formato brasileiro dd/mm/yyyy
     if (dataStr.includes('/')) {
         const partes = dataStr.split('/');
         if (partes.length === 3) {
             const dia = parseInt(partes[0], 10);
             const mes = parseInt(partes[1], 10) - 1;
             const ano = parseInt(partes[2], 10);
-            // Criar data UTC para evitar timezone
             const date = new Date(Date.UTC(ano, mes, dia));
             if (!isNaN(date.getTime())) return date;
         }
     }
-    
-    // Tentativa genérica
     const date = new Date(dataStr);
     return isNaN(date.getTime()) ? null : date;
 }
 
-// Função auxiliar para comparar datas (apenas a parte da data, sem hora)
 function dataParaTimestamp(dataStr) {
     const data = converterDataParaDate(dataStr);
     if (!data) return null;
-    // Retorna timestamp do início do dia UTC
     data.setUTCHours(0, 0, 0, 0);
     return data.getTime();
 }
 
-window.toggleTabelaCadastros = () => { 
-    const tabela = document.getElementById('tabelaCadastros');
-    if(tabela) tabela.classList.toggle('tabela-colapsada');
-};
-window.toggleTabelaLancamentos = () => { 
-    const tabela = document.getElementById('tabelaLancamentos');
-    if(tabela) tabela.classList.toggle('tabela-colapsada');
-};
-window.toggleTabelaPagamentos = () => { 
-    const tabela = document.getElementById('tabelaPagamentos');
-    if(tabela) tabela.classList.toggle('tabela-colapsada');
-};
-window.toggleTabelaProdutos = () => { 
-    const tabela = document.getElementById('tabelaProdutos');
-    if(tabela) tabela.classList.toggle('tabela-colapsada');
-};
-window.toggleTabelaHistorico = () => { 
-    const tabela = document.getElementById('tabelaHistorico');
-    if(tabela) tabela.classList.toggle('tabela-colapsada');
-};
+window.toggleTabelaCadastros = () => { document.getElementById('tabelaCadastros')?.classList.toggle('tabela-colapsada'); };
+window.toggleTabelaLancamentos = () => { document.getElementById('tabelaLancamentos')?.classList.toggle('tabela-colapsada'); };
+window.toggleTabelaPagamentos = () => { document.getElementById('tabelaPagamentos')?.classList.toggle('tabela-colapsada'); };
+window.toggleTabelaProdutos = () => { document.getElementById('tabelaProdutos')?.classList.toggle('tabela-colapsada'); };
+window.toggleTabelaHistorico = () => { document.getElementById('tabelaHistorico')?.classList.toggle('tabela-colapsada'); };
 
-// CADASTROS
 window.limparFormCadastro = () => {
     document.getElementById('editandoCadastroId').value = '';
     document.getElementById('cadastroNome').value = '';
@@ -578,7 +523,6 @@ function renderizarCadastros() {
 function mudarPaginaCadastros(delta) { paginaCadastros += delta; renderizarCadastros(); }
 window.mudarPaginaCadastros = mudarPaginaCadastros;
 
-// COMPRA DE MANDIOCA - CACHE DE FILTROS
 let filtrosCompraCache = { dataInicio: '', dataFim: '', fornecedor: '', motorista: '', status: '' };
 
 function salvarFiltrosCompraCache() {
@@ -649,14 +593,11 @@ window.salvarLancamento = async () => {
     if(!data || !fornecedor) return alert('Preencha data e fornecedor!');
     const vt = renda * fator, qcx = peso / 50, totalBruto = (peso * vt) / 1000, valorCaixa = vt / 20, qtdSacos1 = Math.floor((peso * renda) / 10000 / 10);
     const lanc = { data, fornecedor, motorista, renda, fator, peso, vlTonelada: vt, qtdCx: qcx, totalBruto, valorCaixa, qtdSacos1, qtdSacos2, statusManual };
-    
     salvarFiltrosCompraCache();
-    
     if(id) await updateDoc(doc(db, "lancamentos", id), lanc);
     else await addDoc(lancamentosCol, lanc);
     fecharModal('modalLancamento');
     mostrarFeedback('Salvo!');
-    
     restaurarFiltrosCompraCache();
     atualizarTelaCompra();
 };
@@ -760,7 +701,6 @@ function atualizarTelaCompra() {
     
     let lancFiltrados = [...lancamentos];
     
-    // Filtro de data INÍCIO com timestamp UTC
     if (di) {
         const timestampInicio = dataParaTimestamp(di);
         if (timestampInicio !== null) {
@@ -771,7 +711,6 @@ function atualizarTelaCompra() {
         }
     }
     
-    // Filtro de data FIM com timestamp UTC
     if (df) {
         const timestampFim = dataParaTimestamp(df);
         if (timestampFim !== null) {
@@ -820,7 +759,6 @@ function atualizarTelaCompra() {
     }
     
     if(ffl) pagFiltrados = pagFiltrados.filter(p => p.fornecedor === ffl);
-    
     if(fMotorista) { 
         const fornecedoresCMotorista = lancamentos.filter(l => l.motorista === fMotorista).map(l => l.fornecedor); 
         pagFiltrados = pagFiltrados.filter(p => fornecedoresCMotorista.includes(p.fornecedor)); 
@@ -841,11 +779,7 @@ function atualizarTelaCompra() {
     let s1=0,s2=0,peso=0,bruto=0,qcx=0;
     
     lancPaginados.forEach(l => { 
-        s1+=l.qtdSacos1||0; 
-        s2+=l.qtdSacos2||0; 
-        peso+=l.peso||0; 
-        bruto+=l.totalBruto||0; 
-        qcx+=l.qtdCx||0; 
+        s1+=l.qtdSacos1||0; s2+=l.qtdSacos2||0; peso+=l.peso||0; bruto+=l.totalBruto||0; qcx+=l.qtdCx||0; 
         const st = getStatusLancamento(l); 
         let sc=''; 
         if(st==='PAGO TOTAL') sc='status-quitado'; 
@@ -920,7 +854,6 @@ function atualizarTelaCompra() {
 function mudarPaginaLancamentos(delta){ paginaLancamentos+=delta; atualizarTelaCompra(); }
 window.mudarPaginaLancamentos = mudarPaginaLancamentos;
 
-// PDF CORRIGIDO - Layout alinhado e profissional
 document.getElementById('btnGerarPDF').onclick = () => {
     const di = document.getElementById('dataInicioCompra').value;
     const df = document.getElementById('dataFimCompra').value;
@@ -928,7 +861,6 @@ document.getElementById('btnGerarPDF').onclick = () => {
     const fMotorista = document.getElementById('filtroMotoristaSelect')?.value || '';
     const fsl = document.getElementById('filtroStatusLancamentos')?.value || '';
     
-    // Filtrar lançamentos
     let lancFiltrados = lancamentos.filter(l => {
         const timestampLanc = dataParaTimestamp(l.data);
         const timestampInicio = di ? dataParaTimestamp(di) : null;
@@ -948,7 +880,6 @@ document.getElementById('btnGerarPDF').onclick = () => {
         return ta - tb;
     });
     
-    // Filtrar pagamentos
     let pagFiltrados = pagamentos.filter(p => {
         const fo = !ffl || p.fornecedor === ffl;
         let periodoOk = true;
@@ -969,7 +900,6 @@ document.getElementById('btnGerarPDF').onclick = () => {
         pagFiltrados = pagFiltrados.filter(p => fornecedoresCMotorista.includes(p.fornecedor)); 
     }
     
-    // Totais
     const totalBruto = lancFiltrados.reduce((a,l)=>a+(l.totalBruto||0),0);
     const totalQtdCx = lancFiltrados.reduce((a,l)=>a+(l.qtdCx||0),0);
     const totalPeso = lancFiltrados.reduce((a,l)=>a+(l.peso||0),0);
@@ -987,59 +917,25 @@ document.getElementById('btnGerarPDF').onclick = () => {
         <meta charset="UTF-8">
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { 
-                font-family: 'Courier New', Courier, monospace; 
-                font-size: 11px; 
-                padding: 20px; 
-                background: white;
-            }
-            h1 { font-size: 18px; text-align: center; margin-bottom: 5px; }
+            body { font-family: 'Courier New', Courier, monospace; font-size: 11px; padding: 20px; background: white; }
+            h1 { font-size: 18px; text-align: center; margin-bottom: 5px; color: #000000; }
             h2 { font-size: 14px; text-align: center; margin-bottom: 15px; color: #1e5631; }
-            h3 { font-size: 12px; margin: 15px 0 8px 0; background: #1e5631; color: white; padding: 5px 10px; }
+            h3 { font-size: 12px; margin: 15px 0 8px 0; background: #1e5631; color: white; padding: 5px 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .info-periodo { text-align: center; margin-bottom: 20px; font-size: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
-            table { 
-                width: 100%; 
-                border-collapse: collapse; 
-                margin-bottom: 20px;
-                font-size: 9px;
-            }
-            th, td { 
-                border: 1px solid #000; 
-                padding: 6px 4px; 
-                text-align: left;
-                vertical-align: top;
-            }
-            th { 
-                background: #1e5631; 
-                color: white; 
-                font-weight: bold;
-                text-align: center;
-            }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 9px; }
+            th, td { border: 1px solid #000; padding: 6px 4px; text-align: left; vertical-align: top; }
+            th { background: #1e5631 !important; color: #ffffff !important; font-weight: bold !important; text-align: center !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .text-right { text-align: right; }
             .text-center { text-align: center; }
             .total-row { background: #e8f0ea; font-weight: bold; }
-            .resumo-box {
-                margin-top: 20px;
-                border: 2px solid #1e5631;
-                padding: 10px;
-                width: 100%;
-                max-width: 500px;
-                margin-left: auto;
-                margin-right: auto;
-            }
+            .resumo-box { margin-top: 20px; border: 2px solid #1e5631; padding: 10px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; }
             .resumo-box table { margin-bottom: 0; }
-            .footer {
-                margin-top: 30px;
-                text-align: center;
-                font-size: 8px;
-                border-top: 1px dashed #ccc;
-                padding-top: 10px;
-            }
+            .footer { margin-top: 30px; text-align: center; font-size: 8px; border-top: 1px dashed #ccc; padding-top: 10px; }
             .saldo-vermelho { color: #dc2626; font-weight: bold; }
             .saldo-verde { color: #166534; font-weight: bold; }
             @media print {
                 body { margin: 0; padding: 10px; }
-                .no-print { display: none; }
+                th { background: #1e5631 !important; color: #ffffff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             }
         </style>
     </head>
@@ -1056,71 +952,27 @@ document.getElementById('btnGerarPDF').onclick = () => {
         <h3>📋 LANÇAMENTOS DE COMPRA</h3>
         <table>
             <thead>
-                <tr>
-                    <th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th class="text-right">RENDA</th><th class="text-right">QTD CX</th><th class="text-right">PESO (kg)</th><th class="text-right">VL TONELADA</th><th class="text-right">TOTAL BRUTO</th><th>STATUS</th>
-                </tr>
+                <tr><th>DATA</th><th>FORNECEDOR</th><th>MOTORISTA</th><th class="text-right">RENDA</th><th class="text-right">QTD CX</th><th class="text-right">PESO (kg)</th><th class="text-right">VL TONELADA</th><th class="text-right">TOTAL BRUTO</th><th>STATUS</th></tr>
             </thead>
             <tbody>`;
     
     lancFiltrados.forEach(l => { 
-        html += `<tr>
-            <td class="text-center">${formatarData(l.data)}</td>
-            <td>${l.fornecedor || ''}</td>
-            <td>${l.motorista || '-'}</td>
-            <td class="text-right">${formatarNumero(l.renda||0)}</td>
-            <td class="text-right">${formatarNumeroRedondo(l.qtdCx||0)}</td>
-            <td class="text-right">${formatarNumero(l.peso||0)}</td>
-            <td class="text-right">${formatarNumeroInteiro(l.vlTonelada||0)}</td>
-            <td class="text-right">${formatarMoeda(l.totalBruto||0)}</td>
-            <td class="text-center">${getStatusLancamento(l)}</td>
-        </tr>`; 
+        html += `<tr><td class="text-center">${formatarData(l.data)}</td><td>${l.fornecedor || ''}</td><td>${l.motorista || '-'}</td><td class="text-right">${formatarNumero(l.renda||0)}</td><td class="text-right">${formatarNumeroRedondo(l.qtdCx||0)}</td><td class="text-right">${formatarNumero(l.peso||0)}</td><td class="text-right">${formatarNumeroInteiro(l.vlTonelada||0)}</td><td class="text-right">${formatarMoeda(l.totalBruto||0)}</td><td class="text-center">${getStatusLancamento(l)}</td></tr>`; 
     });
     
-    html += `<tr class="total-row">
-        <td colspan="4" class="text-right"><strong>TOTAIS</strong></td>
-        <td class="text-right"><strong>${formatarNumeroRedondo(totalQtdCx)}</strong></td>
-        <td class="text-right"><strong>${formatarNumero(totalPeso)}</strong></td>
-        <td class="text-right"></td>
-        <td class="text-right"><strong>${formatarMoeda(totalBruto)}</strong></td>
-        <td></td>
-    </tr>
-            </tbody>
-        </table>
+    html += `<tr class="total-row"><td colspan="4" class="text-right"><strong>TOTAIS</strong></td><td class="text-right"><strong>${formatarNumeroRedondo(totalQtdCx)}</strong></td><td class="text-right"><strong>${formatarNumero(totalPeso)}</strong></td><td class="text-right"></td><td class="text-right"><strong>${formatarMoeda(totalBruto)}</strong></td><td class="text-right"></td></tr></tbody></table>
         
         <h3>💰 PAGAMENTOS REALIZADOS</h3>
         <table>
-            <thead>
-                <tr>
-                    <th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th class="text-right">FRETE</th><th class="text-right">ARRANCAÇÃO</th><th class="text-right">VALOR PAGO</th><th class="text-right">TOTAL PAGO</th><th>ORIGEM</th><th>DESTINATÁRIO</th>
-                </tr>
-            </thead>
+            <thead><tr><th>DATA</th><th>FORNECEDOR</th><th>PERÍODO</th><th class="text-right">FRETE</th><th class="text-right">ARRANCAÇÃO</th><th class="text-right">VALOR PAGO</th><th class="text-right">TOTAL PAGO</th><th>ORIGEM</th><th>DESTINATÁRIO</th></tr></thead>
             <tbody>`;
     
     pagFiltrados.forEach(p => { 
         const totalPago = calcularTotalPagoPagamento(p); 
-        html += `<tr>
-            <td class="text-center">${formatarData(p.data)}</td>
-            <td>${p.fornecedor || ''}</td>
-            <td>${formatarData(p.periodoInicio)} → ${formatarData(p.periodoFim)}</td>
-            <td class="text-right">${formatarMoeda(p.frete||0)}</td>
-            <td class="text-right">${formatarMoeda(p.arrancacao||0)}</td>
-            <td class="text-right">${formatarMoeda(p.valor||0)}</td>
-            <td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td>
-            <td>${p.origem||'-'}</td>
-            <td>${p.destinatario||'-'}</td>
-        </tr>`; 
+        html += `<tr><td class="text-center">${formatarData(p.data)}</td><td>${p.fornecedor || ''}</td><td>${formatarData(p.periodoInicio)} → ${formatarData(p.periodoFim)}</td><td class="text-right">${formatarMoeda(p.frete||0)}</td><td class="text-right">${formatarMoeda(p.arrancacao||0)}</td><td class="text-right">${formatarMoeda(p.valor||0)}</td><td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td><td>${p.origem||'-'}</td><td>${p.destinatario||'-'}</td></tr>`; 
     });
     
-    html += `<tr class="total-row">
-        <td colspan="3" class="text-right"><strong>TOTAIS</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalFrete)}</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalArrancacao)}</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalPagoMandioca)}</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalPagoGeral)}</strong></td>
-        <td colspan="2"></td>
-    </tr>
-            </tbody>
-        </table>
+    html += `<tr class="total-row"><td colspan="3" class="text-right"><strong>TOTAIS</strong></td><td class="text-right"><strong>${formatarMoeda(totalFrete)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalArrancacao)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalPagoMandioca)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalPagoGeral)}</strong></td><td colspan="2"></td></tr></tbody></table>
         
         <div class="resumo-box">
             <h3 style="margin:0 0 10px 0; text-align:center;">📊 RESUMO FINANCEIRO</h3>
@@ -1134,10 +986,7 @@ document.getElementById('btnGerarPDF').onclick = () => {
             </table>
         </div>
         
-        <div class="footer">
-            Documento gerado pelo sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}<br>
-            "Senhor, abençoai o meu trabalho!"
-        </div>
+        <div class="footer">Documento gerado pelo sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}<br>"Senhor, abençoai o meu trabalho!"</div>
     </body>
     </html>`;
     
@@ -1146,7 +995,6 @@ document.getElementById('btnGerarPDF').onclick = () => {
     win.document.close();
 };
 
-// ESTOQUE
 let produtoFiltroTexto = '';
 window.filtrarProdutos = () => { produtoFiltroTexto = document.getElementById('filtroBuscaProduto').value.toLowerCase(); paginaProdutos = 1; renderizarProdutos(); };
 window.limparFiltroProdutos = () => { document.getElementById('filtroBuscaProduto').value = ''; produtoFiltroTexto = ''; paginaProdutos = 1; renderizarProdutos(); };
@@ -1168,10 +1016,7 @@ window.mudarPaginaProdutos = mudarPaginaProdutos;
 
 function atualizarSelectProdutosEstoque() {
     const select = document.getElementById('entradaProdutoSelect');
-    if(select) {
-        select.innerHTML = '<option value="">Selecione um produto</option>' + 
-            produtos.sort((a,b)=> (a.codigo || '').localeCompare(b.codigo || '')).map(p => `<option value="${p.id}">${p.nome} (${p.codigo || 'SEM COD'}) - Estoque: ${formatarNumero((p.entrada||0)-(p.saidas||0))}</option>`).join('');
-    }
+    if(select) select.innerHTML = '<option value="">Selecione um produto</option>' + produtos.sort((a,b)=> (a.codigo || '').localeCompare(b.codigo || '')).map(p => `<option value="${p.id}">${p.nome} (${p.codigo || 'SEM COD'}) - Estoque: ${formatarNumero((p.entrada||0)-(p.saidas||0))}</option>`).join('');
 }
 
 window.abrirModalEntradaEstoque = () => {
@@ -1187,27 +1032,13 @@ window.salvarEntradaEstoque = async () => {
     const quantidade = parseFloat(document.getElementById('entradaQuantidade').value) || 0;
     const data = document.getElementById('entradaData').value;
     const obs = document.getElementById('entradaObs').value || '';
-    
     if(!produtoId) { alert('Selecione um produto!'); return; }
     if(quantidade <= 0) { alert('Informe uma quantidade válida!'); return; }
-    
     const produto = produtos.find(p => p.id === produtoId);
     if(!produto) return;
-    
     const novaEntrada = (produto.entrada || 0) + quantidade;
-    
     await updateDoc(doc(db, "produtos", produtoId), { entrada: novaEntrada });
-    
-    await addDoc(historicoPrecosCol, {
-        produtoId: produtoId,
-        data: data,
-        tipo: 'entrada_estoque',
-        valorAnterior: produto.entrada || 0,
-        valorNovo: novaEntrada,
-        obs: obs,
-        quantidade: quantidade
-    });
-    
+    await addDoc(historicoPrecosCol, { produtoId: produtoId, data: data, tipo: 'entrada_estoque', valorAnterior: produto.entrada || 0, valorNovo: novaEntrada, obs: obs, quantidade: quantidade });
     fecharModal('modalEntradaEstoque');
     mostrarFeedback(`Entrada de ${formatarNumero(quantidade)} ${produto.unidade || 'unidades'} registrada com sucesso!`);
     await carregarDadosIniciais();
@@ -1228,26 +1059,8 @@ window.salvarProduto = async () => {
     const existente = id ? produtos.find(x=>x.id===id) : null; 
     let codigo = existente?.codigo; 
     if(!codigo) codigo = gerarCodigoProduto(tipo, produtos); 
-    
-    if(existente && existente.valorUnitario !== vu) {
-        await addDoc(historicoPrecosCol, {
-            produtoId: id,
-            data: new Date().toISOString().split('T')[0],
-            tipo: 'valorBase',
-            valorAnterior: existente.valorUnitario,
-            valorNovo: vu
-        });
-    }
-    if(existente && existente.custoManual !== custoManual) {
-        await addDoc(historicoPrecosCol, {
-            produtoId: id,
-            data: new Date().toISOString().split('T')[0],
-            tipo: 'custoOper',
-            valorAnterior: existente.custoManual,
-            valorNovo: custoManual
-        });
-    }
-    
+    if(existente && existente.valorUnitario !== vu) await addDoc(historicoPrecosCol, { produtoId: id, data: new Date().toISOString().split('T')[0], tipo: 'valorBase', valorAnterior: existente.valorUnitario, valorNovo: vu });
+    if(existente && existente.custoManual !== custoManual) await addDoc(historicoPrecosCol, { produtoId: id, data: new Date().toISOString().split('T')[0], tipo: 'custoOper', valorAnterior: existente.custoManual, valorNovo: custoManual });
     const data = { nome, tipo, unidade: 'Sacas', entrada: ent, saidas: existente?.saidas||0, valorUnitario: vu, custoManual, estoqueMinimo, codigo }; 
     if(id) await updateDoc(doc(db, "produtos", id), data); 
     else await addDoc(produtosCol, data); 
@@ -1255,77 +1068,24 @@ window.salvarProduto = async () => {
     mostrarFeedback('Produto salvo!'); 
 };
 window.excluirProduto = (id) => { if(confirm('Excluir?')) deleteDoc(doc(db, "produtos", id)); };
-
 document.getElementById('btnNovoProduto').onclick = () => window.abrirModalProduto();
 document.getElementById('btnEntradaEstoque').onclick = () => window.abrirModalEntradaEstoque();
 
-// HISTÓRICO DE PREÇOS
 function renderizarHistoricoPrecos() {
     let filtrados = [...historicoPrecos];
     const prodFiltro = document.getElementById('filtroHistoricoProduto')?.value || '';
     const di = document.getElementById('filtroHistoricoDataInicio')?.value || '';
     const df = document.getElementById('filtroHistoricoDataFim')?.value || '';
-    
     if(prodFiltro) filtrados = filtrados.filter(h => h.produtoId === prodFiltro);
-    
-    if (di) {
-        const timestampInicio = dataParaTimestamp(di);
-        if (timestampInicio !== null) {
-            filtrados = filtrados.filter(h => {
-                const timestampHist = dataParaTimestamp(h.data);
-                return timestampHist !== null && timestampHist >= timestampInicio;
-            });
-        }
-    }
-    
-    if (df) {
-        const timestampFim = dataParaTimestamp(df);
-        if (timestampFim !== null) {
-            filtrados = filtrados.filter(h => {
-                const timestampHist = dataParaTimestamp(h.data);
-                return timestampHist !== null && timestampHist <= timestampFim;
-            });
-        }
-    }
-    
-    filtrados.sort((a,b)=> {
-        const ta = dataParaTimestamp(a.data);
-        const tb = dataParaTimestamp(b.data);
-        if (ta === null || tb === null) return 0;
-        return tb - ta;
-    });
+    if (di) { const timestampInicio = dataParaTimestamp(di); if (timestampInicio !== null) filtrados = filtrados.filter(h => { const timestampHist = dataParaTimestamp(h.data); return timestampHist !== null && timestampHist >= timestampInicio; }); }
+    if (df) { const timestampFim = dataParaTimestamp(df); if (timestampFim !== null) filtrados = filtrados.filter(h => { const timestampHist = dataParaTimestamp(h.data); return timestampHist !== null && timestampHist <= timestampFim; }); }
+    filtrados.sort((a,b)=> { const ta = dataParaTimestamp(a.data); const tb = dataParaTimestamp(b.data); if (ta === null || tb === null) return 0; return tb - ta; });
     const total = filtrados.length, inicio = (paginaHistorico-1)*ITENS_POR_PAGINA;
     filtrados = filtrados.slice(inicio, inicio+ITENS_POR_PAGINA);
-    const tbody = document.getElementById('historicoBody'); 
-    tbody.innerHTML = '';
-    
-    filtrados.forEach(h => { 
-        const prod = produtos.find(p=>p.id===h.produtoId); 
-        const v = ((h.valorNovo - h.valorAnterior) / h.valorAnterior * 100); 
-        const pct = v.toFixed(2); 
-        const cor = v>=0?'#166534':'#dc2626'; 
-        const row = tbody.insertRow(); 
-        const chkCell = row.insertCell(0);
-        const chk = document.createElement('input');
-        chk.type = 'checkbox';
-        chk.className = 'chk-historico-item';
-        chk.setAttribute('data-id', h.id);
-        chk.onchange = function() { selecionarHistoricoItem(this); };
-        if(historicoSelecionados.has(h.id)) chk.checked = true;
-        chkCell.appendChild(chk);
-        row.insertCell(1).innerHTML = formatarData(h.data); 
-        row.insertCell(2).innerHTML = prod?.nome || h.produtoId; 
-        row.insertCell(3).innerHTML = h.tipo==='valorBase'?formatarMoeda(prod?.valorUnitario):'-'; 
-        row.insertCell(4).innerHTML = h.tipo==='custoOper'?formatarMoeda(prod?.custoManual):'-'; 
-        row.insertCell(5).innerHTML = formatarMoeda(h.valorAnterior); 
-        row.insertCell(6).innerHTML = formatarMoeda(h.valorNovo); 
-        row.insertCell(7).innerHTML = `<span style="color:${cor}">${v>=0?'+':''}${pct}%</span>`; 
-    });
-    
-    const pagDiv = document.getElementById('paginacaoHistorico'); 
-    const paginas = Math.ceil(total/ITENS_POR_PAGINA);
-    if(paginas<=1) pagDiv.innerHTML=''; 
-    else pagDiv.innerHTML = `<button ${paginaHistorico<=1?'disabled':''} onclick="mudarPaginaHistorico(-1)">←</button><span>${paginaHistorico}/${paginas}</span><button ${paginaHistorico>=paginas?'disabled':''} onclick="mudarPaginaHistorico(1)">→</button>`;
+    const tbody = document.getElementById('historicoBody'); tbody.innerHTML = '';
+    filtrados.forEach(h => { const prod = produtos.find(p=>p.id===h.produtoId); const v = ((h.valorNovo - h.valorAnterior) / h.valorAnterior * 100); const pct = v.toFixed(2); const cor = v>=0?'#166534':'#dc2626'; const row = tbody.insertRow(); const chkCell = row.insertCell(0); const chk = document.createElement('input'); chk.type = 'checkbox'; chk.className = 'chk-historico-item'; chk.setAttribute('data-id', h.id); chk.onchange = function() { selecionarHistoricoItem(this); }; if(historicoSelecionados.has(h.id)) chk.checked = true; chkCell.appendChild(chk); row.insertCell(1).innerHTML = formatarData(h.data); row.insertCell(2).innerHTML = prod?.nome || h.produtoId; row.insertCell(3).innerHTML = h.tipo==='valorBase'?formatarMoeda(prod?.valorUnitario):'-'; row.insertCell(4).innerHTML = h.tipo==='custoOper'?formatarMoeda(prod?.custoManual):'-'; row.insertCell(5).innerHTML = formatarMoeda(h.valorAnterior); row.insertCell(6).innerHTML = formatarMoeda(h.valorNovo); row.insertCell(7).innerHTML = `<span style="color:${cor}">${v>=0?'+':''}${pct}%</span>`; });
+    const pagDiv = document.getElementById('paginacaoHistorico'); const paginas = Math.ceil(total/ITENS_POR_PAGINA);
+    if(paginas<=1) pagDiv.innerHTML=''; else pagDiv.innerHTML = `<button ${paginaHistorico<=1?'disabled':''} onclick="mudarPaginaHistorico(-1)">←</button><span>${paginaHistorico}/${paginas}</span><button ${paginaHistorico>=paginas?'disabled':''} onclick="mudarPaginaHistorico(1)">→</button>`;
 }
 function mudarPaginaHistorico(delta){ paginaHistorico+=delta; renderizarHistoricoPrecos(); }
 window.mudarPaginaHistorico = mudarPaginaHistorico;
@@ -1335,74 +1095,42 @@ document.getElementById('btnLimparHistorico')?.addEventListener('click',()=>{ do
 window.toggleSelecionarTodosHistorico = function() {
     const chkTodos = document.getElementById('selecionarTodosHistorico');
     const checkboxes = document.querySelectorAll('.chk-historico-item');
-    if(chkTodos.checked) {
-        checkboxes.forEach(cb => {
-            cb.checked = true;
-            const id = cb.getAttribute('data-id');
-            if(id) historicoSelecionados.add(id);
-        });
-    } else {
-        checkboxes.forEach(cb => {
-            cb.checked = false;
-            const id = cb.getAttribute('data-id');
-            if(id) historicoSelecionados.delete(id);
-        });
-    }
+    if(chkTodos.checked) { checkboxes.forEach(cb => { cb.checked = true; const id = cb.getAttribute('data-id'); if(id) historicoSelecionados.add(id); }); }
+    else { checkboxes.forEach(cb => { cb.checked = false; const id = cb.getAttribute('data-id'); if(id) historicoSelecionados.delete(id); }); }
 };
 
 window.selecionarHistoricoItem = function(checkbox) {
     const id = checkbox.getAttribute('data-id');
     if(!id) return;
-    if(checkbox.checked) {
-        historicoSelecionados.add(id);
-    } else {
-        historicoSelecionados.delete(id);
-    }
+    if(checkbox.checked) historicoSelecionados.add(id);
+    else historicoSelecionados.delete(id);
     const chkTodos = document.getElementById('selecionarTodosHistorico');
-    if(chkTodos) {
-        const totalCheckboxes = document.querySelectorAll('.chk-historico-item').length;
-        const checkedCheckboxes = document.querySelectorAll('.chk-historico-item:checked').length;
-        chkTodos.checked = (totalCheckboxes > 0 && checkedCheckboxes === totalCheckboxes);
-    }
+    if(chkTodos) { const totalCheckboxes = document.querySelectorAll('.chk-historico-item').length; const checkedCheckboxes = document.querySelectorAll('.chk-historico-item:checked').length; chkTodos.checked = (totalCheckboxes > 0 && checkedCheckboxes === totalCheckboxes); }
 };
 
 document.getElementById('btnLimparHistoricoTotal')?.addEventListener('click', async () => {
-    if(historicoSelecionados.size === 0) { 
-        alert('Selecione os registros que deseja excluir marcando as caixas de seleção!'); 
-        return; 
-    }
+    if(historicoSelecionados.size === 0) { alert('Selecione os registros que deseja excluir marcando as caixas de seleção!'); return; }
     if(confirm(`Tem certeza que deseja excluir ${historicoSelecionados.size} registro(s) do histórico?`)) {
         showLoading(true);
         let excluidos = 0;
         try {
-            for(const id of historicoSelecionados) {
-                await deleteDoc(doc(db, "historicoPrecos", id));
-                excluidos++;
-            }
+            for(const id of historicoSelecionados) { await deleteDoc(doc(db, "historicoPrecos", id)); excluidos++; }
             mostrarFeedback(`${excluidos} registro(s) excluído(s) com sucesso!`);
             historicoSelecionados.clear();
             const chkTodos = document.getElementById('selecionarTodosHistorico');
             if(chkTodos) chkTodos.checked = false;
             await carregarDadosIniciais();
             renderizarHistoricoPrecos();
-        } catch(e) {
-            console.error(e);
-            mostrarFeedback('Erro ao excluir registros');
-        } finally {
-            showLoading(false);
-        }
+        } catch(e) { console.error(e); mostrarFeedback('Erro ao excluir registros'); }
+        finally { showLoading(false); }
     }
 });
 
 function atualizarFiltroHistoricoProdutos() {
     const select = document.getElementById('filtroHistoricoProduto');
-    if(select) {
-        select.innerHTML = '<option value="">Todos os Produtos</option>' + 
-            produtos.sort((a,b)=> (a.codigo || '').localeCompare(b.codigo || '')).map(p => `<option value="${p.id}">${p.nome} (${p.codigo || 'SEM COD'})</option>`).join('');
-    }
+    if(select) select.innerHTML = '<option value="">Todos os Produtos</option>' + produtos.sort((a,b)=> (a.codigo || '').localeCompare(b.codigo || '')).map(p => `<option value="${p.id}">${p.nome} (${p.codigo || 'SEM COD'})</option>`).join('');
 }
 
-// PEDIDOS
 function atualizarSelectProdutosPedido() { 
     const produtosOrdenados = [...produtos].sort((a,b)=> (a.codigo || '').localeCompare(b.codigo || ''));
     const opts = '<option value="">Selecione</option>' + produtosOrdenados.map(p => `<option value="${p.id}" data-nome="${p.nome}" data-valor="${p.valorUnitario||0}" data-kg="50">${p.nome} (${p.codigo || ''})</option>`).join(''); 
@@ -1435,21 +1163,19 @@ function gerarImpressaoPedido() {
     const qt = itensPedido.reduce((a,i) => a + i.qtd, 0);
     const vendedorNome = ven.split('|')[0];
     const vendedorCnpj = ven.split('|')[1] || '09.097.608/0001-50';
-    let itensHtml = ''; itensPedido.forEach(i => { itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; });
+    let itensHtml = ''; itensPedido.forEach(i => { itensHtml += `<table><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; });
     const html = `<!DOCTYPE html><html><head><title>Pedido</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px} @page{size:A4;margin:1.5cm;} .header{text-align:center;margin-bottom:15px;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;} .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} .itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;} .itens-table td{border:1px solid #000;padding:6px;color:#000000} .totals-table{width:100%;margin-top:15px;} .totals-table td{color:#000000} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;} .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}</style></head><body>
         <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA</h3></div>
         <table class="info-table"><tr><td class="info-label">DATA:</td><td style="color:#000000">${formatarData(dt)}</td><td class="info-label">CLIENTE:</td><td style="color:#000000"><strong>${cli}</strong></td></tr>
         <tr><td class="info-label">CONDIÇÃO:</td><td style="color:#000000">${cond}</td><td class="info-label">PESO TOTAL:</td><td style="color:#000000">${formatarNumero(pt)} KG</td></tr>
-        <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero(qt)} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${gerarNumeroPedido()}</td></tr>
-        </table>
+        <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero(qt)} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${gerarNumeroPedido()}</td></tr></table>
         <div class="resumo-pedido"><strong>RESUMO DO PEDIDO</strong><br>Qtd Total: ${formatarNumero(qt)} | Peso Total: ${formatarNumero(pt)} kg | Valor Total: ${formatarMoeda(vt)}</div>
         <table class="itens-table"><thead><tr style="background:#000;color:#000000;font-weight:bold"><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></thead><tbody>${itensHtml}</tbody></table>
         <table class="totals-table"><tr><td style="color:#000000">TOTAL:</td><td style="color:#000000">${formatarMoeda(vt)}</td></tr>
         <tr><td style="color:#000000">DESCONTO:</td><td style="color:#000000">${formatarMoeda(desc)}</td></tr>
         <tr style="font-weight:bold;"><td style="color:#000000">VALOR FINAL:</td><td style="color:#000000">${formatarMoeda(vf)}</td></tr>
         <tr><td style="color:#000000">VALOR PAGO:</td><td style="color:#000000">${formatarMoeda(tp)}</td></tr>
-        <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(liq)}</td></tr>
-        </table>
+        <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(liq)}</td></tr></table>
         <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
         <div class="footer">Documento emitido por sistema Viana Farinha em ${new Date().toLocaleString('pt-br')}</div>
         </body></html>`;
@@ -1473,164 +1199,56 @@ async function gerarPedido() {
     pedidoConfirmado = false;
 }
 
-// FUNÇÃO RENDERIZAR PEDIDOS CORRIGIDA
 function renderizarPedidos() {
     const di = document.getElementById('filtroPedidosDataInicio').value;
     const df = document.getElementById('filtroPedidosDataFim').value;
     const cliFiltro = document.getElementById('filtroPedidosCliente').value;
-    
     let pedidosFiltrados = [...pedidos];
-    
-    // Filtro de data INÍCIO com timestamp UTC
-    if (di) {
-        const timestampInicio = dataParaTimestamp(di);
-        if (timestampInicio !== null) {
-            pedidosFiltrados = pedidosFiltrados.filter(p => {
-                const timestampPedido = dataParaTimestamp(p.data);
-                return timestampPedido !== null && timestampPedido >= timestampInicio;
-            });
-        }
-    }
-    
-    // Filtro de data FIM com timestamp UTC
-    if (df) {
-        const timestampFim = dataParaTimestamp(df);
-        if (timestampFim !== null) {
-            pedidosFiltrados = pedidosFiltrados.filter(p => {
-                const timestampPedido = dataParaTimestamp(p.data);
-                return timestampPedido !== null && timestampPedido <= timestampFim;
-            });
-        }
-    }
-    
-    // Filtro de cliente
-    if (cliFiltro) {
-        pedidosFiltrados = pedidosFiltrados.filter(p => p.cliente === cliFiltro);
-    }
-    
-    // Ordenar por data (mais recente primeiro)
-    pedidosFiltrados.sort((a, b) => {
-        const ta = dataParaTimestamp(a.data);
-        const tb = dataParaTimestamp(b.data);
-        if (ta === null || tb === null) return 0;
-        return tb - ta;
-    });
-    
+    if (di) { const timestampInicio = dataParaTimestamp(di); if (timestampInicio !== null) pedidosFiltrados = pedidosFiltrados.filter(p => { const timestampPedido = dataParaTimestamp(p.data); return timestampPedido !== null && timestampPedido >= timestampInicio; }); }
+    if (df) { const timestampFim = dataParaTimestamp(df); if (timestampFim !== null) pedidosFiltrados = pedidosFiltrados.filter(p => { const timestampPedido = dataParaTimestamp(p.data); return timestampPedido !== null && timestampPedido <= timestampFim; }); }
+    if (cliFiltro) pedidosFiltrados = pedidosFiltrados.filter(p => p.cliente === cliFiltro);
+    pedidosFiltrados.sort((a, b) => { const ta = dataParaTimestamp(a.data); const tb = dataParaTimestamp(b.data); if (ta === null || tb === null) return 0; return tb - ta; });
     pedidosFiltradosGlobal = pedidosFiltrados;
     const total = pedidosFiltradosGlobal.length;
     const inicio = (paginaPedidos - 1) * ITENS_POR_PAGINA;
     const paginados = pedidosFiltradosGlobal.slice(inicio, inicio + ITENS_POR_PAGINA);
     const container = document.getElementById('pedidosContainer');
-    
-    if (paginados.length === 0) { 
-        container.innerHTML = '<div class="card" style="text-align:center;padding:20px;">Nenhum pedido encontrado no período selecionado</div>'; 
-        document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(0);
-        document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(0);
-        document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(0);
-        return; 
-    }
-    
-    // Calcular totais da página
+    if (paginados.length === 0) { container.innerHTML = '<div class="card" style="text-align:center;padding:20px;">Nenhum pedido encontrado no período selecionado</div>'; document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(0); document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(0); document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(0); return; }
     let totalValorFinal = 0, totalPago = 0, totalSaldo = 0;
-    paginados.forEach(p => {
-        const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0);
-        const saldo = (p.valorFinal || 0) - pagoPedido;
-        totalValorFinal += (p.valorFinal || 0);
-        totalPago += pagoPedido;
-        totalSaldo += saldo;
-    });
-    
-    // Calcular totais gerais
+    paginados.forEach(p => { const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0); const saldo = (p.valorFinal || 0) - pagoPedido; totalValorFinal += (p.valorFinal || 0); totalPago += pagoPedido; totalSaldo += saldo; });
     let totalGeralValorFinal = 0, totalGeralPago = 0, totalGeralSaldo = 0;
-    pedidosFiltradosGlobal.forEach(p => {
-        const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0);
-        const saldo = (p.valorFinal || 0) - pagoPedido;
-        totalGeralValorFinal += (p.valorFinal || 0);
-        totalGeralPago += pagoPedido;
-        totalGeralSaldo += saldo;
-    });
-    
+    pedidosFiltradosGlobal.forEach(p => { const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0); const saldo = (p.valorFinal || 0) - pagoPedido; totalGeralValorFinal += (p.valorFinal || 0); totalGeralPago += pagoPedido; totalGeralSaldo += saldo; });
     document.getElementById('resumoPedidosValorTotal').innerHTML = formatarMoeda(totalGeralValorFinal);
     document.getElementById('resumoPedidosTotalPago').innerHTML = formatarMoeda(totalGeralPago);
     document.getElementById('resumoPedidosTotalSaldo').innerHTML = formatarMoeda(totalGeralSaldo);
-    
     let html = `<div class="pedidos-tabela-wrapper"><table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr style="background:#1e5631;color:white;"><th>NÚMERO</th><th>DATA</th><th>CLIENTE</th><th class="text-right">TOTAL</th><th class="text-right">PAGO</th><th class="text-right">SALDO</th><th>STATUS</th><th class="text-center">AÇÕES</th></thead><tbody>`;
-    
-    paginados.forEach(p => { 
-        const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0); 
-        const saldo = (p.valorFinal || 0) - pagoPedido; 
-        let statusClass = '', statusText = p.status || 'PENDENTE';
-        if (statusText === 'QUITADO') statusClass = 'status-quitado';
-        else if (statusText === 'PENDENTE') statusClass = 'status-pendente';
-        else if (statusText === 'PARCIAL') statusClass = 'status-parcial';
-        else statusClass = 'status-pendente';
-        
-        html += `<tr>
-            <td style="color:#000000"><strong>${p.numero}</strong></td>
-            <td style="color:#000000">${formatarData(p.data)}</td>
-            <td style="color:#000000"><strong>${p.cliente}</strong></td>
-            <td class="text-right" style="color:#000000">${formatarMoeda(p.valorFinal)}</td>
-            <td class="text-right" style="color:#000000">${formatarMoeda(pagoPedido)}</td>
-            <td class="text-right" style="color:${saldo > 0 ? '#dc2626' : '#166534'}">${formatarMoeda(saldo)}</td>
-            <td class="text-center"><span class="${statusClass}">${statusText}</span></td>
-            <td class="text-center"><button class="btn-acao btn-visualizar" onclick="visualizarPedido('${p.numero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${p.id}')">✏️</button><button class="btn-acao" onclick="reimprimirPedido('${p.numero}')">🖨️</button><button class="btn-acao btn-excluir" onclick="excluirPedido('${p.id}')">🗑️</button></td>
-        </tr>`; 
-    });
-    
-    html += `</tbody><tfoot><tr style="font-weight:bold;background:#e8f0ea;"><td colspan="3" style="text-align:right;"><strong>TOTAIS DA PÁGINA:</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalValorFinal)}</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td>
-        <td class="text-right"><strong>${formatarMoeda(totalSaldo)}</strong></td>
-        <td colspan="2"></td>
-    </tr></tfoot></table></div>`;
-    
+    paginados.forEach(p => { const pagoPedido = pagamentosPedidos.filter(pp => pp.pedidoNumero === p.numero).reduce((a,pp) => a + (pp.valor || 0), 0); const saldo = (p.valorFinal || 0) - pagoPedido; let statusClass = '', statusText = p.status || 'PENDENTE'; if (statusText === 'QUITADO') statusClass = 'status-quitado'; else if (statusText === 'PENDENTE') statusClass = 'status-pendente'; else if (statusText === 'PARCIAL') statusClass = 'status-parcial'; else statusClass = 'status-pendente'; html += `<tr><td style="color:#000000"><strong>${p.numero}</strong></td><td style="color:#000000">${formatarData(p.data)}</td><td style="color:#000000"><strong>${p.cliente}</strong></td><td class="text-right" style="color:#000000">${formatarMoeda(p.valorFinal)}</td><td class="text-right" style="color:#000000">${formatarMoeda(pagoPedido)}</td><td class="text-right" style="color:${saldo > 0 ? '#dc2626' : '#166534'}">${formatarMoeda(saldo)}</td><td class="text-center"><span class="${statusClass}">${statusText}</span></td><td class="text-center"><button class="btn-acao btn-visualizar" onclick="visualizarPedido('${p.numero}')">🔍</button><button class="btn-acao btn-editar" onclick="editarPedido('${p.id}')">✏️</button><button class="btn-acao" onclick="reimprimirPedido('${p.numero}')">🖨️</button><button class="btn-acao btn-excluir" onclick="excluirPedido('${p.id}')">🗑️</button></td></tr>`; });
+    html += `</tbody><tfoot><tr style="font-weight:bold;background:#e8f0ea;"><td colspan="3" style="text-align:right;"><strong>TOTAIS DA PÁGINA:</strong></td><td class="text-right"><strong>${formatarMoeda(totalValorFinal)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalPago)}</strong></td><td class="text-right"><strong>${formatarMoeda(totalSaldo)}</strong></td><td colspan="2"></td></tr></tfoot></table></div>`;
     container.innerHTML = html;
-    
-    const pagDiv = document.getElementById('paginacaoPedidos'); 
-    const paginas = Math.ceil(total / ITENS_POR_PAGINA);
-    if (paginas <= 1) { 
-        pagDiv.innerHTML = ''; 
-        return; 
-    }
+    const pagDiv = document.getElementById('paginacaoPedidos'); const paginas = Math.ceil(total / ITENS_POR_PAGINA);
+    if (paginas <= 1) { pagDiv.innerHTML = ''; return; }
     pagDiv.innerHTML = `<button ${paginaPedidos <= 1 ? 'disabled' : ''} onclick="mudarPaginaPedidos(-1)">←</button><span>${paginaPedidos} / ${paginas}</span><button ${paginaPedidos >= paginas ? 'disabled' : ''} onclick="mudarPaginaPedidos(1)">→</button>`;
 }
 
-function mudarPaginaPedidos(delta) { 
-    paginaPedidos += delta; 
-    renderizarPedidos(); 
-}
+function mudarPaginaPedidos(delta) { paginaPedidos += delta; renderizarPedidos(); }
 window.mudarPaginaPedidos = mudarPaginaPedidos;
 window.visualizarPedido = (num) => { const p = pedidos.find(p => p.numero === num); if(p) alert(`Pedido ${p.numero}\nCliente: ${p.cliente}\nData: ${formatarData(p.data)}\nTotal: ${formatarMoeda(p.valorFinal)}\nItens: ${p.itens?.length || 0}`); };
 
-window.reimprimirPedido = (num) => { 
-    const p = pedidos.find(p => p.numero === num); 
-    if(p) { 
-        const vendedorNome = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[0]; 
-        const vendedorCnpj = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[1]; 
-        let itensHtml = ''; 
-        (p.itens || []).forEach(i => { 
-            itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; 
-        }); 
-        const html = `<!DOCTYPE html><html><head><title>Pedido ${p.numero}</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px} @page{size:A4;margin:1.5cm;} .header{text-align:center;margin-bottom:15px;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;color:#000000} .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} .itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;} .itens-table td{border:1px solid #000;padding:6px;color:#000000} .totals-table{width:100%;margin-top:15px;} .totals-table td{color:#000000} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;} .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}</style></head><body>
+window.reimprimirPedido = (num) => { const p = pedidos.find(p => p.numero === num); if(p) { const vendedorNome = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[0]; const vendedorCnpj = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[1]; let itensHtml = ''; (p.itens || []).forEach(i => { itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; }); const html = `<!DOCTYPE html><html><head><title>Pedido ${p.numero}</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px} @page{size:A4;margin:1.5cm;} .header{text-align:center;margin-bottom:15px;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;color:#000000} .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} .itens-table th{background:#000;color:white;padding:8px;border:1px solid #000;} .itens-table td{border:1px solid #000;padding:6px;color:#000000} .totals-table{width:100%;margin-top:15px;} .totals-table td{color:#000000} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;} .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}</style></head><body>
             <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA - REIMPRESSÃO</h3></div>
             <table class="info-table"><tr><td class="info-label">DATA:</td><td style="color:#000000">${formatarData(p.data)}</td><td class="info-label">CLIENTE:</td><td style="color:#000000"><strong>${p.cliente}</strong></td></tr>
             <tr><td class="info-label">CONDIÇÃO:</td><td style="color:#000000">${p.condicao || 'Espécie'}</td><td class="info-label">PESO TOTAL:</td><td style="color:#000000">${formatarNumero((p.itens || []).reduce((a,i)=>a+(i.qtd*50),0))} KG</td></tr>
-            <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${p.numero}</td></tr>
-            </table>
+            <tr><td class="info-label">QTD TOTAL:</td><td style="color:#000000">${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} UN</td><td class="info-label">Nº PEDIDO:</td><td style="color:#000000">${p.numero}</td></tr></table>
             <div class="resumo-pedido"><strong>RESUMO DO PEDIDO</strong><br>Qtd Total: ${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} | Peso Total: ${formatarNumero((p.itens || []).reduce((a,i)=>a+(i.qtd*50),0))} kg | Valor Total: ${formatarMoeda(p.valorTotal)}</div>
             <table class="itens-table"><thead><tr style="background:#000;color:#000000;font-weight:bold"><th>PRODUTO</th><th style="width:80px;">QTDE</th><th style="width:110px;">PREÇO UNIT</th><th style="width:120px;">SUBTOTAL</th></thead><tbody>${itensHtml}</tbody></table>
             <table class="totals-table"><tr><td style="color:#000000">TOTAL:</td><td style="color:#000000">${formatarMoeda(p.valorTotal)}</td></tr>
             <tr><td style="color:#000000">DESCONTO:</td><td style="color:#000000">${formatarMoeda(p.desconto || 0)}</td></tr>
             <tr style="font-weight:bold;"><td style="color:#000000">VALOR FINAL:</td><td style="color:#000000">${formatarMoeda(p.valorFinal)}</td></tr>
             <tr><td style="color:#000000">VALOR PAGO:</td><td style="color:#000000">${formatarMoeda(p.totalPago || 0)}</td></tr>
-            <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(p.liquido || 0)}</td></tr>
-            </table>
+            <tr><td style="color:#000000">SALDO DEVEDOR:</td><td style="color:#000000">${formatarMoeda(p.liquido || 0)}</td></tr></table>
             <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
-            <div class="footer">Reimpresso em ${new Date().toLocaleString('pt-br')}</div>
-            </body></html>`;
-        const win = window.open('', '_blank'); win.document.write(html); win.document.close(); 
-    } 
-};
+            <div class="footer">Reimpresso em ${new Date().toLocaleString('pt-br')}</div></body></html>`;
+    const win = window.open('', '_blank'); win.document.write(html); win.document.close(); } };
 
 window.editarPedido = (id) => { const ped = pedidos.find(p => p.id === id); if(ped) { pedidoEditando = ped; document.getElementById('editPedidoId').value = ped.id; document.getElementById('editPedidoDesconto').value = ped.desconto || 0; document.getElementById('editPedidoPago').value = ped.totalPago || 0; document.getElementById('editPedidoInfo').innerHTML = `<p><strong>Pedido:</strong> ${ped.numero}</p><p><strong>Cliente:</strong> ${ped.cliente}</p><p><strong>Valor Final atual:</strong> ${formatarMoeda(ped.valorFinal)}</p>`; window.calcularEditPedido(); document.getElementById('modalEditarPedido').style.display = 'flex'; } };
 window.calcularEditPedido = function() { if(!pedidoEditando) return; const vt = pedidoEditando.valorTotal || 0; const desc = parseFloat(document.getElementById('editPedidoDesconto').value) || 0; const vf = vt - desc; const pago = parseFloat(document.getElementById('editPedidoPago').value) || 0; const saldo = vf - pago; document.getElementById('editPedidoPreview').innerHTML = `<strong>Novo Valor Final:</strong> ${formatarMoeda(vf)}<br><strong>Novo Saldo Devedor:</strong> ${formatarMoeda(saldo)}`; };
@@ -1642,7 +1260,6 @@ document.getElementById('btnConfirmarPedido').onclick = () => window.confirmarPe
 document.getElementById('btnGerarPedidoAcao').onclick = () => window.gerarPedidoFinal();
 document.getElementById('btnImprimirPedido').onclick = () => window.imprimirPedidoFinal();
 
-// DRE
 window.abrirModalCustoIndireto = () => { document.getElementById('custoIndiretoId').value = ''; document.getElementById('custoIndiretoData').value = new Date().toISOString().split('T')[0]; document.getElementById('custoIndiretoDescricao').value = ''; document.getElementById('custoIndiretoValor').value = ''; document.getElementById('modalCustoIndireto').style.display = 'flex'; };
 window.salvarCustoIndireto = async () => { const id = document.getElementById('custoIndiretoId').value; const data = document.getElementById('custoIndiretoData').value; const desc = document.getElementById('custoIndiretoDescricao').value; const val = parseFloat(document.getElementById('custoIndiretoValor').value)||0; if(!data||!desc||val<=0) return alert('Preencha!'); const obj = { data, descricao: desc, valor: val }; if(id) await updateDoc(doc(db, "custosIndiretos", id), obj); else await addDoc(custosIndiretosCol, obj); fecharModal('modalCustoIndireto'); mostrarFeedback('Salvo!'); };
 window.editarCustoIndireto = (id) => { const c = custosIndiretos.find(x=>x.id===id); if(c){ document.getElementById('custoIndiretoId').value = c.id; document.getElementById('custoIndiretoData').value = c.data; document.getElementById('custoIndiretoDescricao').value = c.descricao; document.getElementById('custoIndiretoValor').value = c.valor; document.getElementById('modalCustoIndireto').style.display = 'flex'; } };
@@ -1655,7 +1272,6 @@ function atualizarDRE(){ const ma=document.getElementById('dreMes')?.value||'202
 document.getElementById('btnAtualizarDRE')?.addEventListener('click',atualizarDRE);
 document.getElementById('btnExportarDRE')?.addEventListener('click',()=>mostrarFeedback('Exportado!'));
 
-// LOGIN
 document.getElementById('btnLogin').onclick = async () => { const email=document.getElementById('loginEmail').value, pwd=document.getElementById('loginPassword').value, btn=document.getElementById('btnLogin'); btn.innerHTML='Entrando...'; try{ await signInWithEmailAndPassword(auth,email,pwd); document.getElementById('loginError').style.display='none'; }catch(e){ document.getElementById('loginError').style.display='block'; btn.innerHTML='ENTRAR'; } };
 document.getElementById('btnLogout').onclick = async () => { await signOut(auth); location.reload(); };
 document.getElementById('btnPerfil').onclick = () => { document.getElementById('modalPerfil').style.display='flex'; };
