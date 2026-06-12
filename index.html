@@ -1215,15 +1215,59 @@ function renderizarPedidos() {
 function mudarPaginaPedidos(delta) { paginaPedidos += delta; renderizarPedidos(); }
 window.mudarPaginaPedidos = mudarPaginaPedidos;
 window.visualizarPedido = (num) => { const p = pedidos.find(p => p.numero === num); if(p) alert(`Pedido ${p.numero}\nCliente: ${p.cliente}\nData: ${formatarData(p.data)}\nTotal: ${formatarMoeda(p.valorFinal)}\nItens: ${p.itens?.length || 0}`); };
-window.reimprimirPedido = (num) => { const p = pedidos.find(p => p.numero === num); if(p) { const vendedorNome = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[0]; const vendedorCnpj = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[1]; let itensHtml = ''; let pesoTotal = 0; (p.itens || []).forEach(i => { itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:center;">${i.unidade}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</td>`; pesoTotal += i.qtd * (i.kgPorUnidade || 50); }); const html = `<!DOCTYPE html><html><head><title>Pedido ${p.numero}</title><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;padding:20px;} @page{size:A4;margin:1.5cm;} .header{text-align:center;} .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} .info-table td{border:1px solid #000;padding:8px;} .itens-table{width:100%;border-collapse:collapse;} .itens-table th{background:#fff;border:1px solid #000;padding:8px;} .itens-table td{border:1px solid #000;padding:6px;} .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} .footer{text-align:center;font-size:8px;margin-top:15px;}</style></head><body>
-        <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO - REIMPRESSÃO</h3></div>
-        <table class="info-table"><tr><td>DATA:</td><td>${formatarData(p.data)}</td><td>CLIENTE:</td><td><strong>${p.cliente}</strong></td></tr>
-        <tr><td>CONDIÇÃO:</td><td>${p.condicao || 'Espécie'}</td><td>PESO TOTAL:</td><td>${formatarNumero(pesoTotal)} KG</td></tr>
-        <tr><td>QTD TOTAL:</td><td>${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} UN</td><td>Nº PEDIDO:</td><td>${p.numero}</td></tr></table>
-        <table class="itens-table"><thead><tr><th>PRODUTO</th><th>QTDE</th><th>UN</th><th>PREÇO</th><th>SUBTOTAL</th></thead><tbody>${itensHtml}</tbody></table>
-        <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
-        <div class="footer">Reimpresso em ${new Date().toLocaleString('pt-br')}</div></body></html>`;
-        const win = window.open('', '_blank'); win.document.write(html); win.document.close(); } };
+window.reimprimirPedido = (num) => { 
+    const p = pedidos.find(p => p.numero === num); 
+    if(p) { 
+        const vendedorNome = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[0]; 
+        const vendedorCnpj = (p.vendedor || 'Pedro R V da Silva Eirelli|09.097.608/0001-50').split('|')[1]; 
+        let itensHtml = ''; 
+        let pesoTotal = 0; 
+        (p.itens || []).forEach(i => { 
+            itensHtml += `<tr><td style="border:1px solid #000;padding:6px;">${i.produtoNome}<td style="border:1px solid #000;padding:6px;text-align:center;">${formatarNumero(i.qtd)}<td style="border:1px solid #000;padding:6px;text-align:center;">${i.unidade || 'Sacas'}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.valorUnitario)}<td style="border:1px solid #000;padding:6px;text-align:right;">${formatarMoeda(i.subtotal)}</tr>`; 
+            pesoTotal += i.qtd * (i.kgPorUnidade || 50); 
+        }); 
+        const vt = p.valorTotal || 0;
+        const desc = p.desconto || 0;
+        const vf = p.valorFinal || 0;
+        const tp = p.totalPago || 0;
+        const liq = p.liquido || 0;
+        const html = `<!DOCTYPE html><html><head><title>Pedido ${p.numero}</title><meta charset="UTF-8"><style>
+            body{font-family:Arial;font-size:12px;padding:20px;} 
+            @page{size:A4;margin:1.5cm;} 
+            .header{text-align:center;} 
+            .info-table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #000;} 
+            .info-table td{border:1px solid #000;padding:8px;} 
+            .itens-table{width:100%;border-collapse:collapse;margin:15px 0;} 
+            .itens-table th{background:#fff;color:#000;padding:8px;border:1px solid #000;font-weight:bold;} 
+            .itens-table td{border:1px solid #000;padding:6px;} 
+            .totals-table{width:100%;margin-top:15px;border-collapse:collapse;}
+            .totals-table td{border:none;padding:4px 8px;}
+            .signature{margin-top:25px;text-align:center;border-top:1px dashed #999;padding-top:15px;} 
+            .footer{text-align:center;font-size:8px;margin-top:15px;}
+            .resumo-pedido{background:#f5f5f5;padding:10px;margin:10px 0;text-align:center;}
+        </style></head><body>
+            <div class="header"><h2>VIANA FARINHA</h2><div>${vendedorNome}</div><div>CNPJ: ${vendedorCnpj}</div><h3>PEDIDO DE VENDA - REIMPRESSÃO</h3></div>
+            <table class="info-table"><tr><td style="width:120px;">DATA:</td><td>${formatarData(p.data)}</td><td style="width:120px;">CLIENTE:</td><td><strong>${p.cliente}</strong></td></tr>
+            <tr><td>CONDIÇÃO:</td><td>${p.condicao || 'Espécie'}</td><td>PESO TOTAL:</td><td>${formatarNumero(pesoTotal)} KG</td></tr>
+            <tr><td>QTD TOTAL:</td><td>${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} UN</td><td>Nº PEDIDO:</td><td>${p.numero}</td></tr>
+        </table>
+            <div class="resumo-pedido"><strong>RESUMO DO PEDIDO</strong><br>Qtd Total: ${formatarNumero((p.itens || []).reduce((a,i)=>a+i.qtd,0))} | Peso Total: ${formatarNumero(pesoTotal)} kg | Valor Total: ${formatarMoeda(vt)}</div>
+            <table class="itens-table"><thead><tr><th>PRODUTO</th><th>QTDE</th><th>UN</th><th>PREÇO</th><th>SUBTOTAL</th></tr></thead><tbody>${itensHtml}</tbody></table>
+            <table class="totals-table">
+                <tr><td style="text-align:right;"><strong>TOTAL:</strong></td><td style="text-align:right;">${formatarMoeda(vt)}</td></tr>
+                <tr><td style="text-align:right;"><strong>DESCONTO:</strong></td><td style="text-align:right;">${formatarMoeda(desc)}</td></tr>
+                <tr style="font-weight:bold;"><td style="text-align:right;"><strong>VALOR FINAL:</strong></td><td style="text-align:right;">${formatarMoeda(vf)}</td></tr>
+                <tr><td style="text-align:right;"><strong>VALOR PAGO:</strong></td><td style="text-align:right;">${formatarMoeda(tp)}</td></tr>
+                <tr><td style="text-align:right;"><strong>SALDO DEVEDOR:</strong></td><td style="text-align:right;">${formatarMoeda(liq)}</td></tr>
+            </table>
+            <div class="signature">_________________________________<br>ASSINATURA DO CLIENTE</div>
+            <div class="footer">Reimpresso em ${new Date().toLocaleString('pt-br')}</div>
+        </body></html>`;
+        const win = window.open('', '_blank'); 
+        win.document.write(html); 
+        win.document.close(); 
+    } 
+};
 window.registrarDevolucao = async (numeroPedido) => { const pedido = pedidos.find(p => p.numero === numeroPedido); if(!pedido) { alert('Pedido não encontrado!'); return; } if(confirm(`Registrar DEVOLUÇÃO do pedido ${numeroPedido}?`)) { for(const item of (pedido.itens || [])) { const produto = produtos.find(p => p.id === item.produtoId); if(produto) { const novaSaida = Math.max(0, (produto.saidas || 0) - item.qtd); await updateDoc(doc(db, "produtos", produto.id), { saidas: novaSaida }); } } await updateDoc(doc(db, "pedidos", pedido.id), { status: 'DEVOLVIDO', dataDevolucao: new Date().toISOString().split('T')[0] }); mostrarFeedback(`Devolução do pedido ${numeroPedido} registrada!`); await carregarDadosIniciais(); renderizarPedidos(); renderizarProdutos(); } };
 window.editarPedido = (id) => { const ped = pedidos.find(p => p.id === id); if(ped) { pedidoEditando = ped; document.getElementById('editPedidoId').value = ped.id; document.getElementById('editPedidoDesconto').value = ped.desconto || 0; document.getElementById('editPedidoPago').value = ped.totalPago || 0; document.getElementById('editPedidoInfo').innerHTML = `<p><strong>Pedido:</strong> ${ped.numero}</p><p><strong>Cliente:</strong> ${ped.cliente}</p><p><strong>Valor Final:</strong> ${formatarMoeda(ped.valorFinal)}</p>`; window.calcularEditPedido(); document.getElementById('modalEditarPedido').style.display = 'flex'; } };
 window.calcularEditPedido = function() { if(!pedidoEditando) return; const vt = pedidoEditando.valorTotal || 0; const desc = parseFloat(document.getElementById('editPedidoDesconto').value) || 0; const vf = vt - desc; const pago = parseFloat(document.getElementById('editPedidoPago').value) || 0; const saldo = vf - pago; document.getElementById('editPedidoPreview').innerHTML = `<strong>Novo Valor Final:</strong> ${formatarMoeda(vf)}<br><strong>Novo Saldo:</strong> ${formatarMoeda(saldo)}`; };
