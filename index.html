@@ -777,6 +777,9 @@ function renderizarPagamentosPaginados() {
 function mudarPaginaPagamentos(delta) { paginaAtualPagamentos += delta; renderizarPagamentosPaginados(); }
 window.mudarPaginaPagamentos = mudarPaginaPagamentos;
 
+// ==============================================
+// FUNÇÃO CORRIGIDA: CARDS USAM TOTAIS GERAIS FILTRADOS
+// ==============================================
 function atualizarTelaCompra() {
     const di = document.getElementById('dataInicioCompra').value;
     const df = document.getElementById('dataFimCompra').value;
@@ -808,7 +811,11 @@ function atualizarTelaCompra() {
     tbody.innerHTML = '';
     let s1=0,s2=0,peso=0,bruto=0,qcx=0;
     lancPaginados.forEach(l => { 
-        s1+=l.qtdSacos1||0; s2+=l.qtdSacos2||0; peso+=l.peso||0; bruto+=l.totalBruto||0; qcx+=l.qtdCx||0; 
+        s1+=l.qtdSacos1||0; 
+        s2+=l.qtdSacos2||0; 
+        peso+=l.peso||0; 
+        bruto+=l.totalBruto||0; 
+        qcx+=l.qtdCx||0; 
         const st = getStatusLancamento(l); 
         let sc=''; if(st==='PAGO TOTAL') sc='status-quitado'; else if(st==='PAGO PARCIAL') sc='status-parcial'; else sc='status-pendente'; 
         const row = tbody.insertRow(); 
@@ -832,14 +839,27 @@ function atualizarTelaCompra() {
     const paginas = Math.ceil(totalLanc/ITENS_POR_PAGINA);
     if(paginas<=1) pagDiv.innerHTML=''; 
     else pagDiv.innerHTML = `<button ${paginaLancamentos<=1?'disabled':''} onclick="mudarPaginaLancamentos(-1)">←</button><span>${paginaLancamentos}/${paginas}</span><button ${paginaLancamentos>=paginas?'disabled':''} onclick="mudarPaginaLancamentos(1)">→</button>`;
+    
+    // ==============================================
+    // TOTAIS GERAIS (TODOS OS FILTRADOS) PARA OS CARDS
+    // ==============================================
     const tb = lancFiltrados.reduce((a,l)=>a+(l.totalBruto||0),0);
     const tf = pagFiltrados.reduce((a,p)=>a+(p.frete||0),0);
     const ta = pagFiltrados.reduce((a,p)=>a+(p.arrancacao||0),0);
     const totalPagoGeral = pagFiltrados.reduce((a,p)=>a+calcularTotalPagoPagamento(p),0);
-    document.getElementById('totalBruto').innerHTML=formatarMoeda(tb); document.getElementById('totalFrete').innerHTML=formatarMoeda(tf); 
-    document.getElementById('totalArrancacao').innerHTML=formatarMoeda(ta); document.getElementById('totalQtdCx').innerHTML=formatarNumeroRedondo(lancFiltrados.reduce((a,l)=>a+(l.qtdCx||0),0)); 
-    document.getElementById('totalPagoCompra').innerHTML=formatarMoeda(totalPagoGeral); document.getElementById('saldoPagar').innerHTML=formatarMoeda(Math.max(0,tb-totalPagoGeral)); 
-    document.getElementById('totalSacos1').innerHTML=formatarNumeroInteiro(s1); document.getElementById('totalSacos2').innerHTML=formatarNumeroInteiro(s2);
+    const qcxTotal = lancFiltrados.reduce((a,l)=>a+(l.qtdCx||0),0);
+    const s1Total = lancFiltrados.reduce((a,l)=>a+(l.qtdSacos1||0),0);
+    const s2Total = lancFiltrados.reduce((a,l)=>a+(l.qtdSacos2||0),0);
+    
+    document.getElementById('totalBruto').innerHTML=formatarMoeda(tb); 
+    document.getElementById('totalFrete').innerHTML=formatarMoeda(tf); 
+    document.getElementById('totalArrancacao').innerHTML=formatarMoeda(ta); 
+    document.getElementById('totalQtdCx').innerHTML=formatarNumeroRedondo(qcxTotal); 
+    document.getElementById('totalPagoCompra').innerHTML=formatarMoeda(totalPagoGeral); 
+    document.getElementById('saldoPagar').innerHTML=formatarMoeda(Math.max(0,tb-totalPagoGeral)); 
+    document.getElementById('totalSacos1').innerHTML=formatarNumeroInteiro(s1Total); 
+    document.getElementById('totalSacos2').innerHTML=formatarNumeroInteiro(s2Total);
+    
     const fornecedoresUnicos = [...new Set(lancFiltrados.map(l=>l.fornecedor).filter(Boolean))];
     let htmlSaldo='<div style="display:flex;flex-wrap:wrap;gap:16px;">';
     for(const f of fornecedoresUnicos.sort()){ 
@@ -1151,7 +1171,6 @@ async function gerarPedido() {
     const dt = document.getElementById('pedidoData').value, cli = document.getElementById('pedidoCliente').value, cond = document.getElementById('pedidoCondicao').value, ven = document.getElementById('pedidoVendedorSelect').value;
     const desc = parseFloat(document.getElementById('pedidoDesconto').value) || 0, tp = parseFloat(document.getElementById('pedidoTotalPago').value) || 0;
     if(!cli) return alert('Cliente!'); if(itensPedido.length === 0) return alert('Itens!');
-    // VERIFICAR ESTOQUE (CORREÇÃO #2)
     for(const item of itensPedido) {
         const produto = produtos.find(p => p.id === item.produtoId);
         if(produto) {
@@ -1298,7 +1317,6 @@ function atualizarDRE(){
     const co=fr+ar+cot; const ci=custosIndiretos.filter(c=>c.data>=di&&c.data<=df).reduce((a,c)=>a+(c.valor||0),0); 
     const ct=vm+co+ci; const vv=pp.reduce((a,p)=>a+(p.valorFinal||0),0); 
     const mg=vv-ct; const mgp=vv>0?(mg/vv*100):0;
-    // CUSTO POR SACO (CORREÇÃO #7)
     const totalSacosProduzidos = lancamentos.filter(l=>l.data>=di&&l.data<=df).reduce((a,l)=>a+(l.qtdSacos1||0),0);
     const custoTotalProducao = vm + fr + ar + ci;
     const custoPorSaco = totalSacosProduzidos > 0 ? custoTotalProducao / totalSacosProduzidos : 0;
